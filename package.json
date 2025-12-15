@@ -1,0 +1,15 @@
+{
+  "name": "market-agreement-system",
+  "version": "1.0.0",
+  "description": "Marketing & Stock Agreement System",
+  "main": "market.js",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "serve": "^14.2.0"
+  }
+}
