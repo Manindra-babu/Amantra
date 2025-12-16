@@ -1,0 +1,20 @@
+<div class="card-header">
+    <h2>Dashboard</h2>
+    <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <button id="btnCreateRequest" class="btn btn-primary hidden" style="font-size: 0.8rem;">+ New
+            Request</button>
+    </div>
+</div>
+
+<!-- Tabs -->
+<div class="dashboard-tabs">
+    <button class="tab-btn active" data-tab="active">Active</button>
+    <button class="tab-btn" data-tab="pending">Pending</button>
+    <button class="tab-btn" data-tab="history">History</button>
+    <button class="tab-btn" data-tab="calendar">Calendar</button>
+</div>
+
+<div id="agreementsList" class="agreements-list">
+    <!-- Agreement Items will be injected here -->
+    <p class="empty-state">No agreements found.</p>
+</div>

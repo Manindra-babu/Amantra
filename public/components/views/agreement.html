@@ -1,0 +1,35 @@
+<header class="section-header">
+    <button id="btnBackToDashboard" class="btn-text hidden">← Dashboard</button>
+    <h2>Agreement Details</h2>
+    <span id="statusBadge" class="status-badge pending">Pending</span>
+</header>
+
+<div class="agreement-info">
+    <div class="info-row">
+        <span class="label">Agreement ID:</span>
+        <span id="agreementId" class="value monospace"></span>
+    </div>
+    <div class="info-row">
+        <span class="label">Created At:</span>
+        <span id="timestamp" class="value"></span>
+    </div>
+    <div style="margin-top: 1rem; text-align: right;">
+        <button id="btnReadAloud" class="btn-text" style="font-size: 0.9rem;">🔊 Read Aloud</button>
+    </div>
+</div>
+
+<div id="vendorActions" class="vendor-actions hidden">
+    <h3>Vendor Actions</h3>
+    <div class="action-buttons">
+        <button id="btnConfirm" class="btn btn-success">Confirm Agreement</button>
+        <button id="btnRequestChange" class="btn btn-warning">Request Change</button>
+    </div>
+</div>
+
+<div class="qr-container">
+    <h3>Digital Signature</h3>
+    <div class="qr-wrapper">
+        <img id="qrCode" alt="Agreement QR Code" src="">
+        <p class="qr-hint">Scan to verify authenticity</p>
+    </div>
+</div>

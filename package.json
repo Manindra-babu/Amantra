@@ -4,7 +4,8 @@
   "description": "Marketing & Stock Agreement System",
   "main": "market.js",
   "scripts": {
-    "start": "npx serve ."
+    "start": "npx serve .",
+    "build": "rm -rf public && mkdir public && cp -r agreement.html dashboard.html home.html index.html login.html market.css market.js profile.html register.html request.html js components public"
   },
   "keywords": [],
   "author": "",

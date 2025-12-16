@@ -1,0 +1,32 @@
+<header class="section-header">
+    <h2>Create Agreement</h2>
+</header>
+<form id="agreementForm" class="form-grid">
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input id="title" type="text" placeholder="e.g., Marketing Campaign" required>
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" placeholder="Describe the agreement details..." required></textarea>
+    </div>
+    <div class="form-group">
+        <label for="amount">Amount of the Deal ($)</label>
+        <input id="amount" type="number" min="0" step="0.01" placeholder="0.00" required>
+    </div>
+    <div class="form-group">
+        <label for="dueDate">Due Date</label>
+        <input id="dueDate" type="date" required>
+    </div>
+    <div class="form-group">
+        <label for="dueFine">Due Fine ($)</label>
+        <input id="dueFine" type="number" min="0" step="0.01" placeholder="0.00" required>
+    </div>
+    <div class="form-group">
+        <label for="buyerId">Buyer's ID</label>
+        <input id="buyerId" type="text" placeholder="e.g., 12345" required>
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Create Agreement</button>
+    </div>
+</form>
