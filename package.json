@@ -12,5 +12,7 @@
   "dependencies": {
     "serve": "^14.2.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "firebase-tools": "^15.0.0"
+  }
 }

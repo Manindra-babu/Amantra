@@ -22,16 +22,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (sessionUser) {
         state.currentUser = JSON.parse(sessionUser);
         // If user is on login/register but already logged in, send to Home
-        if (publicPages.includes(page) && page !== "") {
-            // For index.html, we just want to redirect
+        // If on index, let them stay or give them a "Go to Dashboard" button in UI (handled in index.html)
+        if ((page === "login.html" || page === "register.html" || page === "login" || page === "register") && page !== "") {
             window.location.href = "home.html";
             return;
         }
     } else {
         // If no user:
-        // 1. If trying to access private page -> Redirect Login
-        // 2. If on index.html or root -> Redirect Login
-        if (!publicPages.includes(page) || page === "index.html" || page === "index" || page === "") {
+        // Allow public pages (index, login, register)
+        // Block private pages (dashboard, etc.)
+        // We do NOT redirect index.html anymore, it's a landing page.
+        const isPublic = publicPages.includes(page) || page === "index" || page === "";
+        if (!isPublic) {
             window.location.href = "login.html";
             return;
         }
