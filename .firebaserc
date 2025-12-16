@@ -1,5 +1,17 @@
 {
   "projects": {
-    "default": "amantra-359"
+    "default": "amantra-360"
+  },
+  "targets": {
+    "amantra-360": {
+      "hosting": {
+        "production": [
+          "amantra-360"
+        ],
+        "test": [
+          "test-amantra-360"
+        ]
+      }
+    }
   }
 }

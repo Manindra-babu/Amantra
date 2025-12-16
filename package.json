@@ -8,6 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "deploy:prod": "firebase deploy --only hosting:production",
+    "deploy:test": "firebase deploy --only hosting:test",
     "deploy": "firebase deploy"
   },
   "dependencies": {
