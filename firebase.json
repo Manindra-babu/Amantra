@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "amantra",
+    "site": "amantra-360",
     "public": "dist",
     "ignore": [
       "firebase.json",
