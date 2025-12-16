@@ -11,6 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "firebase": "^12.6.0",
     "serve": "^14.2.0"
+  },
+  "devDependencies": {
+    "firebase-tools": "^15.0.0"
   }
 }
