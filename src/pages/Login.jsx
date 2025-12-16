@@ -3,19 +3,33 @@ import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import Header from '../components/Header';
 
+import toast from 'react-hot-toast';
+
 export default function Login() {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { login } = useApp();
+    const [loading, setLoading] = useState(false);
+    const { login, currentUser } = useApp();
     const navigate = useNavigate();
 
-    const handleLogin = (e) => {
-        e.preventDefault();
-        if (login(username, password)) {
+    // Redirect to dashboard if already logged in
+    React.useEffect(() => {
+        if (currentUser) {
             navigate('/dashboard');
-        } else {
-            alert("Invalid credentials!");
         }
+    }, [currentUser, navigate]);
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        const result = await login(email, password);
+        setLoading(false);
+        if (!result.success) {
+            toast.error(result.message || "Invalid credentials!");
+        } else {
+            toast.success("Welcome back!");
+        }
+        // If success, the useEffect above will handle redirection once currentUser is updated
     };
 
     return (
@@ -28,11 +42,12 @@ export default function Login() {
                 </div>
                 <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <input
-                        type="text"
-                        placeholder="Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        type="email"
+                        placeholder="Email Address"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
+                        disabled={loading}
                     />
                     <input
                         type="password"
@@ -40,8 +55,11 @@ export default function Login() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        disabled={loading}
                     />
-                    <button type="submit" className="btn btn-primary btn-large">Login</button>
+                    <button type="submit" className="btn btn-primary btn-large" disabled={loading}>
+                        {loading ? 'Logging in...' : 'Login'}
+                    </button>
                 </form>
                 <p style={{ textAlign: 'center', marginTop: '1rem' }}>
                     New here? <a href="#" onClick={(e) => { e.preventDefault(); navigate('/register'); }}>Register</a>

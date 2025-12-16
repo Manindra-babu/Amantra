@@ -2,8 +2,17 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 
+import { useApp } from '../context/AppContext';
+
 export default function Landing() {
     const navigate = useNavigate();
+    const { currentUser } = useApp();
+
+    // React.useEffect(() => {
+    //     if (currentUser) {
+    //         navigate('/dashboard');
+    //     }
+    // }, [currentUser, navigate]);
 
     return (
         <div className="app-container-full">
@@ -18,8 +27,12 @@ export default function Landing() {
                     <p>The all-in-one platform for effortless stock agreements, real-time tracking, and seamless vendor communication.</p>
 
                     <div className="cta-group">
-                        <button className="btn btn-primary" onClick={() => navigate('/register')}>Start for Free</button>
-                        <button className="btn btn-secondary" onClick={() => navigate('/login')}>Login</button>
+                        <button className="btn btn-primary" onClick={() => navigate(currentUser ? '/dashboard' : '/register')}>
+                            {currentUser ? 'Go to Dashboard' : 'Start for Free'}
+                        </button>
+                        {!currentUser && (
+                            <button className="btn btn-secondary" onClick={() => navigate('/login')}>Login</button>
+                        )}
                     </div>
                 </section>
 

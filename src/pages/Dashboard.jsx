@@ -9,12 +9,8 @@ export default function Dashboard() {
     const navigate = useNavigate();
     const [currentTab, setCurrentTab] = useState('active');
 
-    // Redirection if not logged in
-    if (!currentUser) {
-        // In a real app, use a protected route wrapper, but this works for now
-        setTimeout(() => navigate('/login'), 0);
-        return null;
-    }
+    // Redirection handled by ProtectedRoute
+    // if (!currentUser) { ... }
 
     // Filter Logic
     let displayAgreements = [...agreements].reverse();
@@ -43,21 +39,20 @@ export default function Dashboard() {
 
     return (
         <div className="app-container">
-            <header className="app-header">
-                <div className="header-content">
-                    <h1>Amantra</h1>
-                    <span className="subtitle">Welcome, {currentUser.firstName || currentUser.username}</span>
-                </div>
-                <nav>
-                    <button className="nav-link" onClick={() => navigate('/profile')}>Profile</button>
-                    <button className="nav-link" onClick={() => { logout(); navigate('/login'); }}>Logout</button>
-                </nav>
-            </header>
+            <Header />
 
             <main>
                 <div className="card dashboard-card">
-                    <div className="card-header">
-                        <h2>{currentUser.role === 'Vendor' ? 'Vendor Dashboard' : 'My Requests'}</h2>
+                    <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                            <h2>Dashboard</h2>
+                            <p style={{ color: '#666', fontSize: '0.9rem', marginTop: '0.2rem' }}>
+                                Welcome, <strong>{currentUser.firstName || currentUser.username}</strong>! Here is an overview of your {currentUser.role === 'Vendor' ? 'Sales & Orders' : 'Requests & Purchases'}.
+                            </p>
+                        </div>
+                        <span className={`status-badge ${currentUser.role === 'Vendor' ? 'progress' : 'confirmed'}`}>
+                            {currentUser.role} View
+                        </span>
                     </div>
 
                     <div className="dashboard-tabs">

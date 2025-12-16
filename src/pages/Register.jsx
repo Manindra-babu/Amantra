@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import Header from '../components/Header';
+import toast from 'react-hot-toast';
 
 export default function Register() {
     const [formData, setFormData] = useState({
@@ -21,14 +22,20 @@ export default function Register() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleRegister = (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
-        const result = register(formData);
-        if (result.success) {
-            alert("Registration successful! Please login.");
-            navigate('/login');
-        } else {
-            alert(result.message);
+        try {
+            const result = await register(formData);
+            if (result.success) {
+                toast.success("Registration successful! Welcome to Amantra.");
+                // Firebase automatically logs in after registration, so we go to dashboard
+                navigate('/dashboard');
+            } else {
+                toast.error(result.message);
+            }
+        } catch (error) {
+            console.error("Registration error:", error);
+            toast.error("An error occurred during registration.");
         }
     };
 
