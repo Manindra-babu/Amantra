@@ -1,0 +1,3139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Amantra – User Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* --- RESET & BASE --- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      background: #020617; /* Deep midnight blue */
+      color: #e2e8f0;
+      overflow-x: hidden;
+      /* subtle cinematic light source */
+      background: radial-gradient(circle at 10% 20%, #1e293b 0%, #020617 60%);
+      padding-bottom: 100px; /* Space for bottom dock */
+    }
+
+    .shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px;
+      height: 100vh; /* Full viewport height */
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- HEADER --- */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 200; /* Ensure header stays above other content for dropdown */
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: 1.8rem;
+      letter-spacing: -0.02em;
+      color: #f8fafc;
+    }
+
+    /* --- PROFILE DROPDOWN WRAPPER --- */
+    .profile-wrapper {
+      position: relative;
+    }
+
+    .header-profile {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .header-profile:hover {
+      border-color: #38bdf8;
+      transform: scale(1.05);
+    }
+
+    .header-profile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-dropdown {
+      position: absolute;
+      top: 120%;
+      right: 0;
+      width: 260px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 16px;
+      padding: 8px;
+      display: none; /* Hidden by default */
+      flex-direction: column;
+      gap: 4px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      transform-origin: top right;
+      animation: dropdownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      z-index: 201;
+    }
+
+    .profile-dropdown.active {
+      display: flex;
+    }
+
+    @keyframes dropdownFade {
+      from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      color: #cbd5e1;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dropdown-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #f8fafc;
+      transform: translateX(4px);
+    }
+
+    .dropdown-item svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      opacity: 0.7;
+    }
+
+    .dropdown-item:hover svg {
+      opacity: 1;
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+      margin: 6px 0;
+    }
+
+    .dropdown-item.danger {
+      color: #f87171;
+    }
+
+    .dropdown-item.danger:hover {
+      background: rgba(248, 113, 113, 0.15);
+      color: #fca5a5;
+    }
+
+    /* --- MODE TOGGLE --- */
+    .mode-toggle-wrapper {
+      margin-bottom: 40px;
+      flex-shrink: 0;
+    }
+    
+    .mode-toggle {
+      display: inline-flex;
+      background: rgba(30, 41, 59, 0.5);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .mode-toggle button {
+      border: none;
+      background: transparent;
+      padding: 8px 24px;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mode-toggle button.active {
+      color: #f8fafc;
+      background: #334155;
+    }
+
+    /* --- SPLIT LAYOUT --- */
+    .dashboard-split {
+      display: flex;
+      flex: 1;
+      gap: 60px;
+      min-height: 0; /* Important for scroll interaction */
+    }
+
+    /* --- LEFT: NAVIGATION LIST --- */
+    .nav-panel {
+      width: 35%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding-top: 20px;
+    }
+
+    .nav-item {
+      position: relative;
+      padding: 24px 0;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: all 0.3s ease;
+      opacity: 0.5;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      opacity: 1;
+      padding-left: 12px; /* Slight nudge movement */
+    }
+
+    .nav-item.active {
+      border-bottom-color: rgba(255,255,255,0.2);
+    }
+
+    /* Active Indicator Line */
+    .nav-item::before {
+      content: '';
+      position: absolute;
+      left: -12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 0;
+      background: #38bdf8;
+      transition: height 0.3s ease;
+    }
+    .nav-item.active::before {
+      height: 70%;
+    }
+
+    /* Status Colors for indicator */
+    .nav-item[data-status="active"].active::before { background: #4ade80; }
+    .nav-item[data-status="pending"].active::before { background: #fb923c; }
+    .nav-item[data-status="overdue"].active::before { background: #f43f5e; }
+
+    .nav-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+      color: #94a3b8;
+    }
+
+    .nav-amount {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      color: #f8fafc;
+      line-height: 1;
+    }
+
+    /* --- RIGHT: STAGE --- */
+    .stage-panel {
+      flex: 1;
+      background: rgba(30, 41, 59, 0.3);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 24px;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      /* Subtle glow from bottom right */
+      box-shadow: inset 0 0 100px rgba(0,0,0,0.2);
+    }
+
+    .stage-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .stage-content.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stage-header {
+      margin-bottom: 30px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .stage-title {
+      font-size: 1.5rem;
+      font-weight: 400;
+      font-family: 'Playfair Display', serif;
+    }
+    
+    .stage-meta {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    .stage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+    
+    /* Custom scrollbar for stage grid */
+    .stage-grid::-webkit-scrollbar { width: 6px; }
+    .stage-grid::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+    .stage-grid::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+
+    .detail-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 20px;
+      border-radius: 12px;
+      transition: background 0.2s, transform 0.2s;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer; /* Clickable */
+    }
+    
+    .detail-card:hover {
+      background: rgba(255,255,255,0.08);
+      transform: translateY(-2px);
+      border-color: #38bdf8;
+    }
+
+    .detail-name {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #e2e8f0;
+    }
+    .detail-desc {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      line-height: 1.5;
+      flex-grow: 1;
+    }
+
+    .click-hint {
+      margin-top: 12px;
+      font-size: 0.7rem;
+      color: #38bdf8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.7;
+    }
+    .detail-card:hover .click-hint { opacity: 1; }
+
+    /* REQUEST LOG STYLES - REFINED */
+    .request-log-item {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 20px;
+      border-radius: 6px; /* Slightly sharper */
+      margin-bottom: 16px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    
+    .request-log-item:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transform: translateY(-1px);
+    }
+    
+    /* Left accent bar for distinction */
+    .request-log-item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0; width: 4px;
+      background: #cbd5e1; /* Default gray */
+    }
+    .request-log-item.incoming::before { background: #0f172a; } /* Navy for incoming */
+    .request-log-item.outgoing::before { background: #cbd5e1; } /* Gray for outgoing */
+
+    .req-header { 
+      display: flex; 
+      justify-content: space-between; 
+      margin-bottom: 10px; 
+      font-size: 0.7rem; 
+      color: #64748b; 
+      font-weight: 600;
+      text-transform: uppercase; 
+      letter-spacing: 0.05em; 
+      padding-left: 12px;
+    }
+    
+    .req-title { 
+      font-weight: 700; 
+      color: #0f172a; 
+      font-size: 1rem; 
+      margin-bottom: 8px; 
+      font-family: 'Playfair Display', serif; 
+      padding-left: 12px;
+    }
+    
+    .req-body { 
+      font-size: 0.85rem; 
+      color: #334155; 
+      line-height: 1.5; 
+      background: #f8fafc; 
+      padding: 12px; 
+      border-radius: 4px; 
+      border: 1px solid #e2e8f0;
+      margin-left: 12px;
+    }
+    
+    .req-footer { 
+      margin-top: 16px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      padding-left: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #f1f5f9;
+    }
+    
+    /* OFFICIAL STATUS BADGES */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid transparent;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    /* Green - Approved/Success */
+    .status-badge.success {
+      background: #f0fdf4;
+      color: #15803d;
+      border-color: #bbf7d0;
+    }
+
+    /* Red - Rejected/Overdue */
+    .status-badge.danger {
+      background: #fef2f2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+
+    /* Amber - Pending/Under Review */
+    .status-badge.warning {
+      background: #fffbeb;
+      color: #b45309;
+      border-color: #fde68a;
+    }
+
+    /* Blue - Action Required/Incoming */
+    .status-badge.info {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-color: #bfdbfe;
+    }
+
+    /* Actions container */
+    .req-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    /* OFFICIAL SMALL BUTTONS */
+    .btn-small {
+      padding: 6px 16px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .btn-accept {
+      background: #fff;
+      border: 1px solid #15803d;
+      color: #15803d;
+    }
+    .btn-accept:hover {
+      background: #15803d;
+      color: #fff;
+      box-shadow: 0 4px 6px -1px rgba(21, 128, 61, 0.2);
+    }
+    
+    .btn-reject {
+      background: #fff;
+      border: 1px solid #b91c1c;
+      color: #b91c1c;
+    }
+    .btn-reject:hover {
+      background: #b91c1c;
+      color: #fff;
+      box-shadow: 0 4px 6px -1px rgba(185, 28, 28, 0.2);
+    }
+    
+    .btn-change {
+      background: #fff;
+      border: 1px solid #b45309;
+      color: #b45309;
+    }
+    .btn-change:hover {
+      background: #b45309;
+      color: #fff;
+    }
+
+    /* Notification Badge */
+    .dock-badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 10px;
+      height: 10px;
+      background: #ef4444;
+      border-radius: 50%;
+      border: 2px solid #0f172a; /* Match body bg */
+      display: none; /* Hidden by default */
+      box-shadow: 0 0 4px rgba(239, 68, 68, 0.5);
+    }
+    .dock-badge.active { display: block; }
+    
+    /* Success Ticket View */
+    .ticket-view {
+      background: #ffffff;
+      border: 2px dashed #cbd5e1;
+      padding: 24px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .ticket-id { font-family: 'Inter', sans-serif; font-weight: 700; color: #94a3b8; font-size: 0.8rem; margin-bottom: 4px; letter-spacing: 0.1em; }
+    .ticket-status { display: inline-block; background: #fffbeb; color: #b45309; padding: 4px 12px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 16px; }
+
+    /* NOTIFICATION STYLES */
+    .notification-item {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      transition: transform 0.2s;
+    }
+    .notification-item:hover {
+      background: #f8fafc;
+      transform: translateX(4px);
+    }
+    .notif-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .notif-icon.success { background: #dcfce7; color: #16a34a; }
+    .notif-icon.warning { background: #fef9c3; color: #ca8a04; }
+    .notif-icon.info { background: #e0f2fe; color: #0284c7; }
+    
+    .notif-content { flex: 1; }
+    .notif-text { font-size: 0.85rem; color: #334155; line-height: 1.4; margin-bottom: 4px; }
+    .notif-time { font-size: 0.7rem; color: #94a3b8; }
+    .notif-unread {
+      width: 8px;
+      height: 8px;
+      background: #38bdf8;
+      border-radius: 50%;
+      margin-top: 6px;
+    }
+
+    /* HISTORY STYLES */
+    .history-item {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 12px;
+      transition: all 0.2s;
+    }
+    .history-item:hover {
+      border-color: #94a3b8;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+    .hist-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: #64748b;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .hist-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+    .hist-meta {
+      font-size: 0.85rem;
+      color: #334155;
+      margin-bottom: 12px;
+    }
+    .hist-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 10px;
+    }
+
+    /* --- BOTTOM DOCK --- */
+    .bottom-dock {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 10px 14px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      z-index: 100;
+      max-width: 95vw;
+    }
+
+    .dock-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      background: rgba(255, 255, 255, 0.05);
+      border: none;
+      padding: 12px;
+      border-radius: 999px;
+      color: #94a3b8;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      white-space: nowrap;
+      height: 44px;
+      position: relative; /* For badge */
+    }
+
+    .dock-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      flex-shrink: 0;
+      transition: stroke 0.3s;
+    }
+
+    /* Text Label (Hidden by default) */
+    .dock-btn span {
+      max-width: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    /* Hover State */
+    .dock-btn:hover {
+      background: #38bdf8; /* Brand Cyan */
+      color: #0f172a; /* Dark Text */
+      padding: 12px 20px;
+      gap: 10px;
+    }
+
+    .dock-btn:hover span {
+      max-width: 150px;
+      opacity: 1;
+    }
+
+    .dock-btn:hover svg {
+      stroke: #0f172a;
+    }
+
+    .dock-btn.accent {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+    }
+    
+    .dock-divider {
+      width: 1px;
+      height: 24px;
+      background: rgba(255,255,255,0.1);
+      margin: 0 8px;
+    }
+
+    /* --- FLOATING MODAL PANELS --- */
+    .slide-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 300;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+    }
+
+    .slide-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .slide-panel {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 500px;
+      max-width: 90vw;
+      height: auto;
+      max-height: 85vh; /* Prevent overflow */
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px; /* Floating card look */
+      z-index: 301;
+      
+      /* Animation Initial State */
+      transform: translate(-50%, -45%) scale(0.95);
+      opacity: 0;
+      visibility: hidden;
+      
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+    }
+
+    .slide-panel.active {
+      transform: translate(-50%, -50%) scale(1); /* Center & Scale up */
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .slide-header {
+      padding: 24px 30px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .slide-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: #f8fafc;
+    }
+
+    .slide-close {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 8px;
+      border-radius: 50%;
+      transition: all 0.2s;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slide-close:hover {
+      background: rgba(255,255,255,0.1);
+      color: #f8fafc;
+    }
+
+    .edit-toggle-btn {
+      margin-right: 12px;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .edit-toggle-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    .slide-body {
+      padding: 30px;
+      overflow-y: auto;
+      flex: 1;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    
+    .slide-body::-webkit-scrollbar { 
+      display: none;
+    }
+
+    /* --- OFFICIAL CONTRACT THEME FOR NEW DEAL & VIEW CONTRACT PANEL --- */
+    #newDealSlidePanel, #viewContractPanel, #requestLogPanel {
+      background: #f1f5f9; /* Light gray desk background */
+      border: none;
+      border-radius: 4px; /* Slightly sharper */
+      box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5);
+      padding: 0;
+    }
+
+    /* The "Paper" Container */
+    #newDealSlidePanel .slide-body, #viewContractPanel .slide-body, #requestLogPanel .slide-body, #notificationSlidePanel .slide-body {
+      background: #ffffff;
+      margin: 15px;
+      border: 1px solid #d1d5db;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      padding: 40px 40px 20px 40px; /* Generous padding like a document margins */
+      color: #000;
+    }
+
+    #newDealSlidePanel .slide-header, #viewContractPanel .slide-header, #requestLogPanel .slide-header, #notificationSlidePanel .slide-header {
+      background: #1e293b;
+      color: #fff;
+      border-bottom: 3px solid #b45309; /* Gold/Bronze accent */
+      border-radius: 4px 4px 0 0;
+      padding: 15px 30px;
+    }
+
+    #newDealSlidePanel .slide-title, #viewContractPanel .slide-title, #requestLogPanel .slide-title, #notificationSlidePanel .slide-title {
+      font-family: 'Playfair Display', serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 1.1rem;
+      color: #f8fafc;
+    }
+
+    #newDealSlidePanel .slide-close, #viewContractPanel .slide-close, #requestLogPanel .slide-close, #notificationSlidePanel .slide-close {
+      color: #94a3b8;
+    }
+    #newDealSlidePanel .slide-close:hover, #viewContractPanel .slide-close:hover, #requestLogPanel .slide-close:hover, #notificationSlidePanel .slide-close:hover {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    #newDealSlidePanel .detail-section h4, #viewContractPanel .detail-section h4, #requestLogPanel .detail-section h4 {
+      color: #000;
+      border-bottom: 2px solid #000;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    #newDealSlidePanel .form-group label, #viewContractPanel .form-group label {
+      color: #333;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    /* Formal Input Fields */
+    #newDealSlidePanel .glass-input, 
+    #newDealSlidePanel .glass-select, 
+    #newDealSlidePanel .glass-textarea,
+    #viewContractPanel .glass-input, 
+    #viewContractPanel .glass-select, 
+    #viewContractPanel .glass-textarea {
+      background-color: #fff;
+      border: 1px solid #94a3b8;
+      border-radius: 0; /* Sharp corners for formality */
+      color: #000;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      padding: 10px;
+      box-shadow: none;
+    }
+
+    #newDealSlidePanel .glass-input:focus, 
+    #newDealSlidePanel .glass-select:focus, 
+    #newDealSlidePanel .glass-textarea:focus,
+    #viewContractPanel .glass-input:focus, 
+    #viewContractPanel .glass-select:focus, 
+    #viewContractPanel .glass-textarea:focus {
+      border-color: #000;
+      background-color: #fff;
+      box-shadow: none;
+      outline: 1px solid #000;
+    }
+
+    /* Explicitly set custom arrow background */
+    #newDealSlidePanel .glass-select, #viewContractPanel .glass-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+    }
+
+    #newDealSlidePanel .glass-select option, #viewContractPanel .glass-select option {
+      background: #ffffff;
+      color: #000;
+    }
+
+    #newDealSlidePanel .save-btn, #viewContractPanel .save-btn {
+      background: #0f172a; /* Navy Blue */
+      color: #ffffff;
+      border-radius: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    #newDealSlidePanel .save-btn:hover, #viewContractPanel .save-btn:hover {
+      background: #1e293b;
+    }
+
+    /* Disclaimer/Footer inside the paper */
+    .contract-footer {
+      margin-top: 30px;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 10px;
+      font-size: 0.65rem;
+      color: #64748b;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* SUCCESS VIEW STYLES */
+    .success-icon-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .success-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #ecfdf5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #059669;
+    }
+    
+    .success-msg {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .success-msg h3 {
+      font-family: 'Playfair Display', serif;
+      color: #0f172a;
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+    .success-msg p {
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    /* Paper Preview */
+    .paper-preview {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+      position: relative;
+    }
+    .paper-preview::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: #b45309; /* Gold top bar */
+    }
+    
+    /* Official Agreement Stamp for Accepted State */
+    .official-stamp {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      width: 80px;
+      height: 80px;
+      border: 3px solid #15803d;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #15803d;
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      transform: rotate(-15deg);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+    .official-stamp span {
+      font-size: 0.5rem;
+      margin-top: 2px;
+    }
+
+    .preview-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #000;
+    }
+    .preview-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
+      border-bottom: 1px dashed #e2e8f0;
+      padding-bottom: 4px;
+    }
+    .preview-label { color: #64748b; font-weight: 500; }
+    .preview-val { color: #0f172a; font-weight: 600; }
+    
+    .agreement-meta {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+
+    /* VIEW CONTRACT ACTION BUTTONS */
+    .contract-actions-footer {
+      display: flex;
+      gap: 12px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 2px solid #e2e8f0;
+    }
+    
+    .btn-action {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .btn-action.accept {
+      background: #15803d; /* Strong Green */
+      color: #fff;
+    }
+    .btn-action.accept:hover { background: #166534; }
+    
+    .btn-action.change {
+      background: #ca8a04; /* Dark Yellow/Gold */
+      color: #fff;
+    }
+    .btn-action.change:hover { background: #a16207; }
+
+    .btn-reject {
+      background: #ef4444; /* Red */
+      color: #fff;
+    }
+    .btn-reject:hover { background: #dc2626; }
+
+    /* Share Grid */
+    .share-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    
+    .share-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      color: #334155;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .share-btn:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      transform: translateY(-2px);
+    }
+    
+    .share-btn.whatsapp { color: #16a34a; border-color: #dcfce7; background: #f0fdf4; }
+    .share-btn.whatsapp:hover { background: #dcfce7; }
+    
+    .share-btn.email { color: #ea580c; border-color: #ffedd5; background: #fff7ed; }
+    .share-btn.email:hover { background: #ffedd5; }
+
+    .share-btn svg { width: 18px; height: 18px; }
+
+
+    /* --- GENERAL STYLES (Kept for other panels) --- */
+    .profile-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .profile-hero-img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px solid #38bdf8;
+      padding: 3px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    
+    .profile-hero-img img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .edit-avatar-btn {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: #38bdf8;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 2px solid #0f172a;
+    }
+    .edit-avatar-btn svg { width: 14px; height: 14px; stroke: #0f172a; stroke-width: 2.5; fill: none; }
+
+    .profile-hero-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #f8fafc;
+      margin-bottom: 4px;
+    }
+
+    .profile-hero-role {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      background: rgba(255,255,255,0.05);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    .detail-section {
+      margin-bottom: 30px;
+    }
+
+    .detail-section h4 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #64748b;
+      margin-bottom: 16px;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding-bottom: 8px;
+    }
+
+    /* FORM STYLES (Default Dark Theme) */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .glass-input, .glass-textarea, .glass-select {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: #f8fafc;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      /* FIX: Ensure default arrow is hidden */
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    
+    .glass-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+    }
+    .glass-select option {
+      background: #0f172a;
+      color: #f8fafc;
+    }
+    
+    .glass-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .glass-input:focus, .glass-textarea:focus, .glass-select:focus {
+      outline: none;
+      border-color: #38bdf8;
+      background: rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+    }
+    
+    .glass-input[disabled] {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .save-btn {
+      width: 100%;
+      background: #38bdf8;
+      color: #0f172a;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background 0.2s, transform 0.1s;
+      margin-bottom: 20px;
+    }
+
+    .save-btn:hover {
+      background: #0ea5e9;
+    }
+    
+    .save-btn:active {
+      transform: scale(0.98);
+    }
+    
+    /* Row for two inputs */
+    .form-row {
+      display: flex;
+      gap: 16px;
+    }
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    /* --- CALENDAR STYLES --- */
+    .calendar-container {
+      margin-bottom: 24px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .calendar-month-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .day-header {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .calendar-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: background 0.2s;
+      position: relative;
+    }
+
+    .calendar-day:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .calendar-day.today {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .calendar-day.due {
+      position: relative;
+    }
+
+    /* Red indicator for due dates */
+    .calendar-day.due::after {
+      content: '';
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      background: #ef4444;
+      border-radius: 50%;
+      box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+    }
+
+    /* Selected state */
+    .calendar-day.selected {
+      background: #38bdf8;
+      color: #0f172a;
+      font-weight: 700;
+    }
+    
+    /* Keep the due dot even when selected, maybe switch color */
+    .calendar-day.selected.due::after {
+      background: #0f172a;
+    }
+
+    /* Event List Item in Calendar Panel */
+    .event-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border-left: 3px solid transparent;
+    }
+
+    .event-item.urgent {
+      border-left-color: #ef4444;
+    }
+
+    .event-date {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 40px;
+      background: rgba(255,255,255,0.05);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .date-num { font-size: 1.1rem; font-weight: 700; color: #f8fafc; line-height: 1; }
+    .date-mon { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; }
+
+    .event-info h5 { margin: 0 0 4px 0; font-size: 0.9rem; color: #e2e8f0; }
+    .event-info p { margin: 0; font-size: 0.75rem; color: #94a3b8; }
+    .no-events { text-align: center; color: #64748b; font-size: 0.85rem; padding: 20px; font-style: italic; }
+
+    /* --- MOBILE RESPONSIVENESS --- */
+    @media (max-width: 768px) {
+      .dashboard-split {
+        flex-direction: column;
+        gap: 30px;
+        padding-bottom: 80px;
+      }
+      .nav-panel {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 10px;
+      }
+      .nav-item {
+        min-width: 160px;
+        border-bottom: none;
+        border-left: 1px solid rgba(255,255,255,0.1);
+        padding: 0 16px;
+      }
+      .nav-item::before {
+        display: none;
+      }
+      .nav-amount {
+        font-size: 1.8rem;
+      }
+      
+      .bottom-dock {
+        padding: 8px;
+      }
+      .dock-btn {
+        height: 40px;
+        padding: 10px;
+      }
+      
+      .slide-panel {
+        width: 95%; /* Wider on mobile */
+        max-height: 80vh;
+      }
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="shell">
+    <header>
+      <div class="logo">Amantra</div>
+      
+      <!-- Profile Wrapper -->
+      <div class="profile-wrapper">
+        <div class="header-profile" id="profileTrigger" title="My Profile">
+          <img src="https://ui-avatars.com/api/?name=User&background=334155&color=cbd5e1" alt="Profile" />
+        </div>
+        
+        <!-- Profile Dropdown Menu -->
+        <div class="profile-dropdown" id="profileDropdown">
+          <div class="dropdown-item" id="btnProfileDetails">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            Profile Details
+          </div>
+          <!-- Edit Profile Removed -->
+          <div class="dropdown-item">
+            <svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.74v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            Account Settings
+          </div>
+          <div class="dropdown-item">
+            <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            Billing & Plans
+          </div>
+          <div class="dropdown-item">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Privacy & Security
+          </div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item">
+            <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+            Share Profile
+          </div>
+          <div class="dropdown-item">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            Events
+          </div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            Help & Support
+          </div>
+          <div class="dropdown-item danger">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            Sign Out
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="mode-toggle-wrapper">
+      <div class="mode-toggle" id="modeToggle">
+        <button type="button" id="btnCustomer" class="active">Customer</button>
+        <button type="button" id="btnVendor">Vendor</button>
+      </div>
+    </div>
+
+    <!-- SPLIT LAYOUT -->
+    <div class="dashboard-split">
+      <!-- LEFT: NAVIGATION -->
+      <div class="nav-panel" id="navPanel">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- RIGHT: STAGE -->
+      <div class="stage-panel">
+        <div class="stage-content" id="stageContent">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM DOCK (Static) -->
+  <div class="bottom-dock">
+    <button class="dock-btn" title="Notifications" id="btnNotifications">
+      <div class="dock-badge active" id="notifBadge"></div>
+      <svg viewBox="0 0 24 24">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+      </svg>
+      <span>Notifications</span>
+    </button>
+
+    <div class="dock-divider"></div>
+
+    <button class="dock-btn" title="Request Changes" id="btnRequestLog">
+      <div class="dock-badge" id="requestBadge"></div>
+      <svg viewBox="0 0 24 24">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+      </svg>
+      <span>Request Log</span>
+    </button>
+
+    <div class="dock-divider"></div>
+
+    <button class="dock-btn accent" title="New Deal" id="btnNewDeal">
+      <svg viewBox="0 0 24 24">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      <span>New Deal</span>
+    </button>
+
+    <div class="dock-divider"></div>
+
+    <button class="dock-btn" title="History" id="btnHistory">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+      <span>History</span>
+    </button>
+
+    <div class="dock-divider"></div>
+
+    <button class="dock-btn" title="Calendar" id="btnCalendar">
+      <svg viewBox="0 0 24 24">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+      </svg>
+      <span>Calendar</span>
+    </button>
+  </div>
+
+  <!-- SHARED MODAL OVERLAY -->
+  <div class="slide-overlay" id="slideOverlay"></div>
+
+  <!-- PANEL 1: PROFILE DETAILS -->
+  <div class="slide-panel" id="profileSlidePanel">
+    <div class="slide-header">
+      <h2 class="slide-title" id="profilePanelTitle">Profile Details</h2>
+      <div style="display: flex; align-items: center;">
+        <button class="edit-toggle-btn" id="btnEnableEdit" onclick="enableProfileEdit()">Edit</button>
+        <button class="slide-close" id="closeProfilePanel">✕</button>
+      </div>
+    </div>
+    <div class="slide-body">
+      <form id="profileForm" onsubmit="handleProfileSave(event)">
+        <!-- User Summary -->
+        <div class="profile-hero">
+          <div class="profile-hero-img">
+            <img src="https://ui-avatars.com/api/?name=User&background=334155&color=cbd5e1" alt="Profile" />
+            <div class="edit-avatar-btn" id="avatarEditBtn" title="Change Photo" style="display: none;">
+              <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            </div>
+          </div>
+          <div class="profile-hero-name" id="heroNameDisplay">Aditya Sharma</div>
+          <div class="profile-hero-role">Premium Investor</div>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="detail-section">
+          <h4>Personal Information</h4>
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="profileName" class="glass-input" value="Aditya Sharma" disabled required />
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="profileEmail" class="glass-input" value="aditya.sharma@example.com" disabled required />
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" class="glass-input" value="+91 98765 43210" disabled required />
+          </div>
+        </div>
+
+        <!-- Registered Address -->
+        <div class="detail-section">
+          <h4>Registered Address</h4>
+          <div class="form-group">
+            <label>Street / Apartment</label>
+            <input type="text" class="glass-input" value="12/4 Park Avenue, Koramangala" disabled required />
+          </div>
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" class="glass-input" value="Bangalore, KA" disabled required />
+          </div>
+          <div class="form-group">
+            <label>Postal Code</label>
+            <input type="text" class="glass-input" value="560034" disabled required />
+          </div>
+        </div>
+        
+        <!-- System Info (Read Only) -->
+        <div class="detail-section">
+          <h4>Account Status (Read Only)</h4>
+          <div class="form-group">
+            <label>KYC Status</label>
+            <input type="text" class="glass-input" value="Verified" disabled />
+          </div>
+          <div class="form-group">
+            <label>Member ID</label>
+            <input type="text" class="glass-input" value="AM-883920" disabled />
+          </div>
+        </div>
+
+        <button type="submit" id="saveProfileBtn" class="save-btn" style="display: none;">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PANEL 2: NEW DEAL (OFFICIAL CONTRACT THEME) -->
+  <div class="slide-panel" id="newDealSlidePanel">
+    <div class="slide-header">
+      <h2 class="slide-title">Draft New Contract</h2>
+      <button class="slide-close" id="closeNewDealPanel">✕</button>
+    </div>
+    <div class="slide-body">
+      
+      <!-- State 1: Form -->
+      <div id="contractFormContainer">
+        <form id="newDealForm" onsubmit="handleContractSubmit(event)">
+          <div class="detail-section">
+            <h4>Contract Details</h4>
+            <div class="form-group">
+              <label>Deal / Contract Title</label>
+              <input type="text" id="dealTitleInput" class="glass-input" placeholder="e.g. Service Agreement Q3" required />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label id="lblCounterparty">Vendor (Email/ID)</label>
+                <input type="email" id="dealCounterparty" class="glass-input" placeholder="vendor@example.com" required />
+              </div>
+              <div class="form-group">
+                <label>Contract Type</label>
+                <select id="contractType" class="glass-select">
+                  <option value="Service Agreement">Service Agreement</option>
+                  <option value="Non-Disclosure (NDA)">Non-Disclosure (NDA)</option>
+                  <option value="Employment Contract">Employment Contract</option>
+                  <option value="Sales of Goods">Sales of Goods</option>
+                  <option value="Loan / Bond">Loan / Bond</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Fields Container -->
+          <div id="dynamicFields"></div>
+
+          <div id="financeSection" class="detail-section">
+            <h4>Financial Details</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Total Value (₹)</label>
+                <input type="number" class="glass-input" placeholder="50000" />
+              </div>
+              <div class="form-group">
+                <label>Payment Terms</label>
+                <select class="glass-select">
+                  <option>Net 30 Days</option>
+                  <option>Upon Receipt</option>
+                  <option>Milestone Based</option>
+                  <option>50% Advance</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Effective Date</label>
+                <input type="date" id="effectiveDate" class="glass-input" required />
+              </div>
+              <div class="form-group">
+                <label>Termination / Maturity</label>
+                <input type="date" class="glass-input" />
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Terms & Conditions</h4>
+            <div class="form-group">
+              <label>Specific Clauses</label>
+              <textarea id="termsInput" class="glass-textarea" placeholder="Enter contract specific terms here..."></textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="save-btn">Send Proposal</button>
+          <div class="contract-footer">Confidential & Proprietary • Amantra Contract Generation System</div>
+        </form>
+      </div>
+
+      <!-- State 2: Success & Share -->
+      <div id="contractSuccessContainer" style="display: none;">
+        <div class="success-icon-wrapper">
+          <div class="success-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+        </div>
+        <div class="success-msg">
+          <h3>Contract Drafted</h3>
+          <p>Your contract has been generated successfully.</p>
+        </div>
+
+        <!-- Official Paper Preview -->
+        <div class="paper-preview">
+          <div class="preview-title" id="previewTitle">Contract Title</div>
+          <div class="preview-row">
+            <span class="preview-label" id="lblPreviewSender">Between (Customer):</span>
+            <span class="preview-val" id="previewSender">Aditya Sharma</span>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label" id="lblPreviewCounterparty">And (Vendor):</span>
+            <span class="preview-val" id="previewCounterparty">Counterparty</span>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">Effective Date:</span>
+            <span class="preview-val" id="previewDate">2025-01-01</span>
+          </div>
+          <div style="margin-top: 12px; font-size: 0.75rem; color: #334155; line-height: 1.4;">
+            This agreement is entered into by and between the parties listed above, hereinafter referred to as "First Party" and "Second Party". The parties agree to the terms set forth... (Preview content)
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h4>Share Contract</h4>
+          <div class="share-grid">
+            <button class="share-btn" onclick="copyToClipboard()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Link
+            </button>
+            <button class="share-btn whatsapp" onclick="window.open('https://wa.me/?text=Here is the contract link: https://amantra.com/c/12345')">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              WhatsApp
+            </button>
+            <button class="share-btn email" onclick="window.location.href='mailto:?subject=Contract Review&body=Please review the attached contract.'">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              Email
+            </button>
+            <button class="share-btn" onclick="alert('Downloading PDF...')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download PDF
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PANEL 3: CALENDAR (NEW) -->
+  <div class="slide-panel" id="calendarSlidePanel">
+    <div class="slide-header">
+      <h2 class="slide-title">Schedule</h2>
+      <button class="slide-close" id="closeCalendarPanel">✕</button>
+    </div>
+    <div class="slide-body">
+      
+      <!-- Calendar View -->
+      <div class="calendar-container">
+        <div class="calendar-month-header">
+          <span id="calMonthName">Current Month</span>
+          <span style="font-size: 0.9rem; color: #94a3b8;">2025</span>
+        </div>
+        <div class="calendar-grid" id="calendarGrid">
+          <!-- Headers -->
+          <div class="day-header">S</div>
+          <div class="day-header">M</div>
+          <div class="day-header">T</div>
+          <div class="day-header">W</div>
+          <div class="day-header">T</div>
+          <div class="day-header">F</div>
+          <div class="day-header">S</div>
+          <!-- Days populated via JS -->
+        </div>
+      </div>
+
+      <!-- Upcoming Events List -->
+      <div class="detail-section">
+        <h4>Upcoming Deadlines</h4>
+        <div id="upcomingEventsList">
+          <!-- Events populated via JS -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PANEL 4: VIEW CONTRACT (FOR INCOMING REQUESTS) -->
+  <div class="slide-panel" id="viewContractPanel">
+    <div class="slide-header">
+      <h2 class="slide-title">Contract Details</h2>
+      <button class="slide-close" id="closeViewContractPanel">✕</button>
+    </div>
+    <div class="slide-body">
+      
+      <!-- State 1: Review -->
+      <div id="reviewState">
+        <div class="paper-preview">
+          <div class="preview-title" id="viewContractTitle">Service Level Agreement</div>
+          
+          <div class="preview-row">
+            <span class="preview-label">Between:</span>
+            <span class="preview-val" id="viewParty1">Aditya Sharma (Customer)</span>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">And:</span>
+            <span class="preview-val" id="viewParty2">TechCorp Solutions (Vendor)</span>
+          </div>
+          
+          <div style="margin-top: 15px; margin-bottom: 5px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; color: #000;">
+            Terms & Conditions
+          </div>
+          <div id="viewContractBody" style="font-size: 0.8rem; color: #334155; line-height: 1.5; white-space: pre-line;">
+            1. Scope of Work: The Vendor agrees to provide maintenance services for the specified software suite.<br><br>
+            2. Payment: A monthly retainer of ₹15,000 shall be paid by the 5th of each month.<br><br>
+            3. Termination: Either party may terminate this agreement with 30 days written notice.
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="contract-actions-footer">
+          <button class="btn-action accept" onclick="acceptContract()">Accept Deal</button>
+          <button class="btn-action change" onclick="openChangeRequest()">Request Change</button>
+        </div>
+      </div>
+
+      <!-- State 2: Request Change (New Form) -->
+      <div id="requestChangeState" style="display: none;">
+        <div class="detail-section">
+          <h4>Request Revisions</h4>
+          <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 20px; line-height: 1.5;">
+            Please detail the clauses, terms, or financials you wish to modify. This request will be sent to the counterparty for review.
+          </p>
+          <div class="form-group">
+            <label>Requested Changes</label>
+            <textarea id="changeRequestInput" class="glass-textarea" placeholder="e.g. Update payment terms to Net 45 days; Revise scope of liability..." style="min-height: 180px;"></textarea>
+          </div>
+        </div>
+        
+        <div class="contract-actions-footer">
+          <button class="btn-action accept" style="background: #0f172a;" onclick="submitChangeRequest()">Send Request</button>
+          <button class="btn-action change" style="background: transparent; color: #64748b; border: 1px solid #cbd5e1;" onclick="cancelChangeRequest()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- State 4: Change Request Success (Ticket) -->
+      <div id="requestSuccessState" style="display: none;">
+        <div class="success-icon-wrapper">
+          <div class="success-icon" style="background: #fffbeb; color: #b45309;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          </div>
+        </div>
+        <div class="success-msg">
+          <h3>Request Submitted</h3>
+          <p>Your revision request has been queued.</p>
+        </div>
+
+        <div class="ticket-view">
+          <div class="ticket-id" id="ticketIdDisplay">REQ-2025-8832</div>
+          <div class="ticket-status">Pending Review</div>
+          <div style="font-size: 0.9rem; color: #0f172a; margin-bottom: 8px;">Changes for: <strong id="ticketContractTitle">Contract Title</strong></div>
+          <div id="ticketContentDisplay" style="text-align: left; font-size: 0.8rem; color: #475569; line-height: 1.5; background: #f8fafc; padding: 10px; border-radius: 4px;">
+            -- Content --
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h4>Options</h4>
+          <div class="share-grid">
+            <button class="share-btn" onclick="openPanel(requestLogPanel)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><list></list><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3 6h.01"></path><path d="M3 12h.01"></path><path d="M3 18h.01"></path></svg>
+              Track Status
+            </button>
+            <button class="share-btn" onclick="openChangeRequest()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              Edit
+            </button>
+          </div>
+          <button class="btn-action change" style="margin-top: 10px; width: 100%; background: transparent; border: 1px solid #ef4444; color: #ef4444;" onclick="cancelChangeRequest()">Withdraw Request</button>
+        </div>
+      </div>
+
+      <!-- State 3: Accepted (Official Paper) -->
+      <div id="acceptedState" style="display: none;">
+        <div class="success-icon-wrapper">
+          <div class="success-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </div>
+        </div>
+        <div class="success-msg">
+          <h3>Agreement Finalized</h3>
+          <p>The contract has been legally executed.</p>
+        </div>
+
+        <div class="paper-preview">
+          <!-- Official Stamp Overlay -->
+          <div class="official-stamp">
+            Accepted
+            <span>Verified</span>
+          </div>
+
+          <div class="preview-title">Official Agreement</div>
+          
+          <div class="agreement-meta">
+            <div class="preview-row">
+              <span class="preview-label">Agreement ID:</span>
+              <span class="preview-val" id="officialAgmtId">#AGT-0000</span>
+            </div>
+            <div class="preview-row">
+              <span class="preview-label">Timestamp:</span>
+              <span class="preview-val" id="officialTimestamp">--</span>
+            </div>
+          </div>
+
+          <div style="font-size: 0.8rem; color: #000; line-height: 1.5;">
+            This document certifies that the contract titled <strong id="officialTitle">--</strong> has been formally accepted by all parties.
+            <br><br>
+            <strong>Party A:</strong> <span id="officialP1">--</span><br>
+            <strong>Party B:</strong> <span id="officialP2">--</span>
+            <br><br>
+            This digital record serves as binding proof of the agreement.
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h4>Actions</h4>
+          <div class="share-grid">
+            <button class="share-btn" onclick="alert('Downloading Official PDF...')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download PDF
+            </button>
+            <button class="share-btn email" onclick="window.location.href='mailto:?subject=Executed Agreement&body=Please find attached the signed agreement.'">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              Email Copy
+            </button>
+            <button class="share-btn" onclick="copyToClipboard()">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Link
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PANEL 5: REQUEST LOG -->
+  <div class="slide-panel" id="requestLogPanel">
+    <div class="slide-header">
+      <h2 class="slide-title">Change Requests Log</h2>
+      <button class="slide-close" id="closeRequestLogPanel">✕</button>
+    </div>
+    <div class="slide-body">
+      <div id="requestLogContainer">
+        <div class="no-events">No active requests found.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 6: NOTIFICATIONS (NEW) -->
+  <div class="slide-panel" id="notificationSlidePanel">
+    <div class="slide-header">
+      <h2 class="slide-title">Notifications</h2>
+      <button class="slide-close" id="closeNotificationPanel">✕</button>
+    </div>
+    <div class="slide-body">
+      <div id="notificationList">
+        <!-- Populated via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 7: HISTORY (NEW) -->
+  <div class="slide-panel" id="historySlidePanel">
+    <div class="slide-header">
+      <h2 class="slide-title">Past Deals</h2>
+      <button class="slide-close" id="closeHistoryPanel">✕</button>
+    </div>
+    <div class="slide-body">
+      <div id="historyList">
+        <!-- Populated via JS -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- DROPDOWN LOGIC ---
+    const profileTrigger = document.getElementById('profileTrigger');
+    const profileDropdown = document.getElementById('profileDropdown');
+
+    profileTrigger.addEventListener('click', (e) => {
+      e.stopPropagation(); 
+      profileDropdown.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!profileDropdown.contains(e.target) && !profileTrigger.contains(e.target)) {
+        profileDropdown.classList.remove('active');
+      }
+    });
+
+    // --- MODAL PANEL LOGIC ---
+    const slideOverlay = document.getElementById('slideOverlay');
+    
+    // Panels
+    const profileSlidePanel = document.getElementById('profileSlidePanel');
+    const newDealSlidePanel = document.getElementById('newDealSlidePanel');
+    const calendarSlidePanel = document.getElementById('calendarSlidePanel');
+    const viewContractPanel = document.getElementById('viewContractPanel');
+    const requestLogPanel = document.getElementById('requestLogPanel');
+    const notificationSlidePanel = document.getElementById('notificationSlidePanel');
+    const historySlidePanel = document.getElementById('historySlidePanel');
+    
+    // Triggers
+    const btnProfileDetails = document.getElementById('btnProfileDetails');
+    const btnNewDeal = document.getElementById('btnNewDeal');
+    const btnCalendar = document.getElementById('btnCalendar');
+    const btnRequestLog = document.getElementById('btnRequestLog');
+    const btnNotifications = document.getElementById('btnNotifications');
+    const btnHistory = document.getElementById('btnHistory');
+    
+    // Close Buttons
+    const closeProfilePanel = document.getElementById('closeProfilePanel');
+    const closeNewDealPanel = document.getElementById('closeNewDealPanel');
+    const closeCalendarPanel = document.getElementById('closeCalendarPanel');
+    const closeViewContractPanel = document.getElementById('closeViewContractPanel');
+    const closeRequestLogPanel = document.getElementById('closeRequestLogPanel');
+    const closeNotificationPanel = document.getElementById('closeNotificationPanel');
+    const closeHistoryPanel = document.getElementById('closeHistoryPanel');
+
+    // State Variables for Requests
+    let requestsLogData = [
+      {
+        id: 'REQ-2024-9012',
+        title: 'Service Level Agreement v2',
+        date: '12/20/2024',
+        content: 'Vendor requested adjustment to the Liability Cap clause. Proposed limit: ₹50 Lakhs instead of ₹1Cr.',
+        status: 'Action Required',
+        type: 'Incoming'
+      },
+      {
+        id: 'REQ-2024-8955',
+        title: 'Consultancy Contract',
+        date: '12/19/2024',
+        content: 'You requested a change to the payment schedule: 50% advance instead of 100% post-completion.',
+        status: 'Pending',
+        type: 'Outgoing'
+      },
+      {
+        id: 'REQ-2024-8900',
+        title: 'NDA - Project Alpha',
+        date: '12/18/2024',
+        content: 'Counterparty seeks clarification regarding the definition of "Confidential Information" in Section 3.',
+        status: 'Under Review',
+        type: 'Incoming'
+      }
+    ];
+
+    // State Variables for Notifications
+    let notificationsData = [
+      {
+        id: 1,
+        text: "Contract <strong>#AGT-8992</strong> (Service Agreement) was successfully accepted by TechCorp.",
+        time: "10 mins ago",
+        type: "success",
+        isRead: false
+      },
+      {
+        id: 2,
+        text: "New change request received for <strong>NDA - Project Alpha</strong>. Action required.",
+        time: "1 hour ago",
+        type: "warning",
+        isRead: false
+      },
+      {
+        id: 3,
+        text: "System maintenance scheduled for Dec 25th, 2025. Services may be interrupted.",
+        time: "1 day ago",
+        type: "info",
+        isRead: true
+      },
+      {
+        id: 4,
+        text: "Welcome to Amantra! Your profile setup is complete.",
+        time: "2 days ago",
+        type: "info",
+        isRead: true
+      }
+    ];
+
+    // State Variables for History
+    const HISTORY_DATA = [
+      { 
+        id: 'HST-2023-001', 
+        title: 'Consulting Agreement 2023', 
+        party: 'Alpha Corp', 
+        date: 'Dec 10, 2023', 
+        status: 'Completed', 
+        value: '₹1,20,000' 
+      },
+      { 
+        id: 'HST-2023-002', 
+        title: 'NDA - Beta Project', 
+        party: 'Beta Inc', 
+        date: 'Nov 22, 2023', 
+        status: 'Expired', 
+        value: '-' 
+      },
+      { 
+        id: 'HST-2023-003', 
+        title: 'Supply Contract v1', 
+        party: 'Gamma Logistics', 
+        date: 'Oct 05, 2023', 
+        status: 'Rejected', 
+        value: '₹5,00,000' 
+      },
+      { 
+        id: 'HST-2023-004', 
+        title: 'Q3 Service Retainer', 
+        party: 'Delta Services', 
+        date: 'Sep 15, 2023', 
+        status: 'Completed', 
+        value: '₹75,000' 
+      }
+    ];
+
+    // New Deal Elements for Success State
+    const contractFormContainer = document.getElementById('contractFormContainer');
+    const contractSuccessContainer = document.getElementById('contractSuccessContainer');
+    const previewTitle = document.getElementById('previewTitle');
+    const previewCounterparty = document.getElementById('previewCounterparty');
+    const previewSender = document.getElementById('previewSender');
+    const previewDate = document.getElementById('previewDate');
+    
+    // View Contract Elements
+    const reviewState = document.getElementById('reviewState');
+    const requestChangeState = document.getElementById('requestChangeState');
+    const requestSuccessState = document.getElementById('requestSuccessState');
+    const acceptedState = document.getElementById('acceptedState');
+
+    // Initialize Request Log on Load
+    window.onload = function() {
+      // Check for incoming requests to set badge
+      const hasIncoming = requestsLogData.some(req => req.type === 'Incoming' && req.status !== 'Approved');
+      if (hasIncoming) {
+        document.getElementById('requestBadge').classList.add('active');
+      }
+    };
+
+    function closeAllPanels() {
+      profileSlidePanel.classList.remove('active');
+      newDealSlidePanel.classList.remove('active');
+      calendarSlidePanel.classList.remove('active');
+      viewContractPanel.classList.remove('active');
+      requestLogPanel.classList.remove('active');
+      notificationSlidePanel.classList.remove('active');
+      historySlidePanel.classList.remove('active');
+      slideOverlay.classList.remove('active');
+      
+      // Reset Panels state when closing
+      setTimeout(() => {
+        // Reset Profile Panel to Read-Only
+        document.getElementById('profilePanelTitle').textContent = "Profile Details";
+        document.getElementById('btnEnableEdit').style.display = 'block';
+        document.getElementById('saveProfileBtn').style.display = 'none';
+        document.getElementById('avatarEditBtn').style.display = 'none';
+        const profileInputs = document.querySelectorAll('#profileForm input');
+        profileInputs.forEach(input => input.disabled = true);
+
+        // New Deal Reset
+        contractFormContainer.style.display = 'block';
+        contractSuccessContainer.style.display = 'none';
+        document.getElementById('newDealForm').reset();
+        
+        // View Contract Reset
+        reviewState.style.display = 'block';
+        requestChangeState.style.display = 'none';
+        requestSuccessState.style.display = 'none';
+        acceptedState.style.display = 'none';
+        document.getElementById('changeRequestInput').value = ''; 
+      }, 300);
+    }
+
+    function openPanel(panel) {
+      // Close others first
+      profileSlidePanel.classList.remove('active');
+      newDealSlidePanel.classList.remove('active');
+      calendarSlidePanel.classList.remove('active');
+      viewContractPanel.classList.remove('active');
+      requestLogPanel.classList.remove('active');
+      notificationSlidePanel.classList.remove('active');
+      historySlidePanel.classList.remove('active');
+      
+      panel.classList.add('active');
+      slideOverlay.classList.add('active');
+      profileDropdown.classList.remove('active');
+    }
+
+    function enableProfileEdit() {
+      document.getElementById('profilePanelTitle').textContent = "Edit Profile";
+      document.getElementById('btnEnableEdit').style.display = 'none';
+      
+      // Enable specific inputs (exclude read-only system info)
+      const inputs = document.querySelectorAll('#profileForm input');
+      // Only enable inputs that are not explicitly read-only business logic (mock check)
+      inputs.forEach(input => {
+         // Simple check: if it's not the KYC or Member ID field (checking values for this mock)
+         if(input.value !== 'Verified' && input.value !== 'AM-883920') {
+             input.disabled = false;
+         }
+      });
+      
+      document.getElementById('saveProfileBtn').style.display = 'block';
+      document.getElementById('avatarEditBtn').style.display = 'flex';
+    }
+
+    function handleProfileSave(e) {
+      e.preventDefault();
+      
+      // 1. Get values
+      const newName = document.getElementById('profileName').value;
+      
+      // 2. Update UI elements (Hero Section)
+      document.getElementById('heroNameDisplay').textContent = newName;
+      
+      // 3. Lock fields back
+      const inputs = document.querySelectorAll('#profileForm input');
+      inputs.forEach(input => input.disabled = true);
+      
+      // 4. Reset UI state (Back to View Mode)
+      document.getElementById('profilePanelTitle').textContent = "Profile Details";
+      document.getElementById('btnEnableEdit').style.display = 'block';
+      document.getElementById('saveProfileBtn').style.display = 'none';
+      document.getElementById('avatarEditBtn').style.display = 'none';
+      
+      // 5. Add Notification
+      const newNotif = {
+        id: Date.now(),
+        text: "Profile updated successfully.",
+        time: "Just now",
+        type: "success",
+        isRead: false
+      };
+      notificationsData.unshift(newNotif);
+      document.getElementById('notifBadge').classList.add('active');
+      
+      // 6. User Feedback
+      alert("Profile updated successfully!");
+    }
+
+    // Wiring up Profile
+    btnProfileDetails.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openPanel(profileSlidePanel);
+    });
+    closeProfilePanel.addEventListener('click', closeAllPanels);
+
+    // Wiring up New Deal
+    btnNewDeal.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openPanel(newDealSlidePanel);
+    });
+    closeNewDealPanel.addEventListener('click', closeAllPanels);
+
+    // Wiring up Calendar
+    btnCalendar.addEventListener('click', (e) => {
+      e.stopPropagation();
+      renderCalendar(); 
+      openPanel(calendarSlidePanel);
+    });
+    closeCalendarPanel.addEventListener('click', closeAllPanels);
+    
+    // Wiring up Request Log
+    btnRequestLog.addEventListener('click', (e) => {
+      e.stopPropagation();
+      renderRequestLog();
+      openPanel(requestLogPanel);
+    });
+    closeRequestLogPanel.addEventListener('click', closeAllPanels);
+
+    // Wiring up Notifications
+    btnNotifications.addEventListener('click', (e) => {
+      e.stopPropagation();
+      renderNotifications();
+      openPanel(notificationSlidePanel);
+      // Clear badge on open
+      document.getElementById('notifBadge').classList.remove('active');
+    });
+    closeNotificationPanel.addEventListener('click', closeAllPanels);
+
+    // Wiring up History
+    btnHistory.addEventListener('click', (e) => {
+      e.stopPropagation();
+      renderHistory();
+      openPanel(historySlidePanel);
+    });
+    closeHistoryPanel.addEventListener('click', closeAllPanels);
+    
+    // View Contract Close
+    closeViewContractPanel.addEventListener('click', closeAllPanels);
+
+    slideOverlay.addEventListener('click', closeAllPanels);
+
+    // --- HISTORY LOGIC ---
+    function renderHistory() {
+      const container = document.getElementById('historyList');
+      container.innerHTML = '';
+
+      if (HISTORY_DATA.length === 0) {
+        container.innerHTML = '<div class="no-events">No history found.</div>';
+        return;
+      }
+
+      HISTORY_DATA.forEach(deal => {
+        let badgeClass = 'info';
+        if (deal.status === 'Completed') badgeClass = 'success';
+        if (deal.status === 'Rejected') badgeClass = 'danger';
+        if (deal.status === 'Expired') badgeClass = 'warning';
+
+        const item = document.createElement('div');
+        item.className = 'history-item';
+        item.innerHTML = `
+          <div class="hist-header">
+            <span>${deal.id}</span>
+            <span>${deal.date}</span>
+          </div>
+          <div class="hist-title">${deal.title}</div>
+          <div class="hist-meta">
+            Party: <strong>${deal.party}</strong> • Value: ${deal.value}
+          </div>
+          <div class="hist-footer">
+            <div class="status-badge ${badgeClass}">${deal.status}</div>
+            <button class="btn-small" style="background:transparent; border:1px solid #cbd5e1; color:#64748b;" onclick="alert('Viewing archived contract...')">View</button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // --- NOTIFICATION LOGIC ---
+    function renderNotifications() {
+      const list = document.getElementById('notificationList');
+      list.innerHTML = '';
+
+      if (notificationsData.length === 0) {
+        list.innerHTML = '<div class="no-events">No new notifications.</div>';
+        return;
+      }
+
+      notificationsData.forEach(notif => {
+        const item = document.createElement('div');
+        item.className = 'notification-item';
+        // Make clickable if it has an action
+        if (notif.action) {
+           item.style.cursor = 'pointer';
+           item.onclick = () => handleNotificationClick(notif);
+        }
+        
+        // Icons based on type
+        let iconSvg = '';
+        if (notif.type === 'success') {
+          iconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        } else if (notif.type === 'warning') {
+          iconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+        } else {
+          iconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
+        }
+
+        item.innerHTML = `
+          <div class="notif-icon ${notif.type}">${iconSvg}</div>
+          <div class="notif-content">
+            <div class="notif-text">${notif.text}</div>
+            <div class="notif-time">${notif.time}</div>
+          </div>
+          ${notif.isRead ? '' : '<div class="notif-unread"></div>'}
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function handleNotificationClick(notif) {
+      if (notif.action === 'review_agreement') {
+        const isVendor = document.getElementById('btnVendor').classList.contains('active');
+        // Open contract viewer with actions enabled
+        const desc = "This agreement incorporates the changes approved in Request ID: " + (notif.reqId || 'N/A') + ".\n\nPlease review the final terms below.";
+        
+        // Close other panels first
+        closeAllPanels();
+        
+        // Open Contract View
+        setTimeout(() => {
+            openContractViewer(notif.contractTitle, desc, isVendor, true);
+        }, 100);
+        
+        // Mark as read
+        notif.isRead = true;
+      }
+    }
+
+    // --- VIEW CONTRACT LOGIC ---
+    function openContractViewer(title, description, isVendorView, showActions) {
+      // Reset view
+      reviewState.style.display = 'block';
+      requestChangeState.style.display = 'none';
+      requestSuccessState.style.display = 'none';
+      acceptedState.style.display = 'none';
+      
+      document.getElementById('viewContractTitle').textContent = title;
+      
+      let p1 = "", p2 = "";
+      if (isVendorView) {
+        p1 = "You (Vendor)";
+        p2 = "Client (TechCorp)";
+      } else {
+        p1 = "You (Customer)";
+        p2 = "Vendor (Provider X)";
+      }
+      
+      document.getElementById('viewParty1').textContent = p1;
+      document.getElementById('viewParty2').textContent = p2;
+      
+      // Save for official certificate
+      document.getElementById('officialTitle').textContent = title;
+      document.getElementById('officialP1').textContent = p1;
+      document.getElementById('officialP2').textContent = p2;
+      
+      // Generic body or specific description passed
+      const contractBody = description.includes('1. Agreement') ? description : `
+        1. Agreement: This contract outlines the terms for ${title}.
+        
+        2. Note: ${description}
+        
+        3. Payment Terms: Payment of agreed sum shall be made upon completion/milestones.
+        
+        4. Confidentiality: Both parties agree to maintain strict confidentiality regarding all shared data.
+        
+        5. Jurisdiction: This agreement is governed by local laws.
+      `;
+      document.getElementById('viewContractBody').innerText = contractBody.trim();
+      
+      // Show/Hide Action Buttons
+      const footerActions = document.querySelector('#viewContractPanel .contract-actions-footer');
+      if (footerActions) {
+        footerActions.style.display = showActions ? 'flex' : 'none';
+      }
+      
+      openPanel(viewContractPanel);
+    }
+    
+    function openChangeRequest() {
+      reviewState.style.display = 'none';
+      requestChangeState.style.display = 'block';
+    }
+
+    function cancelChangeRequest() {
+      requestChangeState.style.display = 'none';
+      requestSuccessState.style.display = 'none';
+      reviewState.style.display = 'block';
+    }
+
+    function submitChangeRequest() {
+      const notes = document.getElementById('changeRequestInput').value;
+      if (!notes) {
+        alert("Please describe the desired changes.");
+        return;
+      }
+      
+      // Generate ID
+      const reqId = 'REQ-' + Math.floor(1000 + Math.random() * 9000);
+      const title = document.getElementById('viewContractTitle').textContent;
+      const date = new Date().toLocaleDateString();
+      
+      // Add to Log Data as OUTGOING
+      requestsLogData.unshift({
+        id: reqId,
+        title: title,
+        date: date,
+        content: notes,
+        status: 'Pending',
+        type: 'Outgoing'
+      });
+      
+      // Update Badge
+      const badge = document.getElementById('requestBadge');
+      badge.classList.add('active');
+      
+      // Show Success View
+      requestChangeState.style.display = 'none';
+      requestSuccessState.style.display = 'block';
+      
+      // Populate Ticket
+      document.getElementById('ticketIdDisplay').textContent = reqId;
+      document.getElementById('ticketContractTitle').textContent = title;
+      document.getElementById('ticketContentDisplay').textContent = notes;
+    }
+
+    // Function to Approve an Incoming Request
+    function approveRequest(reqId, reqTitle) {
+       // 1. Update Request Status in Data
+       const requestIndex = requestsLogData.findIndex(r => r.id === reqId);
+       if (requestIndex !== -1) {
+         requestsLogData[requestIndex].status = 'Approved';
+       }
+       
+       // 2. Re-render Log to show change
+       renderRequestLog();
+       
+       // 3. Generate Notification for the Requester (Simulated here for demo)
+       const newNotif = {
+         id: Date.now(),
+         text: `Request <strong>${reqId}</strong> for <strong>${reqTitle}</strong> has been Approved. Click to review and accept the agreement.`,
+         time: "Just now",
+         type: "success",
+         isRead: false,
+         action: "review_agreement", // Action Trigger
+         contractTitle: reqTitle,
+         reqId: reqId
+       };
+       
+       notificationsData.unshift(newNotif);
+       
+       // 4. Show Notification Badge
+       document.getElementById('notifBadge').classList.add('active');
+       
+       alert(`Request ${reqId} has been approved. Notification sent to requester.`);
+    }
+
+    function rejectRequest(reqId) {
+        // 1. Update Request Status in Data
+       const requestIndex = requestsLogData.findIndex(r => r.id === reqId);
+       if (requestIndex !== -1) {
+         requestsLogData[requestIndex].status = 'Rejected';
+       }
+       renderRequestLog();
+       alert(`Request ${reqId} has been rejected.`);
+    }
+    
+    function renderRequestLog() {
+      const container = document.getElementById('requestLogContainer');
+      container.innerHTML = '';
+      
+      if (requestsLogData.length === 0) {
+        container.innerHTML = '<div class="no-events">No active requests found.</div>';
+        return;
+      }
+      
+      requestsLogData.forEach(req => {
+        const isIncoming = req.type === 'Incoming';
+        const item = document.createElement('div');
+        
+        // Apply directional class for left-border
+        item.className = `request-log-item ${isIncoming ? 'incoming' : 'outgoing'}`;
+        
+        // Determine Badge Style
+        let badgeClass = 'info'; // Default blue
+        if (req.status === 'Pending' || req.status === 'Under Review') badgeClass = 'warning';
+        if (req.status === 'Approved') badgeClass = 'success';
+        if (req.status === 'Rejected') badgeClass = 'danger';
+        if (req.status === 'Action Required') badgeClass = 'info';
+
+        // Direction Icon
+        const arrowIcon = isIncoming 
+          ? `<svg style="width:12px;height:12px;display:inline;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>` // Down arrow
+          : `<svg style="width:12px;height:12px;display:inline;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>`; // Up arrow
+        
+        // Only show actions if Incoming AND Action Required
+        const showActions = isIncoming && req.status === 'Action Required';
+
+        item.innerHTML = `
+          <div class="req-header">
+            <span>${req.id}</span>
+            <span style="display:flex;align-items:center;">${arrowIcon} ${req.date} • ${req.type}</span>
+          </div>
+          <div class="req-title">${req.title}</div>
+          <div class="req-body">${req.content}</div>
+          <div class="req-footer">
+            <div class="status-badge ${badgeClass}">
+              ${req.status}
+            </div>
+            ${showActions ? `
+              <div class="req-actions">
+                <button class="btn-small btn-accept" onclick="approveRequest('${req.id}', '${req.title}')">Approve</button>
+                <button class="btn-small btn-reject" onclick="rejectRequest('${req.id}')">Reject</button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function acceptContract() {
+      // Transition to Official Agreement View
+      reviewState.style.display = 'none';
+      acceptedState.style.display = 'block';
+      
+      // Generate Metadata
+      const randomId = '#AGT-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+      const timestamp = new Date().toLocaleString();
+      
+      document.getElementById('officialAgmtId').textContent = randomId;
+      document.getElementById('officialTimestamp').textContent = timestamp;
+    }
+
+    // --- NEW DEAL FORM LOGIC ---
+    const contractTypeSelect = document.getElementById('contractType');
+    const financeSection = document.getElementById('financeSection');
+    const termsInput = document.getElementById('termsInput');
+    const effectiveDateInput = document.getElementById('effectiveDate');
+    const dynamicFieldsContainer = document.getElementById('dynamicFields');
+
+    // Default Date to Today
+    const todayObj = new Date();
+    const todayStr = todayObj.toISOString().split('T')[0];
+    effectiveDateInput.value = todayStr;
+
+    // Configuration for Contract Types
+    const CONTRACT_CONFIG = {
+      'Service Agreement': {
+        hasFinance: true,
+        placeholder: "Define the specific obligations, IP rights, and termination clauses...",
+        fields: `
+          <div class="detail-section">
+            <h4>Service Specifics</h4>
+            <div class="form-group">
+              <label>Service Description</label>
+              <textarea class="glass-textarea" placeholder="Detailed description of services to be provided..." style="min-height:80px;"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Key Deliverables</label>
+              <input type="text" class="glass-input" placeholder="e.g. Design Mockups, Final API Code" />
+            </div>
+          </div>`
+      },
+      'Non-Disclosure (NDA)': {
+        hasFinance: false,
+        placeholder: "Enter definition of confidential information and exclusions...",
+        fields: `
+          <div class="detail-section">
+            <h4>Confidentiality Details</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Confidentiality Period</label>
+                <input type="text" class="glass-input" placeholder="e.g. 2 Years from disclosure" />
+              </div>
+              <div class="form-group">
+                <label>Jurisdiction</label>
+                <input type="text" class="glass-input" placeholder="e.g. State of California" />
+              </div>
+            </div>
+          </div>`
+      },
+      'Employment Contract': {
+        hasFinance: true,
+        placeholder: "Enter leave policy, benefits, and code of conduct...",
+        fields: `
+          <div class="detail-section">
+            <h4>Employment Details</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Job Title</label>
+                <input type="text" class="glass-input" placeholder="e.g. Senior Analyst" />
+              </div>
+              <div class="form-group">
+                <label>Department</label>
+                <input type="text" class="glass-input" placeholder="e.g. Marketing" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Probation Period</label>
+              <input type="text" class="glass-input" placeholder="e.g. 3 Months" />
+            </div>
+          </div>`
+      },
+      'Sales of Goods': {
+        hasFinance: true,
+        placeholder: "Enter return policy, warranties, and shipping terms...",
+        fields: `
+          <div class="detail-section">
+            <h4>Product Details</h4>
+            <div class="form-group">
+              <label>Product Name/Description</label>
+              <input type="text" class="glass-input" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Quantity</label>
+                <input type="number" class="glass-input" />
+              </div>
+              <div class="form-group">
+                <label>Unit Price</label>
+                <input type="number" class="glass-input" />
+              </div>
+            </div>
+          </div>`
+      },
+      'Loan / Bond': {
+        hasFinance: true,
+        placeholder: "Enter default conditions and covenants...",
+        fields: `
+          <div class="detail-section">
+            <h4>Loan Specifics</h4>
+            <div class="form-group">
+              <label>Repayment Schedule</label>
+              <select class="glass-select">
+                <option>Monthly Installments</option>
+                <option>Quarterly Interest + Principal at Maturity</option>
+                <option>Bullet Repayment</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Collateral (Optional)</label>
+              <input type="text" class="glass-input" placeholder="Describe asset pledged..." />
+            </div>
+          </div>`
+      }
+    };
+
+    function renderContractFields(type) {
+      const config = CONTRACT_CONFIG[type];
+      if (!config) return;
+      dynamicFieldsContainer.innerHTML = config.fields;
+      termsInput.value = ""; 
+      termsInput.placeholder = config.placeholder;
+      financeSection.style.display = config.hasFinance ? 'block' : 'none';
+    }
+
+    renderContractFields('Service Agreement');
+
+    contractTypeSelect.addEventListener('change', (e) => {
+      renderContractFields(e.target.value);
+    });
+
+    // Handle New Deal Submission
+    function handleContractSubmit(e) {
+      e.preventDefault();
+      
+      // Determine current mode
+      const isVendor = document.getElementById('btnVendor').classList.contains('active');
+
+      // Get values
+      const title = document.getElementById('dealTitleInput').value;
+      const counterparty = document.getElementById('dealCounterparty').value;
+      const date = document.getElementById('effectiveDate').value;
+      
+      // Get User Name from Profile (or default)
+      const senderNameInput = document.getElementById('profileName');
+      const senderName = senderNameInput ? senderNameInput.value : "Aditya Sharma";
+
+      // Update Preview Labels based on Mode
+      const lblPreviewSender = document.getElementById('lblPreviewSender');
+      const lblPreviewCounterparty = document.getElementById('lblPreviewCounterparty');
+
+      if (isVendor) {
+        lblPreviewSender.textContent = "Between (Vendor):";
+        lblPreviewCounterparty.textContent = "And (Customer):";
+      } else {
+        lblPreviewSender.textContent = "Between (Customer):";
+        lblPreviewCounterparty.textContent = "And (Vendor):";
+      }
+
+      // Populate Preview Values
+      previewTitle.textContent = title;
+      previewSender.textContent = senderName;
+      previewCounterparty.textContent = counterparty;
+      previewDate.textContent = date;
+
+      // Toggle Views
+      contractFormContainer.style.display = 'none';
+      contractSuccessContainer.style.display = 'block';
+    }
+
+    function copyToClipboard() {
+      // Mock copy
+      navigator.clipboard.writeText('https://amantra.com/c/mock-link-12345')
+        .then(() => alert('Link copied to clipboard!'))
+        .catch(() => alert('Failed to copy link.'));
+    }
+
+    // --- CALENDAR LOGIC ---
+    function renderCalendar() {
+      const grid = document.getElementById('calendarGrid');
+      const eventListEl = document.getElementById('upcomingEventsList');
+      const monthNameEl = document.getElementById('calMonthName');
+      
+      const now = new Date();
+      const currentMonth = now.toLocaleString('default', { month: 'long' });
+      const currentYear = now.getFullYear();
+      const todayDate = now.getDate();
+      
+      monthNameEl.textContent = currentMonth;
+      
+      // Clear previous days (keep headers)
+      const headers = Array.from(grid.children).slice(0, 7);
+      grid.innerHTML = '';
+      headers.forEach(h => grid.appendChild(h));
+      // Initially show 'all' or 'today'? Let's show Today's or nothing
+      eventListEl.innerHTML = '<div class="no-events">Select a date to view deadlines.</div>';
+
+      const daysInMonth = 30; // demo
+      
+      // Updated Mock Due Dates with multiple events
+      const dueDates = {
+        5: [
+            { title: "Payment Due: Vendor X", type: "Payment" },
+            { title: "Review Contract Draft", type: "Task" }
+        ],
+        12: [
+            { title: "Contract Renewal: TechCorp", type: "Renewal" }
+        ],
+        25: [
+            { title: "Audit Submission", type: "Compliance" },
+            { title: "Tax Filing", type: "Finance" }
+        ]
+      };
+
+      for(let i=1; i<=daysInMonth; i++) {
+        const dayEl = document.createElement('div');
+        dayEl.className = 'calendar-day';
+        dayEl.textContent = i;
+        
+        if (i === todayDate) dayEl.classList.add('today');
+        if (dueDates[i]) dayEl.classList.add('due');
+        
+        // Add Click Listener for Filtering
+        dayEl.addEventListener('click', () => {
+          // Visual selection
+          document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+          dayEl.classList.add('selected');
+          
+          // Render Events
+          eventListEl.innerHTML = '';
+          const events = dueDates[i];
+          
+          if (events && events.length > 0) {
+            events.forEach(evt => {
+              const item = `
+                <div class="event-item ${evt.type === 'Payment' ? 'urgent' : ''}">
+                  <div class="event-date">
+                    <span class="date-num">${i}</span>
+                    <span class="date-mon">${currentMonth.substring(0,3)}</span>
+                  </div>
+                  <div class="event-info">
+                    <h5>${evt.title}</h5>
+                    <p>${evt.type}</p>
+                  </div>
+                </div>
+              `;
+              eventListEl.innerHTML += item;
+            });
+          } else {
+            eventListEl.innerHTML = '<div class="no-events">No deadlines for this date.</div>';
+          }
+        });
+        
+        grid.appendChild(dayEl);
+      }
+    }
+
+
+    // --- DATA SOURCES ---
+    const CUSTOMER_DATA = {
+      active: {
+        id: 'active',
+        label: "Active Bonds",
+        amount: "₹35,500",
+        count: 6,
+        time: "Updated 2h ago",
+        status: "active",
+        options: [
+          { name: "Government Bond A1", desc: "AAA Rated • 5yr Maturity • 6.5% Yield" },
+          { name: "Corporate Blue", desc: "High Yield • 3yr Maturity • 8.2% Yield" },
+          { name: "Municipal Green", desc: "Tax Free • 10yr Maturity • Safe Haven" },
+          { name: "Tech Sector ETF", desc: "Growth Focus • High Volatility" },
+          { name: "Sovereign Gold", desc: "Asset Backed • Inflation Hedge" }
+        ]
+      },
+      pending: {
+        id: 'pending',
+        label: "Pending Approvals",
+        amount: "3 Contracts",
+        count: 3,
+        time: "Action Required",
+        status: "pending",
+        options: [
+          { name: "Service Level Agreement v2", desc: "Proposed by: Vendor X • Awaiting your acceptance" },
+          { name: "NDA - Project Alpha", desc: "Proposed by: Legal Team • Review terms" },
+          { name: "Consultancy Contract", desc: "Revised draft received today" }
+        ]
+      },
+      overdue: {
+        id: 'overdue',
+        label: "Overdue Bonds",
+        amount: "₹2,800",
+        count: 1,
+        time: "Action required",
+        status: "overdue",
+        options: [
+          { name: "Distressed Asset X", desc: "12 Days Overdue • Contact Support Immediately" }
+        ]
+      }
+    };
+
+    const VENDOR_DATA = {
+      active: {
+        id: 'active',
+        label: "Active Bonds",
+        amount: "₹1,24,000",
+        count: 15,
+        time: "Portfolio Value",
+        status: "active",
+        options: [
+          { name: "Issued Series A-2024", desc: "Fully Subscribed • 8.5% Coupon" },
+          { name: "Green Energy Bond", desc: "Maturing 2028 • 124 Investors" },
+          { name: "Infrastructure Debenture", desc: "Quarterly Payouts • Active" }
+        ]
+      },
+      incoming: {
+        id: 'incoming',
+        label: "Incoming Requests",
+        amount: "4 Proposals",
+        count: 4,
+        time: "Requires Approval",
+        status: "pending",
+        options: [
+          { name: "Supply Contract 2025", desc: "Client: TechCorp • Value: ₹15L • Draft" },
+          { name: "Software License Renewal", desc: "Client: FinServ • Pending Acceptance" },
+          { name: "Maintenance Agreement", desc: "Client: EduInst • Terms Updated" }
+        ]
+      }
+    };
+
+    const navPanel = document.getElementById('navPanel');
+    const stageContent = document.getElementById('stageContent');
+    
+    // State
+    let currentData = CUSTOMER_DATA;
+    let currentActive = null;
+
+    // --- RENDER FUNCTIONS ---
+    function renderNav() {
+      navPanel.innerHTML = '';
+      const keys = Object.keys(currentData);
+
+      if (!keys.includes(currentActive)) {
+        currentActive = keys[0];
+      }
+
+      keys.forEach(key => {
+        const item = currentData[key];
+        
+        const navItem = document.createElement('div');
+        navItem.className = `nav-item ${key === currentActive ? 'active' : ''}`;
+        navItem.dataset.status = item.status;
+        navItem.dataset.key = key;
+        
+        navItem.innerHTML = `
+          <div class="nav-label">${item.label}</div>
+          <div class="nav-amount">${item.amount}</div>
+        `;
+        
+        navItem.addEventListener('mouseenter', () => updateSelection(key));
+        navItem.addEventListener('click', () => updateSelection(key));
+
+        navPanel.appendChild(navItem);
+      });
+      
+      forceStageUpdate(currentActive);
+    }
+
+    function updateSelection(key) {
+      if (key === currentActive && stageContent.classList.contains('visible')) return;
+      currentActive = key;
+
+      document.querySelectorAll('.nav-item').forEach(el => {
+        el.classList.toggle('active', el.dataset.key === key);
+      });
+
+      stageContent.classList.remove('visible');
+
+      setTimeout(() => {
+        renderStageContent(key);
+        stageContent.classList.add('visible');
+      }, 150);
+    }
+
+    function forceStageUpdate(key) {
+      if (!key) return;
+      renderStageContent(key);
+      document.querySelectorAll('.nav-item').forEach(el => {
+        el.classList.toggle('active', el.dataset.key === key);
+      });
+      stageContent.classList.remove('visible');
+      setTimeout(() => stageContent.classList.add('visible'), 50);
+    }
+
+    function renderStageContent(key) {
+      const item = currentData[key];
+      if (!item) return;
+
+      const isVendor = document.getElementById('btnVendor').classList.contains('active');
+      
+      // Determine if actions are required (Pending for Customer, Incoming for Vendor)
+      const showActions = (key === 'pending' || key === 'incoming');
+
+      const cards = item.options.map(opt => `
+        <div class="detail-card" onclick="openContractViewer('${opt.name}', '${opt.desc}', ${isVendor}, ${showActions})">
+          <div class="detail-name">${opt.name}</div>
+          <div class="detail-desc">${opt.desc}</div>
+          <div class="click-hint">${showActions ? 'Review & Act' : 'View Details'}</div>
+        </div>
+      `).join('');
+
+      stageContent.innerHTML = `
+        <div class="stage-header">
+          <div class="stage-title">${item.label}</div>
+          <div class="stage-meta">${item.count} items • ${item.time}</div>
+        </div>
+        <div class="stage-grid">
+          ${cards}
+        </div>
+      `;
+    }
+
+    // --- MODE TOGGLE LOGIC ---
+    const btnCustomer = document.getElementById('btnCustomer');
+    const btnVendor = document.getElementById('btnVendor');
+
+    function switchMode(mode) {
+      const isVendor = mode === 'vendor';
+      
+      btnCustomer.classList.toggle('active', !isVendor);
+      btnVendor.classList.toggle('active', isVendor);
+
+      currentData = isVendor ? VENDOR_DATA : CUSTOMER_DATA;
+      currentActive = null; 
+
+      // Update New Deal Form Labels based on mode
+      const lblCounterparty = document.getElementById('lblCounterparty');
+      const inputCounterparty = document.getElementById('dealCounterparty');
+      
+      if (lblCounterparty && inputCounterparty) {
+        if (isVendor) {
+          lblCounterparty.textContent = "Customer (Email/ID)";
+          inputCounterparty.placeholder = "customer@example.com";
+        } else {
+          lblCounterparty.textContent = "Vendor (Email/ID)";
+          inputCounterparty.placeholder = "vendor@example.com";
+        }
+      }
+
+      renderNav();
+    }
+
+    btnCustomer.addEventListener('click', () => switchMode('customer'));
+    btnVendor.addEventListener('click', () => switchMode('vendor'));
+
+    // --- INITIALIZE ---
+    renderNav();
+
+  </script>
+</body>
+</html>

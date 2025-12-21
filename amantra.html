@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Amantra – Digital Promise Notes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Font pair: elegant serif + clean sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* smooth scroll for anchor links */
+    html {
+      scroll-behavior: smooth;
+    } /* [web:129][web:162] */
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      color: #ffffff;
+      background:
+        linear-gradient(rgba(0,0,40,0.35), rgba(0,0,60,0.5)),
+        url("Bankruptcy-Attorneys-Specializing-In-Chapter.jpg") center/cover no-repeat fixed;
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 16px 64px;
+    }
+
+    /* top nav pill */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.55);
+      border: 1px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(16px);
+      position: sticky;
+      top: 16px;
+      z-index: 10;
+    } /* [web:137][web:157] */
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.3rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      font-size: 0.95rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #f9fafb;
+      opacity: 0.9;
+    }
+
+    .nav-links a:hover { opacity: 1; }
+
+    .nav-cta {
+      padding: 8px 20px;
+      border-radius: 999px;
+      background: #020617;
+      color: #f9fafb;
+      font-size: 0.9rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* hero / home */
+    .hero {
+      text-align: center;
+      margin-top: 80px;
+      scroll-margin-top: 120px;
+    } /* [web:143][web:146] */
+
+    .hero-title {
+      font-size: clamp(3rem, 5vw, 4.2rem);
+      font-weight: 400;
+    }
+
+    .hero-title span.serif {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    .hero-title span.sans {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+    }
+
+    .hero-sub {
+      max-width: 820px;
+      margin: 24px auto 40px auto;
+      font-size: 1.15rem;
+      line-height: 1.5;
+    }
+
+    /* auth box */
+    .auth-box {
+      max-width: 480px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.96);
+      border-radius: 18px;
+      padding: 20px 22px 24px;
+      box-shadow: 0 18px 50px rgba(15,23,42,0.55);
+      color: #111827;
+      scroll-margin-top: 120px;
+    }
+
+    /* toggle bar */
+    .auth-toggle {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-radius: 999px;
+      background: #e5e7eb;
+      padding: 3px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .auth-toggle button {
+      border: none;
+      background: transparent;
+      z-index: 2;
+      padding: 6px 0;
+      border-radius: 999px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      color: #4b5563;
+    }
+
+    .auth-toggle button.active {
+      color: #ffffff;
+    }
+
+    .auth-toggle-indicator {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: calc(50% - 3px);
+      height: calc(100% - 6px);
+      background: #111827;
+      border-radius: 999px;
+      transition: transform 0.25s ease;
+    }
+
+    .auth-toggle.ind-signup .auth-toggle-indicator {
+      transform: translateX(100%);
+    }
+
+    /* forms */
+    .auth-forms {
+      position: relative;
+      overflow: hidden;
+      height: auto;
+    }
+
+    .auth-form {
+      display: none;
+      text-align: left;
+      transition: opacity 0.25s ease;
+    }
+
+    .auth-form.active {
+      display: block;
+    }
+
+    .auth-form h2 {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+
+    .auth-form p {
+      font-size: 0.86rem;
+      color: #6b7280;
+      margin-bottom: 14px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+      color: #374151;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 1px rgba(79,70,229,0.5);
+    }
+
+    .auth-btn {
+      width: 100%;
+      margin-top: 6px;
+      padding: 9px 10px;
+      border-radius: 10px;
+      border: none;
+      background: #111827;
+      color: #f9fafb;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .auth-meta {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    .auth-meta a {
+      color: #4f46e5;
+      text-decoration: none;
+    }
+
+    .auth-meta a:hover { text-decoration: underline; }
+
+    /* About & Feedback sections */
+    .section {
+      max-width: 820px;
+      margin: 80px auto 0 auto;
+      text-align: left;
+      scroll-margin-top: 120px;
+    }
+
+    .section h2 {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 16px;
+    }
+
+    .section h3 {
+      margin-top: 18px;
+      margin-bottom: 6px;
+      font-size: 1.1rem;
+    }
+
+    .section p {
+      font-size: 1rem;
+      line-height: 1.6;
+      opacity: 0.95;
+    }
+
+    @media (max-width: 768px) {
+      .nav { gap: 12px; padding-inline: 16px; }
+      .nav-links { display: none; }
+      .hero { margin-top: 60px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- top nav -->
+    <header class="nav">
+      <div class="nav-left">Amantra</div>
+      <nav class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#login">Login</a>
+        <a href="#about">About</a>
+        <a href="#feedback">Feedback</a>
+      </nav>
+      <button class="nav-cta" onclick="document.getElementById('login').scrollIntoView({behavior:'smooth'});">
+        Get started
+      </button>
+    </header>
+
+    <!-- hero center text (HOME) -->
+    <section class="hero" id="home">
+      <h1 class="hero-title">
+        <span class="serif">Aman</span><span class="sans">tra</span>
+      </h1>
+
+      <p class="hero-sub">
+        Turn every local deal into a clear, digital note of promise. Build trust between customers and vendors with verified data,
+        transparent terms, and effortless follow‑ups.
+      </p>
+
+      <!-- sign in / sign up box (LOGIN) -->
+      <div class="auth-box" id="login">
+        <div class="auth-toggle" id="authToggle">
+          <div class="auth-toggle-indicator"></div>
+          <button type="button" id="btnSignIn" class="active">Sign in</button>
+          <button type="button" id="btnSignUp">Sign up</button>
+        </div>
+
+        <div class="auth-forms">
+          <!-- Sign in form -->
+          <div class="auth-form active" id="formSignIn">
+            <h2>Welcome back</h2>
+            <p>Sign in to continue managing your Amantra promises.</p>
+
+            <div class="field">
+              <label for="signin-email">Email</label>
+              <input id="signin-email" type="email" placeholder="you@example.com">
+            </div>
+
+            <div class="field">
+              <label for="signin-password">Password</label>
+              <input id="signin-password" type="password" placeholder="••••••••">
+            </div>
+
+           <button class="auth-btn" type="button" onclick="handleSignIn()">Sign in</button>
+
+            <div class="auth-meta">
+              New here? <a href="#" id="linkToSignUp">Create an account</a>
+            </div>
+          </div>
+
+          <!-- Sign up form -->
+                   <!-- Sign up form -->
+          <div class="auth-form" id="formSignUp">
+            <h2>Create your account</h2>
+            <p>Join Amantra and keep every local deal transparent and traceable.</p>
+
+            <div class="field">
+              <label for="signup-first-name">First name</label>
+              <input id="signup-first-name" type="text" placeholder="First name" />
+            </div>
+
+            <div class="field">
+              <label for="signup-last-name">Last name</label>
+              <input id="signup-last-name" type="text" placeholder="Last name" />
+            </div>
+
+            <div class="field">
+              <label for="signup-email">Email</label>
+              <input id="signup-email" type="email" placeholder="you@example.com" />
+            </div>
+
+            <div class="field">
+              <label for="signup-phone">Phone number</label>
+              <input id="signup-phone" type="tel" placeholder="98765 43210" />
+            </div>
+
+            <div class="field">
+              <label for="signup-password">Create password</label>
+              <input id="signup-password" type="password" placeholder="Create a password" />
+            </div>
+
+            <div class="field">
+              <label for="signup-confirm">Confirm password</label>
+              <input id="signup-confirm" type="password" placeholder="Re‑enter password" />
+            </div>
+
+            <button class="auth-btn">Sign up</button>
+            <div class="auth-meta">
+              Already have an account? <a href="#" id="linkToSignIn">Sign in</a>
+            </div>
+          </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT section -->
+    <section class="section" id="about">
+      <h2>About Us</h2>
+
+      <h3>The Problem</h3>
+      <p>
+        Local dealer–customer interactions rely heavily on word-of-mouth.
+        This often leads to misunderstandings, lack of clarity, and trust issues.
+      </p>
+
+      <h3>Our Solution</h3>
+      <p>
+        We introduce a digital note of promise backed by verified user data.
+        It converts informal commitments into clear, reliable digital records.
+      </p>
+
+      <h3>Why It Matters</h3>
+      <p>
+        Transparency improves confidence for both customers and vendors.
+        Documented promises reduce disputes and strengthen relationships.
+      </p>
+
+      <h3>Our Goal</h3>
+      <p>
+        To make local transactions simple, trustworthy, and verifiable—every time.
+      </p>
+    </section>
+
+    <!-- FEEDBACK section -->
+    <section class="section" id="feedback">
+      <h2>Feedback</h2>
+      <p>
+        Help shape Amantra. Share your experience, suggest new features, or report issues so local businesses and customers
+        can collaborate with even more confidence.
+      </p>
+    </section>
+  </div>
+
+  <script>
+    const toggle = document.getElementById('authToggle');
+    const btnSignIn = document.getElementById('btnSignIn');
+    const btnSignUp = document.getElementById('btnSignUp');
+    const formSignIn = document.getElementById('formSignIn');
+    const formSignUp = document.getElementById('formSignUp');
+    const linkToSignUp = document.getElementById('linkToSignUp');
+    const linkToSignIn = document.getElementById('linkToSignIn');
+
+    function showSignIn() {
+      toggle.classList.remove('ind-signup');
+      btnSignIn.classList.add('active');
+      btnSignUp.classList.remove('active');
+      formSignIn.classList.add('active');
+      formSignUp.classList.remove('active');
+      document.getElementById('login').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function showSignUp() {
+      toggle.classList.add('ind-signup');
+      btnSignIn.classList.remove('active');
+      btnSignUp.classList.add('active');
+      formSignIn.classList.remove('active');
+      formSignUp.classList.add('active');
+      document.getElementById('login').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    btnSignIn.addEventListener('click', showSignIn);
+    btnSignUp.addEventListener('click', showSignUp);
+    linkToSignUp.addEventListener('click', function(e){ e.preventDefault(); showSignUp(); });
+    linkToSignIn.addEventListener('click', function(e){ e.preventDefault(); showSignIn(); });
+  </script>
+</body>
+</html>
+
+<script>
+  function handleSignIn() {
+  // later you can add real validation here
+  window.location.href = "dashboard.html";  // go to user dashboard page
+} // [web:189][web:198]
+
+</script>
