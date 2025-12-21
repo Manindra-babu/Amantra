@@ -11,6 +11,7 @@
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&family=Inter:wght@400;500;600&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
@@ -20,6 +21,7 @@
       <div class="nav-left">Amantra</div>
       <nav class="nav-links">
         <a href="#home">Home</a>
+        <a href="#features">Features</a>
         <a href="#login">Login</a>
         <a href="#about">About</a>
         <a href="#feedback">Feedback</a>
@@ -41,8 +43,104 @@
         transparent terms, and effortless follow‑ups.
       </p>
 
-      <!-- sign in / sign up box (LOGIN) -->
-      <div class="auth-box" id="login">
+      <!-- Sign in / Sign up moved to its own section -->
+    </section>
+
+    <!-- Features Section (WhatsApp Style) -->
+    <section id="features" class="features-section">
+      <div class="features-header">
+        <h3>Everything you need</h3>
+      </div>
+
+      <div class="features-wrapper">
+        <!-- Left Button -->
+        <button class="scroll-btn left" id="scrollLeft" aria-label="Scroll Left">
+          <i data-lucide="chevron-left"></i>
+        </button>
+
+        <div class="features-scroll-container" id="featuresContainer">
+          <!-- Card 1: Auth -->
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <i data-lucide="shield-check"></i>
+            </div>
+            <h4 class="feature-title">Auth & Onboarding</h4>
+            <ul class="feature-list">
+              <li><i data-lucide="check"></i> Secure Firebase Login</li>
+              <li><i data-lucide="check"></i> Auto Profile Creation</li>
+              <li><i data-lucide="check"></i> Smart Role Redirect</li>
+              <li><i data-lucide="check"></i> Instant KYC Status</li>
+            </ul>
+          </div>
+
+          <!-- Card 2: Dashboard -->
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <i data-lucide="layout-dashboard"></i>
+            </div>
+            <h4 class="feature-title">Smart Dashboard</h4>
+            <ul class="feature-list">
+              <li><i data-lucide="check"></i> Dual-Persona Mode</li>
+              <li><i data-lucide="check"></i> Real-Time Stats</li>
+              <li><i data-lucide="check"></i> Interactive Dock</li>
+              <li><i data-lucide="check"></i> Glassmorphic UI</li>
+            </ul>
+          </div>
+
+          <!-- Card 3: Contracts -->
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <i data-lucide="file-signature"></i>
+            </div>
+            <h4 class="feature-title">Contract Mgmt</h4>
+            <ul class="feature-list">
+              <li><i data-lucide="check"></i> Dynamic Templates</li>
+              <li><i data-lucide="check"></i> Smart Logic Forms</li>
+              <li><i data-lucide="check"></i> Negotiation Tools</li>
+              <li><i data-lucide="check"></i> WhatsApp Sharing</li>
+            </ul>
+          </div>
+
+          <!-- Card 4: Profile -->
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <i data-lucide="user-circle"></i>
+            </div>
+            <h4 class="feature-title">User Profiles</h4>
+            <ul class="feature-list">
+              <li><i data-lucide="check"></i> Live Details Update</li>
+              <li><i data-lucide="check"></i> System Status View</li>
+              <li><i data-lucide="check"></i> Unique Member ID</li>
+              <li><i data-lucide="check"></i> Address Mgmt</li>
+            </ul>
+          </div>
+
+          <!-- Card 5: Tools -->
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <i data-lucide="wrench"></i>
+            </div>
+            <h4 class="feature-title">Tools & Utilities</h4>
+            <ul class="feature-list">
+              <li><i data-lucide="check"></i> Calendar Integration</li>
+              <li><i data-lucide="check"></i> Request Logs</li>
+              <li><i data-lucide="check"></i> Notification Center</li>
+              <li><i data-lucide="check"></i> Deadlines Tracker</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Right Button -->
+        <button class="scroll-btn right" id="scrollRight" aria-label="Scroll Right">
+          <i data-lucide="chevron-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- Login Section -->
+    <section id="login" class="auth-container"
+      style="padding: 40px 0 80px; display: flex; justify-content: center; scroll-margin-top: 100px;">
+      <div class="auth-box">
         <div class="auth-toggle" id="authToggle">
           <div class="auth-toggle-indicator"></div>
           <button type="button" id="btnSignIn" class="active">Sign in</button>
@@ -115,46 +213,45 @@
 
         </div>
       </div>
-  </div>
-  </section>
+    </section>
 
-  <!-- ABOUT section -->
-  <section class="section" id="about">
-    <h2>About Us</h2>
+    <!-- ABOUT section -->
+    <section class="section" id="about">
+      <h2>About Us</h2>
 
-    <h3>The Problem</h3>
-    <p>
-      Local dealer–customer interactions rely heavily on word-of-mouth.
-      This often leads to misunderstandings, lack of clarity, and trust issues.
-    </p>
+      <h3>The Problem</h3>
+      <p>
+        Local dealer–customer interactions rely heavily on word-of-mouth.
+        This often leads to misunderstandings, lack of clarity, and trust issues.
+      </p>
 
-    <h3>Our Solution</h3>
-    <p>
-      We introduce a digital note of promise backed by verified user data.
-      It converts informal commitments into clear, reliable digital records.
-    </p>
+      <h3>Our Solution</h3>
+      <p>
+        We introduce a digital note of promise backed by verified user data.
+        It converts informal commitments into clear, reliable digital records.
+      </p>
 
-    <h3>Why It Matters</h3>
-    <p>
-      Transparency improves confidence for both customers and vendors.
-      Documented promises reduce disputes and strengthen relationships.
-    </p>
+      <h3>Why It Matters</h3>
+      <p>
+        Transparency improves confidence for both customers and vendors.
+        Documented promises reduce disputes and strengthen relationships.
+      </p>
 
-    <h3>Our Goal</h3>
-    <p>
-      To make local transactions simple, trustworthy, and verifiable—every time.
-    </p>
-  </section>
+      <h3>Our Goal</h3>
+      <p>
+        To make local transactions simple, trustworthy, and verifiable—every time.
+      </p>
+    </section>
 
-  <!-- FEEDBACK section -->
-  <section class="section" id="feedback">
-    <h2>Feedback</h2>
-    <p>
-      Help shape Amantra. Share your experience, suggest new features, or report issues so local businesses and
-      customers
-      can collaborate with even more confidence.
-    </p>
-  </section>
+    <!-- FEEDBACK section -->
+    <section class="section" id="feedback">
+      <h2>Feedback</h2>
+      <p>
+        Help shape Amantra. Share your experience, suggest new features, or report issues so local businesses and
+        customers
+        can collaborate with even more confidence.
+      </p>
+    </section>
   </div>
 
   <script type="module" src="landing.js"></script>

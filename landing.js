@@ -191,3 +191,55 @@ if (signUpSubmitBtn) {
 // Global exposure
 window.showSignIn = showSignIn;
 window.showSignUp = showSignUp;
+
+// Initialize Lucide Icons
+if (window.lucide) {
+    window.lucide.createIcons();
+}
+
+const slider = document.getElementById('featuresContainer');
+const btnLeft = document.getElementById('scrollLeft');
+const btnRight = document.getElementById('scrollRight');
+
+// 1. Button Click Scrolling
+if (slider && btnLeft && btnRight) {
+    btnLeft.addEventListener('click', () => {
+        slider.scrollBy({ left: -260, behavior: 'smooth' });
+    });
+
+    btnRight.addEventListener('click', () => {
+        slider.scrollBy({ left: 260, behavior: 'smooth' });
+    });
+}
+
+// 2. Drag to Scroll Logic
+let isDown = false;
+let startX;
+let scrollLeft;
+
+if (slider) {
+    slider.addEventListener('mousedown', (e) => {
+        isDown = true;
+        slider.classList.add('active'); // Changes cursor to 'grabbing'
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+    });
+
+    slider.addEventListener('mouseleave', () => {
+        isDown = false;
+        slider.classList.remove('active');
+    });
+
+    slider.addEventListener('mouseup', () => {
+        isDown = false;
+        slider.classList.remove('active');
+    });
+
+    slider.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault(); // prevents text selection
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 2; // Speed multiplier
+        slider.scrollLeft = scrollLeft - walk;
+    });
+}
