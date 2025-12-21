@@ -122,7 +122,7 @@
     <div class="mode-toggle-wrapper">
       <div class="mode-toggle" id="modeToggle">
         <button type="button" id="btnCustomer" class="active">Customer</button>
-        <button type="button" id="btnVendor">Vendor</button>
+        <button type="button" id="btnVender">Vender</button>
       </div>
     </div>
 
@@ -301,8 +301,13 @@
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label id="lblCounterparty">Vendor (Email/ID)</label>
-                <input type="email" id="dealCounterparty" class="glass-input" placeholder="vendor@example.com"
+                <label id="lblCounterparty">Counterparty (Email/ID)</label>
+                <input type="text" id="dealCounterparty" class="glass-input" placeholder="vendor@example.com"
+                  required />
+              </div>
+              <div class="form-group">
+                <label>Counterparty Name</label>
+                <input type="text" id="dealCounterpartyName" class="glass-input" placeholder="e.g. John Doe, Tech Corp"
                   required />
               </div>
               <div class="form-group">
@@ -387,7 +392,7 @@
             <span class="preview-val" id="previewSender">Aditya Sharma</span>
           </div>
           <div class="preview-row">
-            <span class="preview-label" id="lblPreviewCounterparty">And (Vendor):</span>
+            <span class="preview-label" id="lblPreviewCounterparty">And (Vender):</span>
             <span class="preview-val" id="previewCounterparty">Counterparty</span>
           </div>
           <div class="preview-row">
@@ -403,14 +408,7 @@
         <div class="detail-section">
           <h4>Share Contract</h4>
           <div class="share-grid">
-            <button class="share-btn" onclick="copyToClipboard()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-              </svg>
-              Copy Link
-            </button>
+
             <button class="share-btn whatsapp"
               onclick="window.open('https://wa.me/?text=Here is the contract link: https://amantra.com/c/12345')">
               <svg viewBox="0 0 24 24" fill="currentColor">
@@ -419,8 +417,7 @@
               </svg>
               WhatsApp
             </button>
-            <button class="share-btn email"
-              onclick="window.location.href='mailto:?subject=Contract Review&body=Please review the attached contract.'">
+            <button class="share-btn email" onclick="sendContractEmail()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
@@ -428,7 +425,7 @@
               </svg>
               Email
             </button>
-            <button class="share-btn" onclick="alert('Downloading PDF...')">
+            <button class="share-btn" onclick="downloadContractPDF()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -511,7 +508,7 @@
           </div>
           <div class="preview-row">
             <span class="preview-label">And:</span>
-            <span class="preview-val" id="viewParty2">TechCorp Solutions (Vendor)</span>
+            <span class="preview-val" id="viewParty2">TechCorp Solutions (Vender)</span>
           </div>
 
           <div
@@ -520,7 +517,7 @@
           </div>
           <div id="viewContractBody"
             style="font-size: 0.8rem; color: #334155; line-height: 1.5; white-space: pre-line;">
-            1. Scope of Work: The Vendor agrees to provide maintenance services for the specified software
+            1. Scope of Work: The Vender agrees to provide maintenance services for the specified software
             suite.<br><br>
             2. Payment: A monthly retainer of ₹15,000 shall be paid by the 5th of each month.<br><br>
             3. Termination: Either party may terminate this agreement with 30 days written notice.
@@ -666,7 +663,7 @@
         <div class="detail-section">
           <h4>Actions</h4>
           <div class="share-grid">
-            <button class="share-btn" onclick="alert('Downloading Official PDF...')">
+            <button class="share-btn" onclick="downloadContractPDF()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -675,8 +672,7 @@
               </svg>
               Download PDF
             </button>
-            <button class="share-btn email"
-              onclick="window.location.href='mailto:?subject=Executed Agreement&body=Please find attached the signed agreement.'">
+            <button class="share-btn email" onclick="sendContractEmail()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
@@ -684,14 +680,7 @@
               </svg>
               Email Copy
             </button>
-            <button class="share-btn" onclick="copyToClipboard()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-              </svg>
-              Copy Link
-            </button>
+
           </div>
         </div>
 
@@ -739,6 +728,7 @@
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script type="module" src="dashboard.js"></script>
 </body>
 

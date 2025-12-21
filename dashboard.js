@@ -97,11 +97,57 @@ function closeAllPanels() {
 
 function openPanel(panel) {
     closeAllPanels();
+    if (!panel) return;
     panel.classList.add('active');
     slideOverlay.classList.add('active');
-    profileDropdown.classList.remove('active');
 }
 
+// Make globally available
+window.downloadContractPDF = function () {
+    // Find the visible paper-preview
+    const previews = document.querySelectorAll('.paper-preview');
+    let element = null;
+    for (const p of previews) {
+        if (p.offsetParent !== null) { // Check visibility
+            element = p;
+            break;
+        }
+    }
+
+    // Fallback to the specific view panel if nothing else obvious (or first found)
+    if (!element) element = document.querySelector('.paper-preview');
+    if (!element) return;
+
+    const opt = {
+        margin: 1,
+        filename: 'contract_agreement.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save();
+};
+
+window.sendContractEmail = function () {
+    const title = document.getElementById('viewContractTitle')?.textContent || "Contract";
+    const bodyText = document.getElementById('viewContractBody')?.textContent || "";
+
+    // Construct email body with contract details
+    const emailBody = encodeURIComponent(`
+Hello,
+
+Here is the contract agreement for: ${title}
+
+---
+${bodyText}
+---
+
+Please review and sign.
+    `);
+
+    window.location.href = `mailto:?subject=Contract Agreement: ${title}&body=${emailBody}`;
+};
 // --- PROFILE LOGIC ---
 async function fetchUserProfile(uid) {
     try {
@@ -208,6 +254,8 @@ async function handleContractSubmit(e) {
 
     const title = document.getElementById('dealTitleInput').value;
     const counterpartyEmail = document.getElementById('dealCounterparty').value;
+    const counterpartyName = document.getElementById('dealCounterpartyName').value;
+    const creatorName = document.getElementById('profileName').value || "Creator"; // Fallback
     const type = document.getElementById('contractType').value;
     const effectiveDate = document.getElementById('effectiveDate').value;
     const totalValue = document.querySelector('#financeSection input[type="number"]')?.value || "0";
@@ -219,8 +267,10 @@ async function handleContractSubmit(e) {
             type: type,
             creatorUid: currentUser.uid,
             creatorEmail: currentUser.email,
-            creatorRole: userRole,
+            creatorName: creatorName,
+            creatorRole: userRole === 'vendor' ? 'vender' : userRole, // Normalize to new spelling
             counterpartyEmail: counterpartyEmail,
+            counterpartyName: counterpartyName,
             effectiveDate: effectiveDate,
             totalValue: totalValue,
             status: 'pending',
@@ -229,8 +279,8 @@ async function handleContractSubmit(e) {
 
         // Update Preview UI
         document.getElementById('previewTitle').textContent = title;
-        document.getElementById('previewSender').textContent = currentUser.email;
-        document.getElementById('previewCounterparty').textContent = counterpartyEmail;
+        document.getElementById('previewSender').textContent = creatorName;
+        document.getElementById('previewCounterparty').textContent = counterpartyName;
         document.getElementById('previewDate').textContent = effectiveDate;
 
         // Show Success
@@ -316,29 +366,42 @@ function updateDashboardUI() {
 
     // Category sorting
     const active = [];
-    const pendingMyApproval = []; // Deals sent TO me that are pending
-    const pendingOthersApproval = []; // Deals created BY me that are pending
     const overdue = [];
+    const pendingMyApproval = [];
+    const pendingOthersApproval = [];
 
+    // Filter based on Current Mode
     filtered.forEach(c => {
-        if (c.status === 'active') {
-            active.push(c);
-        } else if (c.status === 'pending') {
-            if (c.creatorUid === currentUser.uid) {
-                // I created it, waiting for other
-                pendingOthersApproval.push(c);
-            } else {
-                // Sent to me, waiting for me
-                pendingMyApproval.push(c);
+        const isCreator = (c.creatorUid === currentUser.uid);
+
+        // STRICT LOGIC:
+        // Customer Mode = RECEIVED (I am not the creator)
+        // Vender Mode   = SENT     (I am the creator)
+
+        let shouldInclude = false;
+
+        if (currentMode === 'customer') {
+            if (!isCreator) shouldInclude = true;
+        } else {
+            // Vender Mode
+            if (isCreator) shouldInclude = true;
+        }
+
+        if (shouldInclude) {
+            if (c.status === 'active') {
+                active.push(c);
+            } else if (c.status === 'pending') {
+                if (isCreator) pendingOthersApproval.push(c);
+                else pendingMyApproval.push(c);
+            } else if (c.status === 'overdue') {
+                overdue.push(c);
             }
         }
     });
 
-    // Unified Pending List
     const allPending = [...pendingMyApproval, ...pendingOthersApproval];
 
-    // Unified Dashboard Data Structure (Pending at Bottom)
-    // Both Customer and Vendor see the same structure now per request
+    // Unified Dashboard Data Structure
     dashboardData = {
         active: {
             id: 'active',
@@ -368,7 +431,7 @@ function updateDashboardUI() {
     if (pendingBadge) {
         if (allPending.length > 0) {
             pendingBadge.style.display = 'block';
-            // Optional: pendingBadge.textContent = allPending.length; 
+            // Optional: pendingBadge.textContent = allPending.length;
         } else {
             pendingBadge.style.display = 'none';
         }
@@ -485,8 +548,8 @@ function openContractDetails(id) {
 
     // Populate View Panel
     document.getElementById('viewContractTitle').textContent = contract.title;
-    document.getElementById('viewParty1').textContent = contract.creatorEmail + (contract.creatorRole ? ` (${contract.creatorRole})` : '');
-    document.getElementById('viewParty2').textContent = contract.counterpartyEmail + " (You)";
+    document.getElementById('viewParty1').textContent = `${contract.creatorName || contract.creatorEmail} (${contract.creatorRole})`;
+    document.getElementById('viewParty2').textContent = `${contract.counterpartyName || contract.counterpartyEmail} (You)`;
 
     // For body, we might want to store/fetch terms. For now using hardcoded or generic text if not in DB.
     document.getElementById('viewContractBody').innerHTML = `
@@ -544,7 +607,7 @@ function renderPendingInPanel() {
     const allPending = dashboardData.pending ? dashboardData.pending.items : [];
 
     listContainer.innerHTML = `
-        <div class="stage-grid" style="grid-template-columns: 1fr;"> 
+        <div class="stage-grid" style="grid-template-columns: 1fr;">
             ${allPending.length === 0 ? '<p style="padding:20px; color:#64748b;">No pending items.</p>' : ''}
             ${allPending.map(c => {
         let actionHint = 'View Details';
@@ -790,46 +853,44 @@ if (btnSignOut) {
 }
 
 // --- HELPER WRAPPERS ---
-window.copyToClipboard = function () {
-    alert("Copied!");
-};
+
 
 // Mode Toggle
 // Mode Toggle
 const btnCustomer = document.getElementById('btnCustomer');
-const btnVendor = document.getElementById('btnVendor');
+const btnVender = document.getElementById('btnVender');
 
 function updateFormLabels() {
     const lblCounterparty = document.getElementById('lblCounterparty');
     const inputCounterparty = document.getElementById('dealCounterparty');
 
     if (lblCounterparty && inputCounterparty) {
-        if (currentMode === 'vendor') {
+        if (currentMode === 'vender') {
             lblCounterparty.textContent = "Customer (Email/ID)";
             inputCounterparty.placeholder = "customer@example.com";
         } else {
-            lblCounterparty.textContent = "Vendor (Email/ID)";
-            inputCounterparty.placeholder = "vendor@example.com";
+            lblCounterparty.textContent = "Vender (Email/ID)";
+            inputCounterparty.placeholder = "vender@example.com";
         }
     }
 }
 
-if (btnCustomer && btnVendor) {
+if (btnCustomer && btnVender) {
     btnCustomer.addEventListener('click', () => {
         currentMode = 'customer';
         btnCustomer.classList.add('active');
-        btnVendor.classList.remove('active');
+        btnVender.classList.remove('active');
         updateFormLabels();
         updateDashboardUI();
-        currentActiveKey = 'active'; // Reset to default tab
+        currentActiveKey = 'active';
     });
-    btnVendor.addEventListener('click', () => {
-        currentMode = 'vendor';
-        btnVendor.classList.add('active');
+    btnVender.addEventListener('click', () => {
+        currentMode = 'vender';
+        btnVender.classList.add('active');
         btnCustomer.classList.remove('active');
         updateFormLabels();
         updateDashboardUI();
-        currentActiveKey = 'active'; // Reset to default tab
+        currentActiveKey = 'active';
     });
 }
 
