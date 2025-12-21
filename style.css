@@ -327,9 +327,9 @@ body {
   /* DYNAMIC ALIGNMENT: Prevents stretching cards to same height */
   align-items: flex-start;
 
-  /* Custom Scrollbar - HIDDEN as requested */
-  scrollbar-width: none;
-  /* Firefox */
+  /* Custom Scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.05);
 
   /* Cursor for Dragging */
   cursor: grab;
@@ -343,14 +343,25 @@ body {
   /* Disable snap while dragging for smoothness */
 }
 
-/* Custom Scrollbar Styling - HIDDEN */
+/* Custom Scrollbar Styling */
 .features-scroll-container::-webkit-scrollbar {
-  display: none;
-  /* Chrome, Safari, Opera */
+  height: 6px;
+  display: block;
 }
 
-/* .features-scroll-container::-webkit-scrollbar-track { ... } removed */
-/* .features-scroll-container::-webkit-scrollbar-thumb { ... } removed */
+.features-scroll-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.features-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.features-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
 
 /* Scroll Buttons */
 .scroll-btn {
@@ -404,9 +415,8 @@ body {
 
   scroll-snap-align: start;
 
-  /* Glassmorphism with Black Tint */
-  background: rgba(15, 23, 42, 0.45);
-  /* Reduced tint opacity as requested */
+  /* Glassmorphism */
+  background: rgba(255, 255, 255, 0.07);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
@@ -421,8 +431,7 @@ body {
 
 .feature-card:hover {
   transform: translateY(-5px);
-  background: rgba(30, 41, 59, 0.8);
-  /* Slightly lighter/more opaque on hover */
+  background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.3);
 }
 

@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="calendar.css">
 </head>
 
 <body>
@@ -21,6 +22,26 @@
 
       <!-- Profile Wrapper -->
       <div class="profile-wrapper">
+        <div class="notification-wrapper" style="position: relative;">
+          <button class="header-icon-btn" id="btnNotifications" title="Notifications">
+            <div class="dock-badge active" id="notifBadge"></div>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+          </button>
+
+          <!-- Notification Dropdown -->
+          <div class="notification-dropdown" id="notificationDropdown" style="right: -80px; width: 300px;">
+            <div class="dropdown-header" style="padding:12px 16px; font-weight:600; color:#e2e8f0;">
+              Notifications
+            </div>
+            <div id="dropdownNotifList">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+        </div>
+
         <div class="header-profile" id="profileTrigger" title="My Profile">
           <img src="https://ui-avatars.com/api/?name=User&background=334155&color=cbd5e1" alt="Profile" />
         </div>
@@ -124,13 +145,13 @@
 
   <!-- BOTTOM DOCK (Static) -->
   <div class="bottom-dock">
-    <button class="dock-btn" title="Notifications" id="btnNotifications">
-      <div class="dock-badge active" id="notifBadge"></div>
+    <button class="dock-btn" title="Pending Approvals" id="btnPending">
+      <div class="dock-badge active" id="pendingBadge" style="display:none; background:#fb923c;"></div>
       <svg viewBox="0 0 24 24">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
       </svg>
-      <span>Notifications</span>
+      <span>Pending</span>
     </button>
 
     <div class="dock-divider"></div>
@@ -426,39 +447,49 @@
   <!-- PANEL 3: CALENDAR (NEW) -->
   <div class="slide-panel" id="calendarSlidePanel">
     <div class="slide-header">
-      <h2 class="slide-title">Schedule</h2>
-      <button class="slide-close" id="closeCalendarPanel">✕</button>
+      <span class="slide-title">Calendar</span>
+      <button class="slide-close" id="closeCalendarPanel">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
     </div>
-    <div class="slide-body">
-
-      <!-- Calendar View -->
-      <div class="calendar-container">
-        <div class="calendar-month-header">
-          <span id="calMonthName">Current Month</span>
-          <span style="font-size: 0.9rem; color: #94a3b8;">2025</span>
+    <div class="slide-content">
+      <!-- New Calendar Structure -->
+      <div class="calendar-wrapper">
+        <div class="calendar-header">
+          <button class="calendar-nav-btn" id="prevMonthBtn">&lt;</button>
+          <div class="calendar-month-title" id="calendarMonthTitle">December 2025</div>
+          <button class="calendar-nav-btn" id="nextMonthBtn">&gt;</button>
         </div>
-        <div class="calendar-grid" id="calendarGrid">
-          <!-- Headers -->
-          <div class="day-header">S</div>
-          <div class="day-header">M</div>
-          <div class="day-header">T</div>
-          <div class="day-header">W</div>
-          <div class="day-header">T</div>
-          <div class="day-header">F</div>
-          <div class="day-header">S</div>
-          <!-- Days populated via JS -->
+
+        <div class="calendar-grid">
+          <!-- Day Names -->
+          <div class="calendar-day-name">Sun</div>
+          <div class="calendar-day-name">Mon</div>
+          <div class="calendar-day-name">Tue</div>
+          <div class="calendar-day-name">Wed</div>
+          <div class="calendar-day-name">Thu</div>
+          <div class="calendar-day-name">Fri</div>
+          <div class="calendar-day-name">Sat</div>
+
+          <!-- Dates will be injected here via JS -->
+          <div id="calendarDatesGrid" style="display:contents;"></div>
+        </div>
+
+        <div class="calendar-events-container">
+          <h5 style="margin-bottom:10px; color:#64748b; font-size:0.8rem; text-transform:uppercase;">Events for <span
+              id="selectedDateDisplay">Dec 24</span></h5>
+          <div id="calendarEventsList">
+            <!-- Events injected here -->
+          </div>
         </div>
       </div>
-
-      <!-- Upcoming Events List -->
-      <div class="detail-section">
-        <h4>Upcoming Deadlines</h4>
-        <div id="upcomingEventsList">
-          <!-- Events populated via JS -->
-        </div>
-      </div>
-
     </div>
+  </div>
+
+  </div>
   </div>
 
   <!-- PANEL 4: VIEW CONTRACT (FOR INCOMING REQUESTS) -->
@@ -682,14 +713,14 @@
     </div>
   </div>
 
-  <!-- PANEL 6: NOTIFICATIONS (NEW) -->
-  <div class="slide-panel" id="notificationSlidePanel">
+  <!-- PANEL 6: PENDING APPROVALS (New Panel) -->
+  <div class="slide-panel" id="pendingSlidePanel">
     <div class="slide-header">
-      <h2 class="slide-title">Notifications</h2>
-      <button class="slide-close" id="closeNotificationPanel">✕</button>
+      <h2 class="slide-title">Pending Approvals</h2>
+      <button class="slide-close" id="closePendingPanel">✕</button>
     </div>
     <div class="slide-body">
-      <div id="notificationList">
+      <div id="pendingListContainer">
         <!-- Populated via JS -->
       </div>
     </div>
