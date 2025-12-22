@@ -338,6 +338,7 @@ function mergeAndUpdate() {
     const unique = Array.from(new Map(all.map(item => [item.id, item])).values());
     allContracts = unique;
     updateDashboardUI();
+    generateNotifications(); // Update notifications based on new data
 }
 
 async function acceptContract(contractId) {
@@ -671,21 +672,174 @@ closeRequestLogPanel.addEventListener('click', closeAllPanels);
 
 // Notification Dropdown Logic
 const notificationDropdown = document.getElementById('notificationDropdown');
+const dropdownNotifList = document.getElementById('dropdownNotifList');
+const notifBadge = document.getElementById('notifBadge');
+
+let currentNotifications = [];
+let readNotificationIds = new Set(); // Track read notifications
+
+function generateNotifications() {
+    currentNotifications = [];
+
+    allContracts.forEach(c => {
+        // 1. New Bond (Incoming Request)
+        if (c.status === 'pending' && c.creatorUid !== currentUser.uid) {
+            currentNotifications.push({
+                title: "New Contract Request",
+                msg: `${c.creatorName || 'Someone'} sent you "${c.title}"`,
+                time: c.createdAt || new Date().toISOString(),
+                type: 'info', // Use for styling
+                id: c.id
+            });
+        }
+
+        // 2. Someone Accepted My Bond
+        if (c.status === 'active' && c.creatorUid === currentUser.uid) {
+            currentNotifications.push({
+                title: "Contract Accepted",
+                msg: `${c.counterpartyName || 'Counterparty'} accepted "${c.title}"`,
+                time: c.acceptedAt || new Date().toISOString(),
+                type: 'success',
+                id: c.id
+            });
+        }
+
+        // 3. Overdue Bond (or Active nearing maturity - simplified to 'overdue' status for now)
+        if (c.status === 'overdue') {
+            currentNotifications.push({
+                title: "Overdue Contract",
+                msg: `Action required: "${c.title}" is overdue.`,
+                time: new Date().toISOString(),
+                type: 'danger',
+                id: c.id
+            });
+        }
+    });
+
+    // DUMMY NOTIFICATION FOR DEMO
+    currentNotifications.push({
+        title: "Welcome to Amantra",
+        msg: "This is a sample notification to show functionality.",
+        time: new Date().toISOString(),
+        type: 'info',
+        id: 'dummy-1'
+    });
+
+    // Sort by time (newest first)
+    currentNotifications.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+    updateNotificationBadge();
+    // If dropdown is open, re-render
+    if (notificationDropdown.classList.contains('active')) {
+        renderNotifications();
+    }
+}
+
+function updateNotificationBadge() {
+    // Calculate unread count
+    const unreadCount = currentNotifications.filter(n => !readNotificationIds.has(n.id)).length;
+
+    if (unreadCount > 0) {
+        if (notifBadge) {
+            notifBadge.style.display = 'block';
+            notifBadge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+        }
+    } else {
+        if (notifBadge) notifBadge.style.display = 'none';
+    }
+}
+
+function renderNotifications() {
+    if (!dropdownNotifList) return;
+
+    dropdownNotifList.innerHTML = '';
+
+    if (currentNotifications.length === 0) {
+        dropdownNotifList.innerHTML = `
+            <div style="padding: 24px; text-align: center; color: #94a3b8; font-size: 0.9rem; font-style: italic;">
+                No notifications
+            </div>
+        `;
+        return;
+    }
+
+    currentNotifications.forEach(n => {
+        const isRead = readNotificationIds.has(n.id);
+        const item = document.createElement('div');
+        item.className = 'notification-item'; // Use CSS class for hover and flex layout (ported from before.html)
+
+        // Dim if read 
+        if (isRead) {
+            item.style.opacity = '0.6';
+        }
+
+        // Map types to icon classes and SVGs
+        let iconType = 'info';
+        if (n.type === 'success') iconType = 'success';
+        else if (n.type === 'danger') iconType = 'danger';
+        else if (n.type === 'warning') iconType = 'warning';
+
+        // SVG logic matching before.html style
+        let iconSvg = '';
+        if (n.type === 'success') iconSvg = '<polyline points="20 6 9 17 4 12"></polyline>';
+        else if (n.type === 'danger') iconSvg = '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>';
+        else if (n.type === 'warning') iconSvg = '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line>';
+        else iconSvg = '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line>'; // Info
+
+        item.innerHTML = `
+            <div class="notif-icon ${iconType}">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${iconSvg}</svg>
+            </div>
+            <div class="notif-content">
+                <div class="notif-text">${n.title}: ${n.msg}</div>
+                <div class="notif-time">${new Date(n.time).toLocaleDateString()}</div>
+            </div>
+            ${!isRead ? '<div class="notif-unread"></div>' : ''}
+        `;
+
+        item.onclick = () => {
+            // Mark as read
+            readNotificationIds.add(n.id);
+            updateNotificationBadge();
+
+            // Open relevant contract if real ID
+            if (n.id && n.id !== 'dummy-1') {
+                openContractDetails(n.id);
+                notificationDropdown.classList.remove('active');
+                btnNotifications.classList.remove('active');
+            } else {
+                renderNotifications(); // checking logic
+            }
+        };
+
+        dropdownNotifList.appendChild(item);
+    });
+}
+
 btnNotifications.addEventListener('click', (e) => {
     e.stopPropagation();
     closeAllPanels();
+
+    // Update notification content
+    renderNotifications();
 
     // Close profile dropdown
     if (profileDropdown) profileDropdown.classList.remove('active');
 
     // Toggle Notification
-    notificationDropdown.classList.toggle('active');
+    const isActive = notificationDropdown.classList.toggle('active');
+    if (isActive) {
+        btnNotifications.classList.add('active');
+    } else {
+        btnNotifications.classList.remove('active');
+    }
 });
 
 // Global Click for Notification Dropdown
 document.addEventListener('click', (e) => {
     if (notificationDropdown && !notificationDropdown.contains(e.target) && !btnNotifications.contains(e.target)) {
         notificationDropdown.classList.remove('active');
+        btnNotifications.classList.remove('active');
     }
 });
 
@@ -701,13 +855,8 @@ slideOverlay.addEventListener('click', closeAllPanels);
 // --- CALENDAR LOGIC ---
 
 // Dummy Events Data
-const calendarEvents = [
-    { date: '2025-12-24', title: 'Start: TechCorp SLA', time: '09:00 AM' },
-    { date: '2025-12-24', title: 'Payment Due: Invoice #901', time: '02:00 PM' },
-    { date: '2025-12-28', title: 'Review: Marketing Agreement', time: '11:00 AM' },
-    { date: '2026-01-02', title: 'Renewal: Vendor Contract', time: '10:00 AM' },
-    { date: '2026-01-05', title: 'Audit: Compliance Check', time: '04:00 PM' },
-];
+// Dummy Events Data - CLEARED
+const calendarEvents = [];
 
 let currentCalendarDate = new Date(2025, 11, 1); // Start Dec 2025
 
