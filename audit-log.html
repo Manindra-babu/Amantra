@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Log</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="audit-log.css">
+</head>
+<body>
+    <nav>
+        <a href="dashboard.html">Back to Dashboard</a>
+    </nav>
+    <div class="container">
+        <h1>System Audit Log</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody id="audit-log-body">
+                </tbody>
+        </table>
+    </div>
+    <script type="module" src="audit-log.js"></script>
+</body>
+</html>

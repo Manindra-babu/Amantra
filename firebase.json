@@ -1,0 +1,17 @@
+{
+  "hosting": {
+    "site": "test-amantra-360",
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/amantra.html"
+      }
+    ]
+  }
+}

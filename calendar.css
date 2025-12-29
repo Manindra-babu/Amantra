@@ -1,0 +1,145 @@
+/* Calendar Wrapper - Dark Theme */
+.calendar-wrapper {
+    background: #1e293b;
+    /* Slate 800 */
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Header (Month Prev/Next) */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.calendar-month-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #f8fafc;
+    /* Light Text */
+}
+
+.calendar-nav-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #94a3b8;
+    transition: all 0.2s;
+}
+
+.calendar-nav-btn:hover {
+    background: #334155;
+    color: #fff;
+    border-color: #64748b;
+}
+
+/* Grid */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    text-align: center;
+}
+
+.calendar-day-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 5px;
+}
+
+.calendar-date {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 0.9rem;
+    color: #cbd5e1;
+    /* Lighter date text */
+    cursor: pointer;
+    position: relative;
+    margin: 0 auto;
+    transition: all 0.2s;
+}
+
+.calendar-date:hover {
+    background: #334155;
+    color: #fff;
+}
+
+.calendar-date.active {
+    background: #fb923c;
+    /* Orange Accent */
+    color: #000;
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(251, 146, 60, 0.4);
+}
+
+.calendar-date.other-month {
+    color: #475569;
+    /* Much simpler grey for other months */
+    pointer-events: none;
+}
+
+/* Event Dot */
+.calendar-dot {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: #38bdf8;
+    /* Sky Blue for events */
+    border-radius: 50%;
+}
+
+.calendar-date.active .calendar-dot {
+    background: #000;
+}
+
+/* Event Details Section */
+.calendar-events-container {
+    margin-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 15px;
+}
+
+.event-detail-item {
+    padding: 10px;
+    background: #0f172a;
+    /* Darker Slate */
+    border-radius: 6px;
+    margin-bottom: 8px;
+    border-left: 3px solid #fb923c;
+    /* Orange accent */
+    transition: transform 0.2s;
+}
+
+.event-detail-item:hover {
+    transform: translateX(2px);
+    background: #1e293b;
+}
+
+.event-time {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    /* Muted text */
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.event-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #f1f5f9;
+    /* Bright text */
+}
