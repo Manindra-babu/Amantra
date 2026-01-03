@@ -31,6 +31,8 @@
                         "surface-dark": "#1c2e36",
                         "border-light": "#e7f0f3",
                         "border-dark": "#2a404b",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1e293b",
                     },
                     fontFamily: {
                         "display": ["Manrope", "sans-serif"],
@@ -63,21 +65,41 @@
                 <div class="flex items-center gap-8">
                     <nav class="hidden md:flex items-center gap-8">
                         <a class="text-sm font-medium text-secondary hover:text-primary transition-colors dark:text-gray-300 dark:hover:text-primary"
-                            href="#">Dashboard</a>
-                        <a class="text-sm font-bold text-primary" href="#">Bond History</a>
+                            href="dashboard.html">Dashboard</a>
+                        <a class="text-sm font-bold text-primary" href="bondhistory.html">Bond History</a>
                         <a class="text-sm font-medium text-secondary hover:text-primary transition-colors dark:text-gray-300 dark:hover:text-primary"
                             href="#">Wallet</a>
                         <a class="text-sm font-medium text-secondary hover:text-primary transition-colors dark:text-gray-300 dark:hover:text-primary"
-                            href="#">Profile</a>
+                            href="profile.html">Profile</a>
                     </nav>
                     <div class="flex items-center gap-4">
-                        <button
+                        <button id="create-bond-btn"
                             class="hidden sm:flex h-10 items-center justify-center rounded-lg bg-primary px-5 text-sm font-bold text-white shadow-sm hover:bg-primary/90 transition-all focus:ring-2 focus:ring-primary focus:ring-offset-2">
                             Create Bond
                         </button>
-                        <div class="size-10 rounded-full bg-cover bg-center border border-border-light dark:border-border-dark cursor-pointer"
-                            data-alt="User profile avatar showing a smiling person"
-                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAf7NuVTTd-6-hVIHdvzP1NSnqppg9rGDhFoehpvD7_1XvaC_pNey3OB9J5degvtFWOydYgOOpIBGayJ7rI_wKP1VwkXitZhom2h6vBdd_CAiIvvMwC0V2VkHxOaTmPWoEKtXSM8xQelyCpA6ViEoYziSFhwcvH1wTK5t3YIU5ZGmXy7Uk8GU8GUJdLbYNFCmYH-ktnZ8Bt-JJFA46MqbTKrnlwYHC21MEHMJfFxD8s8NxFMsV0ZSeIYu9kR5_H080uYwLUvWLBuBPx");'>
+                        <div class="relative" id="profile-menu-container">
+                            <button id="profile-menu-button"
+                                class="size-10 rounded-full bg-cover bg-center border border-border-light dark:border-border-dark cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAf7NuVTTd-6-hVIHdvzP1NSnqppg9rGDhFoehpvD7_1XvaC_pNey3OB9J5degvtFWOydYgOOpIBGayJ7rI_wKP1VwkXitZhom2h6vBdd_CAiIvvMwC0V2VkHxOaTmPWoEKtXSM8xQelyCpA6ViEoYziSFhwcvH1wTK5t3YIU5ZGmXy7Uk8GU8GUJdLbYNFCmYH-ktnZ8Bt-JJFA46MqbTKrnlwYHC21MEHMJfFxD8s8NxFMsV0ZSeIYu9kR5_H080uYwLUvWLBuBPx");'>
+                            </button>
+                            <!-- Dropdown -->
+                            <div id="profile-dropdown"
+                                class="hidden absolute right-0 top-12 w-72 bg-surface-light dark:bg-surface-dark rounded-xl shadow-lg border border-border-light dark:border-border-dark overflow-hidden z-50">
+                                <div
+                                    class="px-4 py-3 border-b border-border-light dark:border-border-dark bg-gray-50 dark:bg-white/5">
+                                    <p class="text-sm font-medium text-text-primary-light dark:text-white">User Settings
+                                    </p>
+                                    <p class="text-xs text-text-secondary-light dark:text-gray-400 truncate">
+                                        user.email@amantra.com</p>
+                                </div>
+                                <div class="py-2">
+                                    <a href="profile.html"
+                                        class="block px-4 py-2 text-sm text-text-primary-light dark:text-gray-300 hover:bg-background-light dark:hover:bg-background-dark">Profile</a>
+                                    <a id="sign-out-btn"
+                                        class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer">Sign
+                                        Out</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -456,6 +478,7 @@
             </div>
         </main>
     </div>
+    <script src="bondhistory.js"></script>
 </body>
 
 </html>

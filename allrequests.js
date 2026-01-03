@@ -48,4 +48,30 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     setupNavigation();
+
+    // Profile Dropdown Logic
+    const profileBtn = document.getElementById('profile-menu-button');
+    const profileDropdown = document.getElementById('profile-dropdown');
+
+    if (profileBtn && profileDropdown) {
+        profileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('hidden');
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                profileDropdown.classList.add('hidden');
+            }
+        });
+
+        // Sign Out logic
+        const signOutBtn = document.getElementById('sign-out-btn');
+        if (signOutBtn) {
+            signOutBtn.addEventListener('click', () => {
+                window.location.href = 'signin.html';
+            });
+        }
+    }
 });

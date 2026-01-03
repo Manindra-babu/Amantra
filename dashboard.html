@@ -28,6 +28,8 @@
                         "text-main": "#050A30",
                         "text-secondary": "#576B7C",
                         "border-light": "#DEE6EF",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1e293b",
                     },
                     fontFamily: {
                         "display": ["Manrope", "sans-serif"]
@@ -71,10 +73,64 @@
                     <span
                         class="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-red-500 border-2 border-white dark:border-background-dark"></span>
                 </button>
-                <div
-                    class="h-10 w-10 cursor-pointer overflow-hidden rounded-full border-2 border-white shadow-sm ring-1 ring-border-light dark:ring-white/20">
-                    <div class="h-full w-full bg-cover bg-center" data-alt="User profile picture placeholder"
-                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDgaaUMaGWAhLW2jxgP-l70Wfr0NADrREGVja0uk7Rhmmxaz6fYt6L79PRkuxGQ4uaHLz5tEmJAC89VjO0eQKgXxRvXS0U9IDHrllWGgHxVyyjgu2mqEFHWIEjijgsaDKrqFy6wisLuDUMv-51pQfQ5sXrZaKBGMMpFBi2S0VOwOyS2QAe8FiD5CkB7iuLgYoFa4wXjqk9X7ozUEr5PZ2f89RJwqgZo01w9ea6M-9Ckus4dfnD_dGuHCWo_tZGTZZhkpVaPqGCHNdDF');">
+                <div class="relative" id="profile-menu-container">
+                    <button id="profile-menu-button"
+                        class="h-10 w-10 cursor-pointer overflow-hidden rounded-full border-2 border-white shadow-sm ring-1 ring-border-light dark:ring-white/20 focus:outline-none focus:ring-2 focus:ring-primary">
+                        <div class="h-full w-full bg-cover bg-center" data-alt="User profile picture placeholder"
+                            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDgaaUMaGWAhLW2jxgP-l70Wfr0NADrREGVja0uk7Rhmmxaz6fYt6L79PRkuxGQ4uaHLz5tEmJAC89VjO0eQKgXxRvXS0U9IDHrllWGgHxVyyjgu2mqEFHWIEjijgsaDKrqFy6wisLuDUMv-51pQfQ5sXrZaKBGMMpFBi2S0VOwOyS2QAe8FiD5CkB7iuLgYoFa4wXjqk9X7ozUEr5PZ2f89RJwqgZo01w9ea6M-9Ckus4dfnD_dGuHCWo_tZGTZZhkpVaPqGCHNdDF');">
+                        </div>
+                    </button>
+                    <!-- Dropdown Menu -->
+                    <div id="profile-dropdown"
+                        class="hidden absolute right-0 top-12 w-72 bg-card-light dark:bg-card-dark rounded-xl shadow-lg border border-border-light dark:border-border-dark overflow-hidden z-50 animate-fade-in">
+                        <div
+                            class="px-4 py-3 border-b border-border-light dark:border-border-dark bg-gray-50 dark:bg-white/5">
+                            <p class="text-sm font-medium text-text-main dark:text-white">User Settings</p>
+                            <p class="text-xs text-text-secondary dark:text-gray-400 truncate">user.email@amantra.com
+                            </p>
+                        </div>
+                        <div class="py-2 border-b border-border-light dark:border-border-dark">
+                            <a class="flex items-center gap-3 px-4 py-2.5 text-sm text-text-main dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                href="profile.html">
+                                <span
+                                    class="material-symbols-outlined text-[20px] text-text-secondary dark:text-gray-500">person</span>
+                                Profile Details
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-2.5 text-sm text-text-main dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                href="#">
+                                <span
+                                    class="material-symbols-outlined text-[20px] text-text-secondary dark:text-gray-500">settings</span>
+                                Account Settings
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-2.5 text-sm text-text-main dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                href="#">
+                                <span
+                                    class="material-symbols-outlined text-[20px] text-text-secondary dark:text-gray-500">credit_card</span>
+                                Billing &amp; Plans
+                            </a>
+                        </div>
+                        <div class="py-2 border-b border-border-light dark:border-border-dark">
+                            <a class="flex items-center gap-3 px-4 py-2.5 text-sm text-text-main dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                href="#">
+                                <span
+                                    class="material-symbols-outlined text-[20px] text-text-secondary dark:text-gray-500">share</span>
+                                Share Profile
+                            </a>
+                        </div>
+                        <div class="py-2">
+                            <a class="flex items-center gap-3 px-4 py-2.5 text-sm text-text-main dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                href="#">
+                                <span
+                                    class="material-symbols-outlined text-[20px] text-text-secondary dark:text-gray-500">help</span>
+                                Help &amp; Support
+                            </a>
+                            <a id="sign-out-btn"
+                                class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group cursor-pointer">
+                                <span
+                                    class="material-symbols-outlined text-[20px] text-red-500 group-hover:translate-x-1 transition-transform">logout</span>
+                                Sign Out
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

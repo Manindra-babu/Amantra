@@ -35,6 +35,8 @@
                         "text-secondary": "#4c669a",
                         "border-light": "#e7ebf3",
                         "border-dark": "#2a3447",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1a2234",
                     },
                     fontFamily: {
                         "display": ["Manrope", "sans-serif"]
@@ -81,9 +83,46 @@
                     class="flex items-center justify-center rounded-full size-10 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-text-main dark:text-white">
                     <span class="material-symbols-outlined text-[24px]">notifications</span>
                 </button>
-                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 border border-border-light dark:border-border-dark"
-                    data-alt="User profile avatar showing a smiling person"
-                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC3VwRzr64SwGtctHWxwmzR5woEWZxzQzx0wqlp6zJIA7lBxKnSn872MnSU650NOKFdg6jI2lKOS0AuvMJlzH_rezu8SmDWyqiek2C1aiyteGidwDhmS5vv_s1jpIxZVJ_XKWrZ1SGkF0oT0hIopZnC-KMI7QYND3VEeQWkA4kaoCjZeOmGxF5HiOJGgp1vxnuuWfNOokkjtAWvdJemkH1djV-kTIDOs6hnhpIEQ5KBXXTtC5LrDwutkNQ2PJGCCU_6vdkClfmjXB21");'>
+                <div class="relative" id="profile-menu-container">
+                    <button id="profile-menu-button"
+                        class="h-9 w-9 cursor-pointer overflow-hidden rounded-full border border-border-light dark:border-border-dark focus:outline-none focus:ring-2 focus:ring-primary">
+                        <div class="h-full w-full bg-cover bg-center"
+                            data-alt="User profile avatar showing a smiling person"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC3VwRzr64SwGtctHWxwmzR5woEWZxzQzx0wqlp6zJIA7lBxKnSn872MnSU650NOKFdg6jI2lKOS0AuvMJlzH_rezu8SmDWyqiek2C1aiyteGidwDhmS5vv_s1jpIxZVJ_XKWrZ1SGkF0oT0hIopZnC-KMI7QYND3VEeQWkA4kaoCjZeOmGxF5HiOJGgp1vxnuuWfNOokkjtAWvdJemkH1djV-kTIDOs6hnhpIEQ5KBXXTtC5LrDwutkNQ2PJGCCU_6vdkClfmjXB21");'>
+                        </div>
+                    </button>
+                    <!-- Dropdown Menu -->
+                    <div id="profile-dropdown"
+                        class="hidden absolute right-0 top-12 w-72 bg-card-light dark:bg-card-dark rounded-xl shadow-lg border border-border-light dark:border-border-dark overflow-hidden z-50 animate-fade-in">
+                        <div
+                            class="px-4 py-3 border-b border-border-light dark:border-border-dark bg-gray-50 dark:bg-white/5">
+                            <p class="text-sm font-medium text-text-main dark:text-white">User Settings</p>
+                            <p class="text-xs text-text-secondary dark:text-gray-400 truncate">user.email@amantra.com
+                            </p>
+                        </div>
+                        <div class="py-2 border-b border-border-light dark:border-border-dark">
+                            <a class="flex items-center gap-3 px-4 py-2.5 text-sm text-text-main dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                href="profile.html">
+                                <span
+                                    class="material-symbols-outlined text-[20px] text-text-secondary dark:text-gray-500">person</span>
+                                Profile Details
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-2.5 text-sm text-text-main dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                href="#">
+                                <span
+                                    class="material-symbols-outlined text-[20px] text-text-secondary dark:text-gray-500">settings</span>
+                                Account Settings
+                            </a>
+                        </div>
+                        <div class="py-2">
+                            <a id="sign-out-btn"
+                                class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group cursor-pointer">
+                                <span
+                                    class="material-symbols-outlined text-[20px] text-red-500 group-hover:translate-x-1 transition-transform">logout</span>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
