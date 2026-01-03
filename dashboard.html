@@ -1,773 +1,346 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="light" lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Amantra - Dashboard</title>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Amantra User Dashboard</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        // New palette mapped to user provided image
+                        "brand-dark": "#050A30", "brand-blue": "#1F426F", "brand-grey": "#757575", "brand-light": "#DEE6EF",// Semantic mapping
+                        "primary": "#1F426F", // Using the strong blue as primary
+                        "accent": "#050A30",  // Using deep navy as accent
+                        "background-light": "#F8FAFC",
+                        "background-dark": "#050A30",
+                        "text-main": "#050A30",
+                        "text-secondary": "#576B7C",
+                        "border-light": "#DEE6EF",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="dashboard.css">
-  <link rel="stylesheet" href="calendar.css">
-
-  <!-- PWA Manifest -->
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-192.svg">
-
-  <!-- Service Worker Registration -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(reg => console.log('SW registered!', reg))
-          .catch(err => console.log('SW failed', err));
-      });
-    }
-  </script>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
 </head>
 
-<body>
-
-  <div class="shell">
-    <header>
-      <div class="logo">Amantra</div>
-
-      <!-- Profile Wrapper -->
-      <div class="profile-wrapper">
-        <div class="notification-wrapper" style="position: relative;">
-          <button class="header-icon-btn" id="btnNotifications" title="Notifications">
-            <div class="dock-badge" id="notifBadge" style="display: none;"></div>
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-            </svg>
-          </button>
-
-          <!-- Notification Dropdown -->
-          <div class="notification-dropdown" id="notificationDropdown" style="right: -80px; width: 300px;">
-            <div class="dropdown-header" style="padding:12px 16px; font-weight:600; color:#e2e8f0;">
-              Notifications
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display text-text-main">
+    <header
+        class="sticky top-0 z-50 w-full border-b border-border-light bg-white/95 backdrop-blur-md dark:bg-background-dark/90 dark:border-white/10">
+        <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center gap-3">
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-dark text-white shadow-md">
+                    <span class="material-symbols-outlined text-[22px]">link</span>
+                </div>
+                <h2 class="text-xl font-extrabold tracking-tight text-brand-dark dark:text-white">Amantra</h2>
             </div>
-            <div id="dropdownNotifList">
-              <!-- Populated via JS -->
+            <div class="flex items-center gap-4 sm:gap-6">
+                <button
+                    class="group relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-transparent hover:bg-brand-light/50 transition-colors text-text-secondary hover:text-brand-blue dark:text-gray-300 dark:hover:text-white">
+                    <span class="material-symbols-outlined" style="font-size: 24px;">notifications</span>
+                    <span
+                        class="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-red-500 border-2 border-white dark:border-background-dark"></span>
+                </button>
+                <div
+                    class="h-10 w-10 cursor-pointer overflow-hidden rounded-full border-2 border-white shadow-sm ring-1 ring-border-light dark:ring-white/20">
+                    <div class="h-full w-full bg-cover bg-center" data-alt="User profile picture placeholder"
+                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDgaaUMaGWAhLW2jxgP-l70Wfr0NADrREGVja0uk7Rhmmxaz6fYt6L79PRkuxGQ4uaHLz5tEmJAC89VjO0eQKgXxRvXS0U9IDHrllWGgHxVyyjgu2mqEFHWIEjijgsaDKrqFy6wisLuDUMv-51pQfQ5sXrZaKBGMMpFBi2S0VOwOyS2QAe8FiD5CkB7iuLgYoFa4wXjqk9X7ozUEr5PZ2f89RJwqgZo01w9ea6M-9Ckus4dfnD_dGuHCWo_tZGTZZhkpVaPqGCHNdDF');">
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-
-        <div class="header-profile" id="profileTrigger" title="My Profile">
-          <img src="https://ui-avatars.com/api/?name=User&background=334155&color=cbd5e1" alt="Profile" />
-        </div>
-
-        <!-- Profile Dropdown Menu -->
-        <div class="profile-dropdown" id="profileDropdown">
-
-          <div class="dropdown-item" id="btnProfileDetails">
-            <svg viewBox="0 0 24 24">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-            Profile Details
-          </div>
-
-          <div class="dropdown-item" id="btnAccountSettings">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.74v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
-              </path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-            Account Settings
-          </div>
-
-          <div class="dropdown-item" id="btnBilling">
-            <svg viewBox="0 0 24 24">
-              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-              <line x1="1" y1="10" x2="23" y2="10"></line>
-            </svg>
-            Billing & Plans
-          </div>
-
-          <div class="dropdown-item" id="btnPrivacy">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            </svg>
-            Privacy & Security
-          </div>
-
-          <div class="dropdown-divider"></div>
-
-          <div class="dropdown-item" id="btnShareProfile">
-            <svg viewBox="0 0 24 24">
-              <circle cx="18" cy="5" r="3"></circle>
-              <circle cx="6" cy="12" r="3"></circle>
-              <circle cx="18" cy="19" r="3"></circle>
-              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-            </svg>
-            Share Profile
-          </div>
-
-          <div class="dropdown-item" id="btnEvents">
-            <svg viewBox="0 0 24 24">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            Events
-          </div>
-
-          <div class="dropdown-divider"></div>
-
-          <div class="dropdown-item" id="btnHelp">
-            <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-            Help & Support
-          </div>
-
-          <div class="dropdown-item" id="btnAuditLog" onclick="window.location.href='audit-log.html'">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
-            Audit Log
-          </div>
-
-          <div class="dropdown-divider"></div>
-
-          <div class="dropdown-item danger" id="btnSignOut">
-            <svg viewBox="0 0 24 24">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-              <polyline points="16 17 21 12 16 7"></polyline>
-              <line x1="21" y1="12" x2="9" y2="12"></line>
-            </svg>
-            Sign Out
-          </div>
-        </div>
-      </div>
     </header>
-
-   <div class="mode-toggle-wrapper">
-      <div class="mode-toggle" id="modeToggle">
-        <button type="button" id="btnCustomer" class="active">Customer</button>
-        <button type="button" id="btnVender">Vender</button>
-      </div>
-    </div>
-
-  <!-- SPLIT LAYOUT -->
-  <div class="dashboard-split">
-    <!-- LEFT: NAVIGATION -->
-    <div class="nav-panel" id="navPanel">
-      <!-- Rendered via JS -->
-    </div>
-
-    <!-- RIGHT: STAGE -->
-    <div class="stage-panel">
-      <div class="stage-content" id="stageContent">
-        <!-- Rendered via JS -->
-      </div>
-    </div>
-  </div>
-
-  </div>
-
-  <!-- BOTTOM DOCK (Static) -->
-  <div class="bottom-dock">
-    <button class="dock-btn" title="Pending Approvals" id="btnPending">
-      <div class="dock-badge active" id="pendingBadge" style="display:none; background:#fb923c;"></div>
-      <svg viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="10"></circle>
-        <polyline points="12 6 12 12 16 14"></polyline>
-      </svg>
-      <span>Pending</span>
-    </button>
-
-    <div class="dock-divider"></div>
-
-    <button class="dock-btn" title="Request Changes" id="btnRequestLog">
-      <div class="dock-badge" id="requestBadge"></div>
-      <svg viewBox="0 0 24 24">
-        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-      </svg>
-      <span>Request Log</span>
-    </button>
-
-    <div class="dock-divider"></div>
-
-    <button class="dock-btn accent" title="New Deal" id="btnNewDeal">
-      <svg viewBox="0 0 24 24">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-      </svg>
-      <span>New Deal</span>
-    </button>
-
-    <div class="dock-divider"></div>
-
-    <button class="dock-btn" title="History" id="btnHistory">
-      <svg viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="10"></circle>
-        <polyline points="12 6 12 12 16 14"></polyline>
-      </svg>
-      <span>History</span>
-    </button>
-
-    <div class="dock-divider"></div>
-
-    <button class="dock-btn" title="Calendar" id="btnCalendar">
-      <svg viewBox="0 0 24 24">
-        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-        <line x1="16" y1="2" x2="16" y2="6"></line>
-        <line x1="8" y1="2" x2="8" y2="6"></line>
-        <line x1="3" y1="10" x2="21" y2="10"></line>
-      </svg>
-      <span>Calendar</span>
-    </button>
-  </div>
-
-  <!-- SHARED MODAL OVERLAY -->
-  <div class="slide-overlay" id="slideOverlay"></div>
-
-  <!-- PANEL 1: PROFILE DETAILS -->
-  <div class="slide-panel" id="profileSlidePanel">
-    <div class="slide-header">
-      <h2 class="slide-title" id="profilePanelTitle">Profile Details</h2>
-      <div style="display: flex; align-items: center;">
-        <button class="edit-toggle-btn" id="btnEnableEdit" onclick="enableProfileEdit()">Edit</button>
-        <button class="slide-close" id="closeProfilePanel">✕</button>
-      </div>
-    </div>
-    <div class="slide-body">
-      <form id="profileForm" onsubmit="handleProfileSave(event)">
-        <!-- User Summary -->
-        <div class="profile-hero">
-          <div class="profile-hero-img">
-            <img src="https://ui-avatars.com/api/?name=User&background=334155&color=cbd5e1" alt="Profile" />
-            <div class="edit-avatar-btn" id="avatarEditBtn" title="Change Photo" style="display: none;">
-              <svg viewBox="0 0 24 24">
-                <path d="M12 20h9"></path>
-                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-              </svg>
+    <main class="flex-1 py-10">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                <div class="flex flex-col gap-2">
+                    <h1 class="text-4xl font-black leading-tight tracking-tight text-brand-dark dark:text-white">
+                        Dashboard</h1>
+                    <p class="text-lg font-medium text-text-secondary">Welcome back! Manage your financial bonds.</p>
+                </div>
+                <button
+                    class="flex items-center justify-center gap-2 rounded-xl bg-brand-blue px-6 py-3.5 font-bold text-white shadow-lg shadow-brand-blue/20 transition-transform hover:scale-[1.02] hover:bg-brand-dark active:scale-95">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">add_circle</span>
+                    <span>Create New Bond</span>
+                </button>
             </div>
-          </div>
-          <div class="profile-hero-name" id="heroNameDisplay">Aditya Sharma</div>
-          <div class="profile-hero-role">Premium Investor</div>
-        </div>
-
-        <!-- Personal Information -->
-        <div class="detail-section">
-          <h4>Personal Information</h4>
-          <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" id="profileName" class="glass-input" value="Aditya Sharma" disabled required />
-          </div>
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" id="profileEmail" class="glass-input" value="aditya.sharma@example.com" disabled
-              required />
-          </div>
-          <div class="form-group">
-            <label>Phone Number</label>
-            <input type="tel" id="profilePhone" class="glass-input" value="+91 98765 43210" disabled required />
-          </div>
-        </div>
-
-        <!-- Registered Address -->
-        <div class="detail-section">
-          <h4>Registered Address</h4>
-          <div class="form-group">
-            <label>Street / Apartment</label>
-            <input type="text" id="profileStreet" class="glass-input" value="12/4 Park Avenue, Koramangala" disabled
-              required />
-          </div>
-          <div class="form-group">
-            <label>City</label>
-            <input type="text" id="profileCity" class="glass-input" value="Bangalore, KA" disabled required />
-          </div>
-          <div class="form-group">
-            <label>Postal Code</label>
-            <input type="text" id="profileZip" class="glass-input" value="560034" disabled required />
-          </div>
-        </div>
-
-        <!-- System Info (Read Only) -->
-        <div class="detail-section">
-          <h4>Account Status (Read Only)</h4>
-          <div class="form-group">
-            <label>KYC Status</label>
-            <input type="text" id="profileKYC" class="glass-input" value="Verified" disabled />
-          </div>
-          <div class="form-group">
-            <label>Member ID</label>
-            <input type="text" id="profileMemberID" class="glass-input" value="AM-883920" disabled />
-          </div>
-        </div>
-
-        <button type="submit" id="saveProfileBtn" class="save-btn" style="display: none;">Save Changes</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- PANEL 2: NEW DEAL (OFFICIAL CONTRACT THEME) -->
-  <div class="slide-panel" id="newDealSlidePanel">
-    <div class="slide-header">
-      <h2 class="slide-title">Draft New Contract</h2>
-      <button class="slide-close" id="closeNewDealPanel">✕</button>
-    </div>
-    <div class="slide-body">
-
-      <!-- State 1: Form -->
-      <div id="contractFormContainer">
-        <form id="newDealForm" onsubmit="handleContractSubmit(event)">
-          <div class="detail-section">
-            <h4>Contract Details</h4>
-            <div class="form-group">
-              <label>Deal / Contract Title</label>
-              <input type="text" id="dealTitleInput" class="glass-input" placeholder="e.g. Service Agreement Q3"
-                required />
+            <div class="mb-10 flex flex-wrap gap-4">
+                <button
+                    class="flex items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-bold text-brand-dark shadow-sm ring-1 ring-border-light transition-all hover:bg-gray-50 hover:shadow-md dark:bg-white/5 dark:text-white dark:ring-white/10 dark:hover:bg-white/10">
+                    <span class="material-symbols-outlined text-brand-blue dark:text-blue-300"
+                        style="font-size: 20px;">history</span>
+                    Bond History
+                </button>
+                <button
+                    class="flex items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-bold text-brand-dark shadow-sm ring-1 ring-border-light transition-all hover:bg-gray-50 hover:shadow-md dark:bg-white/5 dark:text-white dark:ring-white/10 dark:hover:bg-white/10">
+                    <span class="material-symbols-outlined text-brand-blue dark:text-blue-300"
+                        style="font-size: 20px;">calendar_month</span>
+                    Calendar
+                </button>
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label id="lblCounterparty">Counterparty (Email/ID)</label>
-                <input type="text" id="dealCounterparty" class="glass-input" placeholder="vendor@example.com"
-                  required />
-              </div>
-              <div class="form-group">
-                <label>Counterparty Name</label>
-                <input type="text" id="dealCounterpartyName" class="glass-input" placeholder="e.g. John Doe, Tech Corp"
-                  required />
-              </div>
-              <div class="form-group">
-                <label>Contract Type</label>
-                <select id="contractType" class="glass-select">
-                  <option value="Service Agreement">Service Agreement</option>
-                  <option value="Non-Disclosure (NDA)">Non-Disclosure (NDA)</option>
-                  <option value="Employment Contract">Employment Contract</option>
-                  <option value="Sales of Goods">Sales of Goods</option>
-                  <option value="Loan / Bond">Loan / Bond</option>
-                </select>
-              </div>
+            <div class="mb-10">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="flex h-3 w-3 relative">
+                            <span
+                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                        </span>
+                        <h2 class="text-xl font-bold text-brand-dark dark:text-white">Bonds with Change Requests</h2>
+                    </div>
+                    <a class="text-sm font-bold text-brand-blue hover:text-brand-dark dark:text-blue-300 dark:hover:text-white"
+                        href="#">View all requests</a>
+                </div>
+                <div
+                    class="rounded-2xl border border-amber-200 bg-amber-50/50 p-2 dark:border-amber-900/30 dark:bg-amber-900/10">
+                    <div
+                        class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 rounded-xl bg-white p-6 shadow-sm border border-amber-100 dark:bg-white/5 dark:border-white/10">
+                        <div class="flex items-center gap-5">
+                            <div class="relative">
+                                <div class="h-14 w-14 rounded-full bg-brand-light bg-cover bg-center ring-2 ring-white shadow-sm dark:ring-white/10"
+                                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAFqaGdMaSWJLMIq2PDK_xeIqjlO5zbV_Zvjm46x5zs2hk7_0G3QkASUAC1bHFIqX8mh8nkdSnNE5EoQMRqeBdFxBPQ1h0a1ANy_pjpfCdkJBvSE038kKp4X5U3mbZKxe2X79EJ6RlOn_AJDqXnpzqS0hjUKOAOM2hL9_Lt3HJXVd6pVaWicYuq6qF1gesmFQooaa68JixHQyQrv5-7Koqx35mOiINEE0qCE-3oOEIPat-qHVtigGBxn7dHnDpOwQ2JqZf5SzBhf6p4');">
+                                </div>
+                                <div
+                                    class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-amber-500 ring-2 ring-white dark:ring-[#1E1E1E]">
+                                    <span class="material-symbols-outlined text-white"
+                                        style="font-size: 14px;">edit</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-brand-dark dark:text-white">Sarah Jenkins</h3>
+                                <p class="text-sm font-medium text-text-secondary">Proposed new terms for <span
+                                        class="text-brand-blue font-bold dark:text-blue-300">Bond #B-204</span></p>
+                            </div>
+                        </div>
+                        <div class="flex-1 lg:max-w-xl">
+                            <div
+                                class="flex items-center gap-4 rounded-xl bg-background-light px-5 py-4 border border-border-light dark:bg-white/5 dark:border-white/10">
+                                <div>
+                                    <p class="text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">
+                                        Current Amount</p>
+                                    <p class="text-sm font-bold text-brand-grey line-through">$500.00</p>
+                                </div>
+                                <div
+                                    class="flex-1 border-t-2 border-dashed border-gray-300 dark:border-gray-600 mx-2 relative top-[2px]">
+                                </div>
+                                <span class="material-symbols-outlined text-amber-500"
+                                    style="font-size: 20px;">arrow_forward</span>
+                                <div
+                                    class="flex-1 border-t-2 border-dashed border-gray-300 dark:border-gray-600 mx-2 relative top-[2px]">
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">
+                                        Requested</p>
+                                    <p class="text-xl font-extrabold text-brand-dark dark:text-white">$550.00</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 w-full lg:w-auto">
+                            <button
+                                class="flex-1 lg:flex-none flex items-center justify-center gap-2 rounded-xl bg-brand-blue px-5 py-3 text-sm font-bold text-white shadow-lg shadow-brand-blue/20 transition-all hover:bg-brand-dark hover:scale-105 active:scale-95">
+                                Review
+                            </button>
+                            <button
+                                class="flex-1 lg:flex-none rounded-xl border border-border-light bg-white px-5 py-3 text-sm font-bold text-text-secondary hover:bg-gray-50 dark:bg-transparent dark:border-white/10 dark:text-white dark:hover:bg-white/5">
+                                Decline
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-
-          <!-- Dynamic Fields Container -->
-          <div id="dynamicFields"></div>
-
-          <div id="financeSection" class="detail-section">
-            <h4>Financial Details</h4>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Total Value (₹)</label>
-                <input type="number" class="glass-input" placeholder="50000" />
-              </div>
-              <div class="form-group">
-                <label>Payment Terms</label>
-                <select class="glass-select">
-                  <option>Net 30 Days</option>
-                  <option>Upon Receipt</option>
-                  <option>Milestone Based</option>
-                  <option>50% Advance</option>
-                </select>
-              </div>
+            <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
+                <section class="flex flex-col gap-5">
+                    <div
+                        class="flex items-center justify-between border-b border-border-light pb-4 dark:border-white/10">
+                        <div class="flex items-center gap-2">
+                            <div class="h-2 w-2 rounded-full bg-brand-blue"></div>
+                            <h2 class="text-xl font-bold text-brand-dark dark:text-white">Bonds You've Created</h2>
+                        </div>
+                        <div class="flex gap-6">
+                            <button class="relative pb-1 text-sm font-bold text-brand-blue dark:text-blue-300">
+                                Active
+                                <span
+                                    class="absolute bottom-[-17px] left-0 h-[3px] w-full bg-brand-blue dark:bg-blue-300 rounded-t-sm"></span>
+                            </button>
+                            <button
+                                class="pb-1 text-sm font-bold text-text-secondary hover:text-brand-dark dark:text-gray-400 dark:hover:text-white">
+                                Overdue
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <div
+                            class="group relative flex flex-col gap-4 rounded-2xl border border-border-light bg-white p-6 shadow-sm transition-all hover:shadow-md hover:border-brand-blue/30 dark:border-white/10 dark:bg-white/5 dark:hover:border-white/20">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="h-12 w-12 rounded-full bg-brand-light bg-cover bg-center ring-2 ring-white dark:ring-white/10"
+                                        data-alt="Portrait of Marcus Chen"
+                                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDjJy59yrcxNsx7ImbnIlfUvGvnFRstP5gro8son0iaDAXP02oMUzqACBb7dJ2MgKbt7CLOmCTd2H-6q1vFjzBfIltrRTnfjVjhjXK6S6rvSC_5xfsCxIDaALjuc7pkKcTzIStDx6EirTawu2XpP9sB_Zi4ffOpW5sdsjXUgW3wq7M4EM1dZPRiOcAqzVP2VsAdbZuNCHECHCKNQesNh7GvkHywKgYKsS1mUYmQbNOBndbNmaebwmetOb7DPQHm0GOo8OjfKy78hmRT');">
+                                    </div>
+                                    <div>
+                                        <p class="text-base font-bold text-brand-dark dark:text-white">To: Marcus Chen
+                                        </p>
+                                        <p class="text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                                            Created Sep 28, 2023</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="rounded-full bg-brand-light p-2 transition-colors group-hover:bg-brand-blue group-hover:text-white dark:bg-white/10 dark:text-white">
+                                    <span class="material-symbols-outlined block"
+                                        style="font-size: 20px;">arrow_outward</span>
+                                </div>
+                            </div>
+                            <div
+                                class="flex items-end justify-between border-t border-border-light pt-4 mt-2 dark:border-white/10">
+                                <div>
+                                    <p class="text-xs font-bold uppercase tracking-wide text-text-secondary mb-1">Amount
+                                    </p>
+                                    <p class="text-2xl font-extrabold text-brand-dark dark:text-white">$1,250.00</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs font-medium text-text-secondary mb-1">Due Date</p>
+                                    <div
+                                        class="inline-flex items-center rounded-md bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                                        <span class="material-symbols-outlined mr-1"
+                                            style="font-size: 14px;">warning</span>
+                                        Due in 2 days
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="flex flex-col gap-5">
+                    <div
+                        class="flex items-center justify-between border-b border-border-light pb-4 dark:border-white/10">
+                        <div class="flex items-center gap-2">
+                            <div class="h-2 w-2 rounded-full bg-brand-dark dark:bg-white"></div>
+                            <h2 class="text-xl font-bold text-brand-dark dark:text-white">Bonds Received</h2>
+                        </div>
+                        <div class="flex gap-6">
+                            <button
+                                class="pb-1 text-sm font-bold text-text-secondary hover:text-brand-dark dark:text-gray-400 dark:hover:text-white">
+                                Active
+                            </button>
+                            <button class="relative pb-1 text-sm font-bold text-brand-blue dark:text-blue-300">
+                                Overdue
+                                <span
+                                    class="absolute bottom-[-17px] left-0 h-[3px] w-full bg-brand-blue dark:bg-blue-300 rounded-t-sm"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <div
+                            class="group relative flex flex-col gap-4 rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm transition-all hover:shadow-md dark:border-red-900/30 dark:bg-red-900/10">
+                            <div
+                                class="absolute right-0 top-0 rounded-bl-xl rounded-tr-xl bg-red-100 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-red-700 dark:bg-red-900/50 dark:text-red-300">
+                                Action Required</div>
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="h-12 w-12 rounded-full bg-white bg-cover bg-center ring-2 ring-red-100 dark:ring-red-900/30"
+                                        data-alt="Portrait of Elena Rodriguez"
+                                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBkOI4p07kuM7K08iDVU_csjtYNzgVnIe6OxnkTO6eU6SsTUbkG3JVvWaK1akbim1J1LaYR_z9E23G-XZy8Z3U6v53-dBg-GA54_yLFBFHNUw_Tv2KNZEx1p2BvafmWHLwMRpX-Z4Jr8QsErLuJ_L8L7TiFi-DBL-xesfpb2mqEK3xPv1-mEWiTlH8kafT8EtPibFt9CPNfCojwVREidMTopVYDOUERrSfD7GYfNAumGP0Ob1olFxoQj4BTy9h2tNqwCRBRRZkPIdOR');">
+                                    </div>
+                                    <div>
+                                        <p class="text-base font-bold text-brand-dark dark:text-white">From: Elena
+                                            Rodriguez</p>
+                                        <p class="text-xs font-medium text-red-600 dark:text-red-400">Overdue Status</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="rounded-full bg-white p-2 text-red-400 transition-colors group-hover:bg-red-500 group-hover:text-white dark:bg-red-900/20 dark:text-red-300">
+                                    <span class="material-symbols-outlined block"
+                                        style="font-size: 20px;">call_received</span>
+                                </div>
+                            </div>
+                            <div
+                                class="flex items-end justify-between border-t border-red-200 pt-4 mt-2 dark:border-red-900/30">
+                                <div>
+                                    <p class="text-xs font-bold uppercase tracking-wide text-text-secondary mb-1">Amount
+                                    </p>
+                                    <p class="text-2xl font-extrabold text-brand-dark dark:text-white">$340.00</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs font-medium text-text-secondary mb-1">Status</p>
+                                    <div
+                                        class="inline-flex items-center rounded-md bg-white px-3 py-1 text-xs font-bold text-red-600 shadow-sm ring-1 ring-red-100 dark:bg-red-900/40 dark:text-red-400 dark:ring-0">
+                                        Overdue 5 days
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="group relative flex flex-col gap-4 rounded-2xl border border-border-light bg-brand-light/30 p-6 shadow-sm transition-all hover:shadow-md hover:bg-brand-light/50 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="h-12 w-12 rounded-full bg-white bg-cover bg-center ring-2 ring-brand-light dark:ring-white/10"
+                                        data-alt="Portrait of David Kim"
+                                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAwQZhiBdxaSxkrLTNaB3vxTIhInHiQawqywu9UV5GxIQUtCqURGbu-jvqcab16Ewsmzq2k31BeadPHwacml_hEtHGn_X3bj6MxDJO5vt3_3KAHF5kdwzi1YulJerPy7XXJuIc5q_tuxa8xuCgeUAGvsSU6uWyV7_KcSxcUd-QZMuQXkKUiBVv3GV3SvJJws193GQ7eJx_Bduly9VkzbAKNF761OJNlBBu6AF0gd0dfmqZ-85ZJR_LH1KqAtdADuIupWELGkpXL8-UG');">
+                                    </div>
+                                    <div>
+                                        <p class="text-base font-bold text-brand-dark dark:text-white">From: David Kim
+                                        </p>
+                                        <p class="text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                                            Recieved Oct 20, 2023</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="rounded-full bg-white p-2 transition-colors group-hover:bg-brand-dark group-hover:text-white dark:bg-white/10 dark:text-white">
+                                    <span class="material-symbols-outlined block text-brand-grey"
+                                        style="font-size: 20px;">call_received</span>
+                                </div>
+                            </div>
+                            <div
+                                class="flex items-end justify-between border-t border-border-light pt-4 mt-2 dark:border-white/10">
+                                <div>
+                                    <p class="text-xs font-bold uppercase tracking-wide text-text-secondary mb-1">Amount
+                                    </p>
+                                    <p class="text-2xl font-extrabold text-brand-dark dark:text-white">$2,000.00</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs font-medium text-text-secondary mb-1">Due Date</p>
+                                    <div
+                                        class="inline-flex items-center rounded-md bg-white px-3 py-1 text-xs font-bold text-brand-grey shadow-sm ring-1 ring-brand-light dark:bg-white/10 dark:text-gray-300 dark:ring-0">
+                                        Dec 01, 2023
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Effective Date</label>
-                <input type="date" id="effectiveDate" class="glass-input" required />
-              </div>
-              <div class="form-group">
-                <label>Termination / Maturity</label>
-                <input type="date" class="glass-input" />
-              </div>
-            </div>
-          </div>
-
-          <div class="detail-section">
-            <h4>Terms & Conditions</h4>
-            <div class="form-group">
-              <label>Specific Clauses</label>
-              <textarea id="termsInput" class="glass-textarea"
-                placeholder="Enter contract specific terms here..."></textarea>
-            </div>
-          </div>
-
-          <button type="submit" class="save-btn">Send Proposal</button>
-          <div class="contract-footer">Confidential & Proprietary • Amantra Contract Generation System</div>
-        </form>
-      </div>
-
-      <!-- State 2: Success & Share -->
-      <div id="contractSuccessContainer" style="display: none;">
-        <div class="success-icon-wrapper">
-          <div class="success-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-              stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-          </div>
         </div>
-        <div class="success-msg">
-          <h3>Contract Drafted</h3>
-          <p>Your contract has been generated successfully.</p>
-        </div>
-
-        <!-- Official Paper Preview -->
-        <div class="paper-preview">
-          <div class="preview-title" id="previewTitle">Contract Title</div>
-          <div class="preview-row">
-            <span class="preview-label" id="lblPreviewSender">Between (Customer):</span>
-            <span class="preview-val" id="previewSender">Aditya Sharma</span>
-          </div>
-          <div class="preview-row">
-            <span class="preview-label" id="lblPreviewCounterparty">And (Vender):</span>
-            <span class="preview-val" id="previewCounterparty">Counterparty</span>
-          </div>
-          <div class="preview-row">
-            <span class="preview-label">Effective Date:</span>
-            <span class="preview-val" id="previewDate">2025-01-01</span>
-          </div>
-          <div style="margin-top: 12px; font-size: 0.75rem; color: #334155; line-height: 1.4;">
-            This agreement is entered into by and between the parties listed above, hereinafter referred to as "First
-            Party" and "Second Party". The parties agree to the terms set forth... (Preview content)
-          </div>
-        </div>
-
-        <div class="detail-section">
-          <h4>Share Contract</h4>
-          <div class="share-grid">
-
-            <button class="share-btn whatsapp"
-              onclick="window.open('https://wa.me/?text=Here is the contract link: https://amantra.com/c/12345')">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-              </svg>
-              WhatsApp
-            </button>
-            <button class="share-btn email" onclick="sendContractEmail()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-              </svg>
-              Email
-            </button>
-            <button class="share-btn" onclick="downloadContractPDF()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              Download PDF
-            </button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- PANEL 3: CALENDAR (NEW) -->
-  <div class="slide-panel" id="calendarSlidePanel">
-    <div class="slide-header">
-      <span class="slide-title">Calendar</span>
-      <button class="slide-close" id="closeCalendarPanel">
-        <svg viewBox="0 0 24 24" width="24" height="24">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-    </div>
-    <div class="slide-content">
-      <!-- New Calendar Structure -->
-      <div class="calendar-wrapper">
-        <div class="calendar-header">
-          <button class="calendar-nav-btn" id="prevMonthBtn">&lt;</button>
-          <div class="calendar-month-title" id="calendarMonthTitle">December 2025</div>
-          <button class="calendar-nav-btn" id="nextMonthBtn">&gt;</button>
-        </div>
-
-        <div class="calendar-grid">
-          <!-- Day Names -->
-          <div class="calendar-day-name">Sun</div>
-          <div class="calendar-day-name">Mon</div>
-          <div class="calendar-day-name">Tue</div>
-          <div class="calendar-day-name">Wed</div>
-          <div class="calendar-day-name">Thu</div>
-          <div class="calendar-day-name">Fri</div>
-          <div class="calendar-day-name">Sat</div>
-
-          <!-- Dates will be injected here via JS -->
-          <div id="calendarDatesGrid" style="display:contents;"></div>
-        </div>
-
-        <div class="calendar-events-container">
-          <h5 style="margin-bottom:10px; color:#64748b; font-size:0.8rem; text-transform:uppercase;">Events for <span
-              id="selectedDateDisplay">Dec 24</span></h5>
-          <div id="calendarEventsList">
-            <!-- Events injected here -->
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  </div>
-  </div>
-
-  <!-- PANEL 4: VIEW CONTRACT (FOR INCOMING REQUESTS) -->
-  <div class="slide-panel" id="viewContractPanel">
-    <div class="slide-header">
-      <h2 class="slide-title">Contract Details</h2>
-      <button class="slide-close" id="closeViewContractPanel">✕</button>
-    </div>
-    <div class="slide-body">
-
-      <!-- State 1: Review -->
-      <div id="reviewState">
-        <div class="paper-preview">
-          <div class="preview-title" id="viewContractTitle">Service Level Agreement</div>
-
-          <div class="preview-row">
-            <span class="preview-label">Between:</span>
-            <span class="preview-val" id="viewParty1">Aditya Sharma (Customer)</span>
-          </div>
-          <div class="preview-row">
-            <span class="preview-label">And:</span>
-            <span class="preview-val" id="viewParty2">TechCorp Solutions (Vender)</span>
-          </div>
-
-          <div
-            style="margin-top: 15px; margin-bottom: 5px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; color: #000;">
-            Terms & Conditions
-          </div>
-          <div id="viewContractBody"
-            style="font-size: 0.8rem; color: #334155; line-height: 1.5; white-space: pre-line;">
-            1. Scope of Work: The Vender agrees to provide maintenance services for the specified software
-            suite.<br><br>
-            2. Payment: A monthly retainer of ₹15,000 shall be paid by the 5th of each month.<br><br>
-            3. Termination: Either party may terminate this agreement with 30 days written notice.
-          </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="contract-actions-footer">
-          <button class="btn-action accept" onclick="acceptContract()">Accept Deal</button>
-          <button class="btn-action change" onclick="openChangeRequest()">Request Change</button>
-        </div>
-      </div>
-
-      <!-- State 2: Request Change (New Form) -->
-      <div id="requestChangeState" style="display: none;">
-        <div class="detail-section">
-          <h4>Request Revisions</h4>
-          <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 20px; line-height: 1.5;">
-            Please detail the clauses, terms, or financials you wish to modify. This request will be sent to the
-            counterparty for review.
-          </p>
-          <div class="form-group">
-            <label>Requested Changes</label>
-            <textarea id="changeRequestInput" class="glass-textarea"
-              placeholder="e.g. Update payment terms to Net 45 days; Revise scope of liability..."
-              style="min-height: 180px;"></textarea>
-          </div>
-        </div>
-
-        <div class="contract-actions-footer">
-          <button class="btn-action accept" style="background: #0f172a;" onclick="submitChangeRequest()">Send
-            Request</button>
-          <button class="btn-action change" style="background: transparent; color: #64748b; border: 1px solid #cbd5e1;"
-            onclick="cancelChangeRequest()">Cancel</button>
-        </div>
-      </div>
-
-      <!-- State 4: Change Request Success (Ticket) -->
-      <div id="requestSuccessState" style="display: none;">
-        <div class="success-icon-wrapper">
-          <div class="success-icon" style="background: #fffbeb; color: #b45309;">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-              stroke-linecap="round" stroke-linejoin="round">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-          </div>
-        </div>
-        <div class="success-msg">
-          <h3>Request Submitted</h3>
-          <p>Your revision request has been queued.</p>
-        </div>
-
-        <div class="ticket-view">
-          <div class="ticket-id" id="ticketIdDisplay">REQ-2025-8832</div>
-          <div class="ticket-status">Pending Review</div>
-          <div style="font-size: 0.9rem; color: #0f172a; margin-bottom: 8px;">Changes for: <strong
-              id="ticketContractTitle">Contract Title</strong></div>
-          <div id="ticketContentDisplay"
-            style="text-align: left; font-size: 0.8rem; color: #475569; line-height: 1.5; background: #f8fafc; padding: 10px; border-radius: 4px;">
-            -- Content --
-          </div>
-        </div>
-
-        <div class="detail-section">
-          <h4>Options</h4>
-          <div class="share-grid">
-            <button class="share-btn" onclick="openPanel(requestLogPanel)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <list></list>
-                <path d="M8 6h13"></path>
-                <path d="M8 12h13"></path>
-                <path d="M8 18h13"></path>
-                <path d="M3 6h.01"></path>
-                <path d="M3 12h.01"></path>
-                <path d="M3 18h.01"></path>
-              </svg>
-              Track Status
-            </button>
-            <button class="share-btn" onclick="openChangeRequest()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-              </svg>
-              Edit
-            </button>
-          </div>
-          <button class="btn-action change"
-            style="margin-top: 10px; width: 100%; background: transparent; border: 1px solid #ef4444; color: #ef4444;"
-            onclick="cancelChangeRequest()">Withdraw Request</button>
-        </div>
-      </div>
-
-      <!-- State 3: Accepted (Official Paper) -->
-      <div id="acceptedState" style="display: none;">
-        <div class="success-icon-wrapper">
-          <div class="success-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-          </div>
-        </div>
-        <div class="success-msg">
-          <h3>Agreement Finalized</h3>
-          <p>The contract has been legally executed.</p>
-        </div>
-
-        <div class="paper-preview">
-          <!-- Official Stamp Overlay -->
-          <div class="official-stamp">
-            Accepted
-            <span>Verified</span>
-          </div>
-
-          <div class="preview-title">Official Agreement</div>
-
-          <div class="agreement-meta">
-            <div class="preview-row">
-              <span class="preview-label">Agreement ID:</span>
-              <span class="preview-val" id="officialAgmtId">#AGT-0000</span>
-            </div>
-            <div class="preview-row">
-              <span class="preview-label">Timestamp:</span>
-              <span class="preview-val" id="officialTimestamp">--</span>
-            </div>
-          </div>
-
-          <div style="font-size: 0.8rem; color: #000; line-height: 1.5;">
-            This document certifies that the contract titled <strong id="officialTitle">--</strong> has been formally
-            accepted by all parties.
-            <br><br>
-            <strong>Party A:</strong> <span id="officialP1">--</span><br>
-            <strong>Party B:</strong> <span id="officialP2">--</span>
-            <br><br>
-            This digital record serves as binding proof of the agreement.
-          </div>
-        </div>
-
-        <div class="detail-section">
-          <h4>Actions</h4>
-          <div class="share-grid">
-            <button class="share-btn" onclick="downloadContractPDF()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              Download PDF
-            </button>
-            <button class="share-btn email" onclick="sendContractEmail()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-              </svg>
-              Email Copy
-            </button>
-
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </div>
-
-  <!-- PANEL 5: REQUEST LOG -->
-  <div class="slide-panel" id="requestLogPanel">
-    <div class="slide-header">
-      <h2 class="slide-title">Change Requests Log</h2>
-      <button class="slide-close" id="closeRequestLogPanel">✕</button>
-    </div>
-    <div class="slide-body">
-      <div id="requestLogContainer">
-        <div class="no-events">No active requests found.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PANEL 6: PENDING APPROVALS (New Panel) -->
-  <div class="slide-panel" id="pendingSlidePanel">
-    <div class="slide-header">
-      <h2 class="slide-title">Pending Approvals</h2>
-      <button class="slide-close" id="closePendingPanel">✕</button>
-    </div>
-    <div class="slide-body">
-      <div id="pendingListContainer">
-        <!-- Populated via JS -->
-      </div>
-    </div>
-  </div>
-
-  <!-- PANEL 7: HISTORY (NEW) -->
-  <div class="slide-panel" id="historySlidePanel">
-    <div class="slide-header">
-      <h2 class="slide-title">Past Deals</h2>
-      <button class="slide-close" id="closeHistoryPanel">✕</button>
-    </div>
-    <div class="slide-body">
-      <div id="historyList">
-        <!-- Populated via JS -->
-      </div>
-    </div>
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script type="module" src="dashboard.js"></script>
+    </main>
 </body>
 
 </html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Amantra - All Change Requests</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1a2234",
+                        "text-main": "#0d121b",
+                        "text-secondary": "#4c669a",
+                        "border-light": "#e7ebf3",
+                        "border-dark": "#2a3447",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main dark:text-white font-display antialiased min-h-screen flex flex-col overflow-x-hidden">
+    <!-- Top Navigation Bar -->
+    <header
+        class="sticky top-0 z-50 bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark px-6 py-3 shadow-sm">
+        <div class="max-w-[1280px] mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-4 text-text-main dark:text-white">
+                <div class="size-8 text-primary">
+                    <svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z">
+                        </path>
+                    </svg>
+                </div>
+                <h2 class="text-xl font-bold leading-tight tracking-tight">Amantra</h2>
+            </div>
+            <div class="hidden md:flex flex-1 justify-center gap-8 px-8">
+                <a class="text-text-secondary dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium"
+                    href="#">Dashboard</a>
+                <a class="text-text-secondary dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium"
+                    href="#">Bonds</a>
+                <a class="text-primary font-bold text-sm leading-normal" href="#">Requests</a>
+                <a class="text-text-secondary dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium"
+                    href="#">Profile</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <button
+                    class="flex items-center justify-center rounded-full size-10 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-text-main dark:text-white">
+                    <span class="material-symbols-outlined text-[24px]">notifications</span>
+                </button>
+                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 border border-border-light dark:border-border-dark"
+                    data-alt="User profile avatar showing a smiling person"
+                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC3VwRzr64SwGtctHWxwmzR5woEWZxzQzx0wqlp6zJIA7lBxKnSn872MnSU650NOKFdg6jI2lKOS0AuvMJlzH_rezu8SmDWyqiek2C1aiyteGidwDhmS5vv_s1jpIxZVJ_XKWrZ1SGkF0oT0hIopZnC-KMI7QYND3VEeQWkA4kaoCjZeOmGxF5HiOJGgp1vxnuuWfNOokkjtAWvdJemkH1djV-kTIDOs6hnhpIEQ5KBXXTtC5LrDwutkNQ2PJGCCU_6vdkClfmjXB21");'>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Main Content -->
+    <main class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Breadcrumbs -->
+        <nav aria-label="Breadcrumb" class="flex mb-6">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a class="inline-flex items-center text-sm font-medium text-text-secondary dark:text-gray-400 hover:text-primary"
+                        href="#">
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <div class="flex items-center">
+                        <span
+                            class="material-symbols-outlined text-text-secondary dark:text-gray-500 text-[16px] mx-2">chevron_right</span>
+                        <span class="ml-1 text-sm font-medium text-text-main dark:text-white md:ml-2">Change
+                            Requests</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div class="flex flex-col gap-2">
+                <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-text-main dark:text-white">All Change
+                    Requests</h1>
+                <p class="text-text-secondary dark:text-gray-400 text-base max-w-2xl">Manage and review modification
+                    requests from bond recipients. Track status and history of all negotiations.</p>
+            </div>
+            <div class="flex gap-3">
+                <button
+                    class="flex items-center gap-2 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark text-text-main dark:text-white px-4 py-2.5 rounded-lg text-sm font-semibold shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">file_download</span>
+                    Export CSV
+                </button>
+            </div>
+        </div>
+        <!-- Controls Toolbar -->
+        <div
+            class="flex flex-col xl:flex-row gap-4 mb-6 bg-card-light dark:bg-card-dark p-4 rounded-xl shadow-sm border border-border-light dark:border-border-dark items-center justify-between">
+            <!-- Search -->
+            <div class="w-full xl:w-1/3 relative">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <span class="material-symbols-outlined text-text-secondary dark:text-gray-500">search</span>
+                </div>
+                <input
+                    class="block w-full p-2.5 pl-10 text-sm text-text-main dark:text-white border border-border-light dark:border-border-dark rounded-lg bg-background-light dark:bg-[#101622] focus:ring-primary focus:border-primary placeholder-text-secondary dark:placeholder-gray-500"
+                    placeholder="Search by bond name or recipient..." type="text" />
+            </div>
+            <!-- Filters -->
+            <div class="flex flex-wrap items-center gap-2 w-full xl:w-auto justify-start xl:justify-end">
+                <span class="text-xs font-bold text-text-secondary uppercase tracking-wider mr-1 hidden sm:block">Filter
+                    by:</span>
+                <div class="relative group">
+                    <button
+                        class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-text-main dark:text-white bg-background-light dark:bg-[#101622] border border-border-light dark:border-border-dark rounded-lg hover:border-primary transition-colors">
+                        Status: <span class="text-primary">All</span>
+                        <span class="material-symbols-outlined text-[18px]">expand_more</span>
+                    </button>
+                </div>
+                <div class="relative group">
+                    <button
+                        class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-text-main dark:text-white bg-background-light dark:bg-[#101622] border border-border-light dark:border-border-dark rounded-lg hover:border-primary transition-colors">
+                        Date Range
+                        <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                    </button>
+                </div>
+                <div class="relative group">
+                    <button
+                        class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-text-main dark:text-white bg-background-light dark:bg-[#101622] border border-border-light dark:border-border-dark rounded-lg hover:border-primary transition-colors">
+                        Type
+                        <span class="material-symbols-outlined text-[18px]">expand_more</span>
+                    </button>
+                </div>
+                <div class="h-6 w-px bg-border-light dark:bg-border-dark mx-2 hidden sm:block"></div>
+                <button
+                    class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-text-main dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">sort</span>
+                    Sort
+                </button>
+            </div>
+        </div>
+        <!-- Data Table Card -->
+        <div
+            class="bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-gray-50 dark:bg-[#151b28] border-b border-border-light dark:border-border-dark">
+                        <tr>
+                            <th class="px-6 py-4 text-xs font-bold text-text-secondary uppercase tracking-wider"
+                                scope="col">Request ID / Bond</th>
+                            <th class="px-6 py-4 text-xs font-bold text-text-secondary uppercase tracking-wider"
+                                scope="col">Recipient</th>
+                            <th class="px-6 py-4 text-xs font-bold text-text-secondary uppercase tracking-wider"
+                                scope="col">Date Submitted</th>
+                            <th class="px-6 py-4 text-xs font-bold text-text-secondary uppercase tracking-wider"
+                                scope="col">Proposed Change</th>
+                            <th class="px-6 py-4 text-xs font-bold text-text-secondary uppercase tracking-wider"
+                                scope="col">Status</th>
+                            <th class="px-6 py-4 text-xs font-bold text-text-secondary uppercase tracking-wider text-right"
+                                scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border-light dark:divide-border-dark">
+                        <!-- Row 1: Pending -->
+                        <tr class="hover:bg-gray-50 dark:hover:bg-[#1f293a] transition-colors group">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-text-secondary">#REQ-2023-089</span>
+                                    <span class="text-sm font-bold text-text-main dark:text-white">Education Bond
+                                        #402</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-3">
+                                    <div class="size-8 rounded-full bg-cover bg-center"
+                                        data-alt="Portrait of Sarah Jenkins"
+                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBUVe926KjQ4I0NWOqTZBHu59aSJdri30iiQ643CH8mLrN5Z_hT3pd6ohkztjRB6qpXQDYV-tDVvRUhtOKGwh2ZH_oOg8ftvBxT_ElDab2euv-BQzJzqX33gwBC0hfkzoxe9_EHEpZLGLSkveC956xh768yv8fQIKE_xFouAITjfo6WSxq7VufcHBLZMc7leW-Q1CbrQmRe7K1lE-IPjLToH8N27zGYctXF7uC84Jkps8I8SczjjYGGDcOZzxj4vWAC59gqP9tYSASK");'>
+                                    </div>
+                                    <span class="text-sm font-medium text-text-main dark:text-white">Sarah
+                                        Jenkins</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="text-sm text-text-main dark:text-gray-300">Oct 24, 2023</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="text-sm text-text-secondary dark:text-gray-400 line-clamp-1 max-w-[200px]"
+                                    title="Requesting to extend repayment schedule by 2 months due to family emergency.">
+                                    Requesting to extend repayment schedule by 2 months...</p>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                                    <span class="size-1.5 rounded-full bg-amber-500"></span>
+                                    Pending Review
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right">
+                                <button
+                                    class="inline-flex items-center justify-center rounded-lg text-sm font-medium h-8 px-4 bg-primary hover:bg-blue-700 text-white shadow-sm transition-colors">
+                                    Review
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Row 2: Rejected -->
+                        <tr class="hover:bg-gray-50 dark:hover:bg-[#1f293a] transition-colors group">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-text-secondary">#REQ-2023-082</span>
+                                    <span class="text-sm font-bold text-text-main dark:text-white">Small Biz Bond
+                                        #112</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-3">
+                                    <div class="size-8 rounded-full bg-cover bg-center"
+                                        data-alt="Portrait of Marcus Thompson"
+                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC7wZ3Uaz-cfW9gmPyWMWI2cJaK-h03-JXpqnGp-VOt51x4Bp4kOGDEYWii7JA8K5as1T42llWcPyF_6Uu38j9cMT_BSBh7HF89t3-2FrkxSFyvdOU-kX6vOZD4y_Txt1HOxsQwG-xx8_n3MWfPkLth1lRfa9K3n1JGl9b9GzxJhsqXVLmdaMBQdIJJEItARf3sFi2wzxlgOYSwwMDlsBrWmcO_N4TF700ukS2hMQkjreVIdmSxNerHZwdRt05282k9XW7V1KKaO3qG");'>
+                                    </div>
+                                    <span class="text-sm font-medium text-text-main dark:text-white">Marcus
+                                        Thompson</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="text-sm text-text-main dark:text-gray-300">Oct 20, 2023</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="text-sm text-text-secondary dark:text-gray-400 line-clamp-1 max-w-[200px]"
+                                    title="Proposal to increase principal amount for inventory purchase.">Proposal to
+                                    increase principal amount for inventory...</p>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
+                                    <span class="size-1.5 rounded-full bg-rose-500"></span>
+                                    Rejected
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right">
+                                <button
+                                    class="inline-flex items-center justify-center rounded-lg text-sm font-medium h-8 px-4 text-text-secondary dark:text-gray-300 bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 border border-border-light dark:border-border-dark transition-colors">
+                                    Details
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Row 3: Accepted -->
+                        <tr class="hover:bg-gray-50 dark:hover:bg-[#1f293a] transition-colors group">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-text-secondary">#REQ-2023-075</span>
+                                    <span class="text-sm font-bold text-text-main dark:text-white">Agri-Bond #88</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-3">
+                                    <div class="size-8 rounded-full bg-cover bg-center"
+                                        data-alt="Portrait of Elena Rodriguez"
+                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBKqmDzafwnk8vD-NJG4mZ67Lr3kwdEgA6IQlu6Q91GA5RVnfRon8dYK55HylMnCFe2XtJzf-H8D8T6L5iTxmLEF-YQeoeVpNqsKJCX1JUWktWihBtGpZJoPVx8bqB2NiBL19y2h2dH2yVDDGTGrSKnMBZTRhtf8JtLBT2_4mvHVsLG5s6b0-43CIm8wPJIsgDQqHTJ3mFMaM-SkqQki4Bsu6EBOkGrJMUiow81fXfsMgULhrESkGXLZ13Nq_Q4uZWTRmvD_Rp0abFX");'>
+                                    </div>
+                                    <span class="text-sm font-medium text-text-main dark:text-white">Elena
+                                        Rodriguez</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="text-sm text-text-main dark:text-gray-300">Oct 15, 2023</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="text-sm text-text-secondary dark:text-gray-400 line-clamp-1 max-w-[200px]"
+                                    title="Change payment frequency from monthly to quarterly based on harvest cycles.">
+                                    Change payment frequency from monthly to quarterly...</p>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                                    <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                                    Accepted
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right">
+                                <button
+                                    class="inline-flex items-center justify-center rounded-lg text-sm font-medium h-8 px-4 text-text-secondary dark:text-gray-300 bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 border border-border-light dark:border-border-dark transition-colors">
+                                    Details
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Row 4: Pending -->
+                        <tr class="hover:bg-gray-50 dark:hover:bg-[#1f293a] transition-colors group">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-text-secondary">#REQ-2023-071</span>
+                                    <span class="text-sm font-bold text-text-main dark:text-white">Tech Start Bond
+                                        #501</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-3">
+                                    <div class="size-8 rounded-full bg-cover bg-center"
+                                        data-alt="Portrait of David Chen"
+                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAyoONJKn0-uJpLOExPtUlpXRuHMvNKSw4G83NbbBvKks62ephaJ8hyWhhTABJ849nBsFCR5nInAPlVn6Q8cSxDHc59CN1cronIyx7y0KpiKukAr-XRH9_nS7SmPybLFTTdY5RwF_yOHUDj_OihY1546sQTfNeLyAOhxRLQFAJUjhfJlqcxbQKd0ERMOfvLiMslU3mNhDKKWHBYxNQpVEJOVS7R5mV8ZXAJLRFHlJtdwBG63ioiuVzK3nb5OiWePIyz_LKj-nfsQo-_");'>
+                                    </div>
+                                    <span class="text-sm font-medium text-text-main dark:text-white">David Chen</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="text-sm text-text-main dark:text-gray-300">Oct 12, 2023</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="text-sm text-text-secondary dark:text-gray-400 line-clamp-1 max-w-[200px]"
+                                    title="Request for early repayment without penalty fees.">Request for early
+                                    repayment without penalty fees.</p>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                                    <span class="size-1.5 rounded-full bg-amber-500"></span>
+                                    Pending Review
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right">
+                                <button
+                                    class="inline-flex items-center justify-center rounded-lg text-sm font-medium h-8 px-4 bg-primary hover:bg-blue-700 text-white shadow-sm transition-colors">
+                                    Review
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Row 5: Pending -->
+                        <tr class="hover:bg-gray-50 dark:hover:bg-[#1f293a] transition-colors group">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-text-secondary">#REQ-2023-068</span>
+                                    <span class="text-sm font-bold text-text-main dark:text-white">Housing Bond
+                                        #22</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-3">
+                                    <div class="size-8 rounded-full bg-cover bg-center"
+                                        data-alt="Portrait of Aisha Bello"
+                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBC6RbHSYk-XsiAPtYl1mv6QoE2L0oNsaOApwE1mHf2ed8wuI9t0J7QsxA2f4q5gTvmDraAdhbZlI5pJM8U-Z419TWSHJTymWjKc6XVpAMrcFp1BW-pDz6VVcMSvTq5EOs4BNxJEB5jSC4sCouq14Qsar9yjllwuTjFnPdxWZa8Glrs1FKdN4JqQOLDj53PzqxpZIQf8bSgb_YSDfrTCVpL4N4UBT6EjIwhQsVWRcfO7ByXHoQyD8yFsoojaw7QGee9z2dCFDAOh-T0");'>
+                                    </div>
+                                    <span class="text-sm font-medium text-text-main dark:text-white">Aisha Bello</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="text-sm text-text-main dark:text-gray-300">Oct 10, 2023</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="text-sm text-text-secondary dark:text-gray-400 line-clamp-1 max-w-[200px]"
+                                    title="Modification of collateral terms due to property valuation change.">
+                                    Modification of collateral terms due to property...</p>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                                    <span class="size-1.5 rounded-full bg-amber-500"></span>
+                                    Pending Review
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right">
+                                <button
+                                    class="inline-flex items-center justify-center rounded-lg text-sm font-medium h-8 px-4 bg-primary hover:bg-blue-700 text-white shadow-sm transition-colors">
+                                    Review
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination Footer -->
+            <div
+                class="flex items-center justify-between px-6 py-4 bg-white dark:bg-card-dark border-t border-border-light dark:border-border-dark">
+                <div class="flex-1 flex justify-between sm:hidden">
+                    <a class="relative inline-flex items-center px-4 py-2 border border-border-light dark:border-border-dark text-sm font-medium rounded-md text-text-main dark:text-white bg-white dark:bg-card-dark hover:bg-gray-50 dark:hover:bg-gray-800"
+                        href="#"> Previous </a>
+                    <a class="ml-3 relative inline-flex items-center px-4 py-2 border border-border-light dark:border-border-dark text-sm font-medium rounded-md text-text-main dark:text-white bg-white dark:bg-card-dark hover:bg-gray-50 dark:hover:bg-gray-800"
+                        href="#"> Next </a>
+                </div>
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-text-secondary dark:text-gray-400">
+                            Showing <span class="font-bold text-text-main dark:text-white">1</span> to <span
+                                class="font-bold text-text-main dark:text-white">5</span> of <span
+                                class="font-bold text-text-main dark:text-white">24</span> requests
+                        </p>
+                    </div>
+                    <div>
+                        <nav aria-label="Pagination" class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                            <a class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-border-light dark:border-border-dark bg-white dark:bg-card-dark text-sm font-medium text-text-secondary dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                                href="#">
+                                <span class="sr-only">Previous</span>
+                                <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                            </a>
+                            <a aria-current="page"
+                                class="z-10 bg-primary/10 border-primary text-primary relative inline-flex items-center px-4 py-2 border text-sm font-bold"
+                                href="#"> 1 </a>
+                            <a class="bg-white dark:bg-card-dark border-border-light dark:border-border-dark text-text-secondary dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                                href="#"> 2 </a>
+                            <a class="bg-white dark:bg-card-dark border-border-light dark:border-border-dark text-text-secondary dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                                href="#"> 3 </a>
+                            <span
+                                class="relative inline-flex items-center px-4 py-2 border border-border-light dark:border-border-dark bg-white dark:bg-card-dark text-sm font-medium text-text-secondary dark:text-gray-400">
+                                ... </span>
+                            <a class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-border-light dark:border-border-dark bg-white dark:bg-card-dark text-sm font-medium text-text-secondary dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                                href="#">
+                                <span class="sr-only">Next</span>
+                                <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

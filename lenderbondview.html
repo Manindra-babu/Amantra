@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Amantra - Bond Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13b6ec",
+                        "background-light": "#f6f8f8",
+                        "background-dark": "#101d22",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1a2c32",
+                        "text-primary-light": "#0d181b",
+                        "text-primary-dark": "#ffffff",
+                        "text-secondary-light": "#4c869a",
+                        "text-secondary-dark": "#94a3b8",
+                        "border-light": "#e7f0f3",
+                        "border-dark": "#2a3c42",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-text-primary-light dark:text-text-primary-dark min-h-screen flex flex-col">
+    <!-- Top Navigation -->
+    <header
+        class="sticky top-0 z-50 w-full bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark px-4 lg:px-10 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-4">
+                    <div class="size-8 text-primary">
+                        <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z"
+                                fill="currentColor"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-bold tracking-tight">Amantra</h2>
+                </div>
+                <nav class="hidden md:flex items-center gap-6">
+                    <a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors"
+                        href="#">Dashboard</a>
+                    <a class="text-primary text-sm font-bold transition-colors" href="#">My Bonds</a>
+                    <a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors"
+                        href="#">Wallet</a>
+                </nav>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="hidden sm:flex relative">
+                    <span
+                        class="absolute inset-y-0 left-0 flex items-center pl-3 text-text-secondary-light dark:text-text-secondary-dark">
+                        <span class="material-symbols-outlined text-[20px]">search</span>
+                    </span>
+                    <input
+                        class="w-64 pl-10 pr-4 py-2 text-sm bg-background-light dark:bg-background-dark border-none rounded-lg focus:ring-2 focus:ring-primary dark:text-white placeholder-text-secondary-light"
+                        placeholder="Search bonds..." type="text" />
+                </div>
+                <button class="size-10 rounded-full bg-cover bg-center ring-2 ring-border-light dark:ring-border-dark"
+                    data-alt="User profile picture showing a smiling person"
+                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCTDYRnpRS6VEDc5xd6avi9jlRERwd-5lf8-LYwjXs9l6PYib4ECEzwEc7Lvr_G8UnihktdBQzm6v9BWZlzW_i9rZ0coIva7zYxiy9sTVzomtCHapTZV7LduKKyfChteofMjyLSkEiE4C772qDjGeq9yXOUkGb0R6IQ-ZDYyD3PcCEuo1kQBcjKXpCsJwpv5CVTk-qtQ2VmFW3C2DMfPQKy6ZHUZH39qrsbv5UsQakza2AnWXJ9nBSTtk2BdAVxaskAQa3ti9RSvr5l');"></button>
+            </div>
+        </div>
+    </header>
+    <main class="flex-1 w-full max-w-7xl mx-auto px-4 lg:px-10 py-8">
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-2 mb-6 text-sm text-text-secondary-light dark:text-text-secondary-dark">
+            <a class="hover:text-primary transition-colors" href="#">Dashboard</a>
+            <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+            <a class="hover:text-primary transition-colors" href="#">My Bonds</a>
+            <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+            <span class="font-medium text-text-primary-light dark:text-text-primary-dark">Bond #B-8920</span>
+        </nav>
+        <!-- Header & Main Actions -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-8">
+            <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-3">
+                    <h1 class="text-3xl lg:text-4xl font-black tracking-tight">Bond #B-8920</h1>
+                    <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold uppercase tracking-wider">
+                        <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                        Active
+                    </span>
+                </div>
+                <p class="text-text-secondary-light dark:text-text-secondary-dark text-lg">Personal loan agreement for
+                    home renovation.</p>
+            </div>
+            <div class="flex items-center gap-3 flex-wrap">
+                <button
+                    class="flex items-center gap-2 px-5 py-2.5 bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg font-semibold hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-primary-light dark:text-text-primary-dark shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">calendar_clock</span>
+                    Extend Due Date
+                </button>
+                <button
+                    class="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-sky-500 text-white rounded-lg font-semibold shadow-md shadow-primary/20 transition-all">
+                    <span class="material-symbols-outlined text-[20px]">check</span>
+                    Mark as Completed
+                </button>
+                <button
+                    class="p-2.5 bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-secondary-light dark:text-text-secondary-dark">
+                    <span class="material-symbols-outlined">more_vert</span>
+                </button>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+            <!-- Main Content Column -->
+            <div class="lg:col-span-2 flex flex-col gap-6">
+                <!-- Hero Card: Financials -->
+                <section
+                    class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark p-6 lg:p-8 shadow-sm">
+                    <div
+                        class="flex flex-col md:flex-row gap-8 justify-between items-start md:items-center mb-8 border-b border-border-light dark:border-border-dark pb-8">
+                        <div>
+                            <p class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1">
+                                Principal Amount</p>
+                            <div class="flex items-baseline gap-1">
+                                <span
+                                    class="text-5xl font-extrabold text-text-primary-light dark:text-text-primary-dark tracking-tight">$5,000</span>
+                                <span
+                                    class="text-2xl font-bold text-text-secondary-light dark:text-text-secondary-dark">.00</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-8">
+                            <div>
+                                <p
+                                    class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1">
+                                    Due Date</p>
+                                <p class="text-xl font-bold">Oct 24, 2024</p>
+                                <p
+                                    class="text-xs font-medium text-orange-600 dark:text-orange-400 mt-1 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[14px]">schedule</span>
+                                    14 Days Remaining
+                                </p>
+                            </div>
+                            <div>
+                                <p
+                                    class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1">
+                                    Interest Rate</p>
+                                <p class="text-xl font-bold">0%</p>
+                                <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1">Flat
+                                    repayment</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div
+                            class="bg-background-light dark:bg-background-dark p-4 rounded-lg flex items-center gap-4 border border-border-light dark:border-border-dark">
+                            <div class="relative">
+                                <div class="size-12 rounded-full bg-cover bg-center"
+                                    data-alt="Portrait of Sarah Jenkins looking professional"
+                                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDwaLBAToa6awNOaeJ6Egq_3XpDtgxY0WR23KHxcRPM8Oac6pu-R0Y7dKOYqnDnyDbg7FWRcJ5W9Q8K0o0fioqAmkOO-OTrzNuAgsvKKBkVSkDKq0O1iEGl-CHQUHXEZPIj5Yx2VSX0SvuuI-vVkzEBSbo2qDVb-lMTGNZgMIkLQ0PK0saS_7h3ZhjELZDLwtlVNNbAcoEuQ9iVVIXmjRRpbaTiR6Fw53-lbL3HH6ayTmIwLLiNNLjey0CgmaKLvOuZi5AJ0B3qBUJQ');">
+                                </div>
+                                <div
+                                    class="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-0.5 border-2 border-white dark:border-background-dark">
+                                    <span class="material-symbols-outlined text-white text-[12px] block">shield</span>
+                                </div>
+                            </div>
+                            <div>
+                                <p
+                                    class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide">
+                                    Recipient</p>
+                                <p class="text-base font-bold text-text-primary-light dark:text-text-primary-dark">Sarah
+                                    Jenkins</p>
+                                <a class="text-xs text-primary hover:underline font-medium" href="#">View Profile</a>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-background-light dark:bg-background-dark p-4 rounded-lg flex items-center gap-4 border border-border-light dark:border-border-dark">
+                            <div
+                                class="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined">description</span>
+                            </div>
+                            <div>
+                                <p
+                                    class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide">
+                                    Bond Type</p>
+                                <p class="text-base font-bold text-text-primary-light dark:text-text-primary-dark">
+                                    Personal Loan</p>
+                                <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark">ID:
+                                    #B-8920</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Purpose & Details -->
+                <section
+                    class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark p-6 lg:p-8 shadow-sm">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">info</span>
+                        Purpose &amp; Description
+                    </h3>
+                    <p class="text-text-secondary-light dark:text-text-secondary-dark leading-relaxed mb-6">
+                        This bond serves as a personal loan to assist with the initial costs of home renovation
+                        materials. The agreement is between friends, with no interest charged, provided the repayment is
+                        made in full by the specified due date. The funds were transferred directly to Sarah's bank
+                        account on the creation date.
+                    </p>
+                    <h4
+                        class="text-sm font-bold text-text-primary-light dark:text-text-primary-dark mb-3 uppercase tracking-wider">
+                        Attached Documents</h4>
+                    <div class="flex flex-wrap gap-3">
+                        <div
+                            class="flex items-center gap-3 p-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer group">
+                            <div class="p-2 bg-red-100 dark:bg-red-900/20 rounded text-red-600 dark:text-red-400">
+                                <span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span
+                                    class="text-sm font-bold text-text-primary-light dark:text-text-primary-dark group-hover:text-primary transition-colors">Agreement_Signed.pdf</span>
+                                <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark">2.4 MB •
+                                    Oct 10, 2024</span>
+                            </div>
+                        </div>
+                        <div
+                            class="flex items-center gap-3 p-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer group">
+                            <div class="p-2 bg-blue-100 dark:bg-blue-900/20 rounded text-blue-600 dark:text-blue-400">
+                                <span class="material-symbols-outlined text-[20px]">image</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span
+                                    class="text-sm font-bold text-text-primary-light dark:text-text-primary-dark group-hover:text-primary transition-colors">Receipt_Transfer.png</span>
+                                <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark">1.1 MB •
+                                    Oct 10, 2024</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Terms Accordion -->
+                <section
+                    class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden shadow-sm">
+                    <details class="group">
+                        <summary
+                            class="flex items-center justify-between p-6 cursor-pointer hover:bg-background-light dark:hover:bg-background-dark transition-colors">
+                            <h3 class="text-lg font-bold flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary">gavel</span>
+                                Terms &amp; Conditions
+                            </h3>
+                            <span
+                                class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
+                        </summary>
+                        <div
+                            class="px-6 pb-6 text-sm text-text-secondary-light dark:text-text-secondary-dark border-t border-border-light dark:border-border-dark pt-4">
+                            <ul class="list-disc pl-5 space-y-2">
+                                <li>The Borrower agrees to repay the Principal Amount in full on or before the Due Date.
+                                </li>
+                                <li>No interest shall accrue on the Principal Amount unless the repayment is late by
+                                    more than 30 days.</li>
+                                <li>In the event of late payment, a grace period of 7 days is allowed before a penalty
+                                    fee of 5% is applied.</li>
+                                <li>This digital bond is a binding agreement recognized by both parties on the Amantra
+                                    platform.</li>
+                                <li>Disputes regarding this bond can be raised through the Amantra Dispute Resolution
+                                    Center.</li>
+                            </ul>
+                        </div>
+                    </details>
+                </section>
+            </div>
+            <!-- Sidebar Column -->
+            <div class="lg:col-span-1 flex flex-col gap-6">
+                <!-- Activity Timeline -->
+                <section
+                    class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark p-6 shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-bold">Activity History</h3>
+                        <button class="text-xs font-semibold text-primary hover:text-sky-600">View All</button>
+                    </div>
+                    <div class="relative pl-4 border-l-2 border-border-light dark:border-border-dark space-y-8">
+                        <!-- Timeline Item 1 (Latest) -->
+                        <div class="relative">
+                            <div
+                                class="absolute -left-[21px] top-1 size-3 rounded-full bg-primary ring-4 ring-surface-light dark:ring-surface-dark">
+                            </div>
+                            <p class="text-sm font-bold text-text-primary-light dark:text-text-primary-dark">Reminder
+                                Sent</p>
+                            <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">Automated
+                                system reminder sent to Sarah.</p>
+                            <p
+                                class="text-[10px] text-text-secondary-light dark:text-text-secondary-dark mt-1 font-medium">
+                                Oct 20, 2024 • 09:00 AM</p>
+                        </div>
+                        <!-- Timeline Item 2 -->
+                        <div class="relative">
+                            <div
+                                class="absolute -left-[21px] top-1 size-3 rounded-full bg-border-light dark:bg-border-dark ring-4 ring-surface-light dark:ring-surface-dark">
+                            </div>
+                            <p class="text-sm font-bold text-text-primary-light dark:text-text-primary-dark">Funds
+                                Transferred</p>
+                            <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">Transfer
+                                of $5,000.00 confirmed.</p>
+                            <p
+                                class="text-[10px] text-text-secondary-light dark:text-text-secondary-dark mt-1 font-medium">
+                                Oct 10, 2024 • 02:30 PM</p>
+                        </div>
+                        <!-- Timeline Item 3 -->
+                        <div class="relative">
+                            <div
+                                class="absolute -left-[21px] top-1 size-3 rounded-full bg-border-light dark:bg-border-dark ring-4 ring-surface-light dark:ring-surface-dark">
+                            </div>
+                            <p class="text-sm font-bold text-text-primary-light dark:text-text-primary-dark">Terms
+                                Accepted</p>
+                            <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">Sarah
+                                Jenkins accepted the bond terms.</p>
+                            <p
+                                class="text-[10px] text-text-secondary-light dark:text-text-secondary-dark mt-1 font-medium">
+                                Oct 10, 2024 • 01:15 PM</p>
+                        </div>
+                        <!-- Timeline Item 4 -->
+                        <div class="relative">
+                            <div
+                                class="absolute -left-[21px] top-1 size-3 rounded-full bg-border-light dark:bg-border-dark ring-4 ring-surface-light dark:ring-surface-dark">
+                            </div>
+                            <p class="text-sm font-bold text-text-primary-light dark:text-text-primary-dark">Bond
+                                Created</p>
+                            <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">You
+                                created Bond #B-8920.</p>
+                            <p
+                                class="text-[10px] text-text-secondary-light dark:text-text-secondary-dark mt-1 font-medium">
+                                Oct 10, 2024 • 01:00 PM</p>
+                        </div>
+                    </div>
+                </section>
+                <!-- Need Help Card -->
+                <section
+                    class="bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/20 p-6 text-center">
+                    <div
+                        class="size-12 bg-surface-light dark:bg-surface-dark rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm text-primary">
+                        <span class="material-symbols-outlined">support_agent</span>
+                    </div>
+                    <h3 class="text-base font-bold text-text-primary-light dark:text-text-primary-dark mb-1">Have
+                        questions?</h3>
+                    <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mb-4">Our support team can
+                        help clarify bond terms or technical issues.</p>
+                    <button
+                        class="w-full py-2 bg-surface-light dark:bg-surface-dark hover:bg-white dark:hover:bg-gray-800 border border-border-light dark:border-border-dark rounded-lg text-sm font-bold text-text-primary-light dark:text-text-primary-dark transition-colors shadow-sm">
+                        Contact Support
+                    </button>
+                </section>
+                <p class="text-center text-xs text-text-secondary-light dark:text-text-secondary-dark mt-2">
+                    Bond generated on Amantra Platform v2.4
+                </p>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
