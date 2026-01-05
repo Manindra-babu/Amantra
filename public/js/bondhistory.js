@@ -1,61 +1,134 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Render Mock Data
-    const renderBondHistory = () => {
-        if (typeof MOCK_DATA === 'undefined') return;
-        const tbody = document.getElementById('bond-history-body');
-        if (!tbody || !MOCK_DATA.bondHistory) return;
+import { auth, db } from './firebase-config.js';
+import { collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
-        tbody.innerHTML = MOCK_DATA.bondHistory.map(bond => `
-            <tr class="group hover:bg-background-light dark:hover:bg-background-dark/50 transition-colors">
-                <td class="whitespace-nowrap px-6 py-4">
-                    <div class="flex items-center gap-3">
-                        <div class="flex h-10 w-10 items-center justify-center rounded-lg ${bond.bgClass || 'bg-primary/10'} ${bond.textClass || 'text-primary'}">
-                            <span class="material-symbols-outlined">${bond.icon}</span>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const renderBondHistory = (user) => {
+        // Use 'bonds' collection for consistency with Dashboard/Profile
+        const q = query(collection(db, "bonds"), where("userId", "==", user.uid));
+
+        onSnapshot(q, (snapshot) => {
+            const bonds = [];
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                // Normalize data structure if needed (ensure dates are comparable)
+                bonds.push(data);
+            });
+            updateTable(bonds);
+            updateStats(bonds);
+        });
+    };
+
+    const updateStats = (bonds) => {
+        // 1. Total Active Value
+        const activeBonds = bonds.filter(b =>
+            b.status.toLowerCase() === 'active' ||
+            b.statusCategory === 'active'
+        );
+
+        const totalValue = activeBonds.reduce((sum, bond) => {
+            // Remove non-numeric except . and -
+            const val = parseFloat(bond.amount.replace(/[^0-9.-]+/g, ""));
+            return sum + (isNaN(val) ? 0 : val);
+        }, 0);
+
+        const totalValueLabel = Array.from(document.querySelectorAll('p')).find(el => el.textContent.trim() === 'Total Active Value');
+        if (totalValueLabel && totalValueLabel.parentElement && totalValueLabel.parentElement.nextElementSibling) {
+            totalValueLabel.parentElement.nextElementSibling.textContent = `$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+
+        // 2. Upcoming Due Date
+        // Filter active bonds with future dates
+        const now = new Date();
+        const futureBonds = activeBonds.filter(b => {
+            const d = new Date(b.dueDate); // stored as YYYY-MM-DD or readable string?
+            // Seed data uses YYYY-MM-DD usually, or standard string. JS Date parses most.
+            return !isNaN(d) && d > now;
+        });
+
+        // Sort by date ascending
+        futureBonds.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+
+        const upcomingLabel = Array.from(document.querySelectorAll('p')).find(el => el.textContent.trim() === 'Upcoming Due');
+        if (upcomingLabel && upcomingLabel.parentElement && upcomingLabel.parentElement.nextElementSibling) {
+            if (futureBonds.length > 0) {
+                const nextDate = new Date(futureBonds[0].dueDate);
+                // Format: Oct 24, 2024
+                const options = { month: 'short', day: 'numeric', year: 'numeric' };
+                upcomingLabel.parentElement.nextElementSibling.textContent = nextDate.toLocaleDateString('en-US', options);
+            } else {
+                upcomingLabel.parentElement.nextElementSibling.textContent = "No Upcoming";
+            }
+        }
+    };
+
+    const updateTable = (bonds) => {
+        const tbody = document.getElementById('bond-history-body');
+        if (!tbody) return;
+
+        if (bonds.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-4 text-center text-sm text-text-secondary">No bond history found.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = bonds.map(bond => `
+            <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors border-b border-border-light dark:border-border-dark last:border-b-0 cursor-pointer" 
+                onclick="window.location.href='${bond.type === 'received' ? 'recipientbondview.html' : 'lenderbondview.html'}'">
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 h-10 w-10">
+                            <div class="h-10 w-10 rounded-full bg-cover bg-center ring-2 ring-white dark:ring-white/10"
+                                style="background-image: url('${bond.avatar || 'assets/default_avatar.png'}');">
+                            </div>
                         </div>
-                        <div>
-                            <p class="font-bold text-accent-dark dark:text-white">${bond.name}</p>
-                            <p class="text-xs text-secondary dark:text-gray-400">${bond.bondId}</p>
+                        <div class="ml-4">
+                            <div class="text-sm font-bold text-text-main dark:text-white capitalize">${bond.name}</div>
                         </div>
                     </div>
                 </td>
-                <td class="whitespace-nowrap px-6 py-4">
-                    <div class="flex items-center gap-3">
-                        <div class="h-8 w-8 rounded-full bg-cover bg-center" style='background-image: url("${bond.avatar}");'></div>
-                        <span class="text-sm font-medium text-accent-dark dark:text-white">${bond.counterparty}</span>
-                    </div>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-bold text-text-main dark:text-white">${bond.counterparty || (bond.type === 'created' ? 'Recipient' : 'Sender')}</div>
                 </td>
-                <td class="whitespace-nowrap px-6 py-4">
-                    <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${bond.typeClass}">${bond.type}</span>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                        ${bond.type === 'created' ? 'Lending' : 'Borrowing'}
+                    </span>
                 </td>
-                <td class="whitespace-nowrap px-6 py-4 text-right">
-                    <span class="font-bold text-accent-dark dark:text-white text-base">${bond.amount}</span>
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                     <div class="text-sm font-bold text-text-main dark:text-white">${bond.amount}</div>
                 </td>
-                <td class="whitespace-nowrap px-6 py-4">
-                    <div class="flex flex-col">
-                        <span class="text-sm text-accent-dark dark:text-white">${bond.date}</span>
-                        ${bond.timeLeft ? `<span class="text-xs text-secondary dark:text-gray-400">${bond.timeLeft}</span>` : ''}
-                    </div>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
+                    ${bond.dueDate}
                 </td>
-                <td class="whitespace-nowrap px-6 py-4">
-                    <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ring-1 ring-inset ${bond.statusClass} ${bond.status.includes('Overdue') ? 'bg-red-50 text-red-700 ring-red-600/20' : ''}">
-                        ${bond.statusIcon ? `<span class="material-symbols-outlined text-[14px]">${bond.statusIcon}</span>` : '<span class="h-1.5 w-1.5 rounded-full bg-primary"></span>'}
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusClass(bond.status)}">
                         ${bond.status}
                     </span>
                 </td>
+
             </tr>
         `).join('');
     };
 
-    renderBondHistory();
-    // Navigation Action
-    const createBtn = document.getElementById('create-bond-btn');
-    if (createBtn) {
-        createBtn.addEventListener('click', () => {
-            window.location.href = 'newbond.html';
-        });
-    }
+    const getStatusClass = (status) => {
+        if (!status) return 'bg-gray-100 text-gray-800';
+        const s = status.toLowerCase();
+        if (s.includes('active')) return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300';
+        if (s.includes('completed') || s.includes('closed') || s.includes('paid')) return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
+        if (s.includes('overdue')) return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
+        if (s.includes('pending')) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300';
+        return 'bg-gray-100 text-gray-800';
+    };
 
-    // Profile Dropdown Logic
+    // Initialize Auth Listener
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            renderBondHistory(user);
+        }
+    });
+
+    // Navigation and Dropdown Logic (Preserved)
     const profileBtn = document.getElementById('profile-menu-button');
     const profileDropdown = document.getElementById('profile-dropdown');
 
@@ -64,42 +137,14 @@ document.addEventListener('DOMContentLoaded', () => {
             e.stopPropagation();
             profileDropdown.classList.toggle('hidden');
         });
-
         document.addEventListener('click', (e) => {
             if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
                 profileDropdown.classList.add('hidden');
             }
         });
-
         const signOutBtn = document.getElementById('sign-out-btn');
         if (signOutBtn) {
-            signOutBtn.addEventListener('click', () => {
-                window.location.href = 'signin.html';
-            });
+            signOutBtn.addEventListener('click', () => window.location.href = 'signin.html');
         }
     }
-    // Bond Row Click Navigation
-    const bondRows = document.querySelectorAll('tbody tr');
-    bondRows.forEach(row => {
-        row.style.cursor = 'pointer';
-
-        row.addEventListener('click', (e) => {
-            // Prevent if clicking an interactive element like a button or link
-            if (e.target.closest('button') || e.target.closest('a')) {
-                return;
-            }
-
-            // The 'Type' is in the 3rd column (index 2)
-            const typeCell = row.cells[2];
-            if (typeCell) {
-                const typeText = typeCell.textContent.trim().toLowerCase();
-                if (typeText.includes('lending')) {
-                    window.location.href = 'lenderbondview.html';
-                } else if (typeText.includes('borrowing')) {
-                    window.location.href = 'recipientbondview.html';
-                }
-            }
-        });
-    });
 });
-

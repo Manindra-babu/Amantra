@@ -1,21 +1,54 @@
-// Navigation Action
-const buttons = {
-    'button:contains("Create New Bond")': 'newbond.html',
-    'button:contains("Bond History")': 'bondhistory.html',
-    'button:contains("Calendar")': 'calendar.html',
-    'a:contains("View all requests")': 'allrequests.html'
-};
+import { auth, db } from './firebase-config.js';
+import { collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
-// Render Mock Data
-const renderDashboardData = () => {
-    if (typeof MOCK_DATA === 'undefined') return;
+document.addEventListener('DOMContentLoaded', () => {
 
-    // Change Requests
-    const changeRequestContainer = document.getElementById('change-requests-container');
-    if (changeRequestContainer) {
-        if (MOCK_DATA.dashboard.changeRequests && MOCK_DATA.dashboard.changeRequests.length > 0) {
-            changeRequestContainer.classList.remove('hidden');
-            changeRequestContainer.innerHTML = MOCK_DATA.dashboard.changeRequests.map(req => `
+    const renderDashboard = (user) => {
+        // Change Requests Listener
+        const requestsQuery = query(collection(db, "requests"), where("userId", "==", user.uid));
+        onSnapshot(requestsQuery, (snapshot) => {
+            const requests = [];
+            snapshot.forEach((doc) => {
+                requests.push(doc.data());
+            });
+            renderChangeRequests(requests);
+        });
+
+        // Bonds Listener
+        const bondsQuery = query(collection(db, "bonds"), where("userId", "==", user.uid));
+        onSnapshot(bondsQuery, (snapshot) => {
+            const createdActive = [];
+            const createdOverdue = [];
+            const receivedActive = [];
+            const receivedOverdue = [];
+
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                if (data.type === 'created') {
+                    if (data.statusCategory === 'active') createdActive.push(data);
+                    else if (data.statusCategory === 'overdue') createdOverdue.push(data);
+                } else if (data.type === 'received') {
+                    if (data.statusCategory === 'active') receivedActive.push(data);
+                    else if (data.statusCategory === 'overdue') receivedOverdue.push(data);
+                }
+            });
+
+            renderBondList('created-active', createdActive, false, 'lenderbondview.html');
+            renderBondList('created-overdue', createdOverdue, true, 'lenderbondview.html');
+            renderBondList('received-active', receivedActive, false, 'recipientbondview.html');
+            renderBondList('received-overdue', receivedOverdue, true, 'recipientbondview.html');
+        });
+    };
+
+    const renderChangeRequests = (requests) => {
+        const section = document.getElementById('change-requests-section');
+        const container = document.getElementById('change-requests-container');
+        if (!section || !container) return;
+
+        if (requests.length > 0) {
+            section.classList.remove('hidden');
+            container.innerHTML = requests.map(req => `
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 rounded-xl bg-white p-6 shadow-sm border border-amber-100 dark:bg-white/5 dark:border-white/10">
                     <div class="flex items-center gap-5">
                         <div class="relative">
@@ -53,12 +86,15 @@ const renderDashboardData = () => {
                 </div>
             `).join('');
         } else {
-            changeRequestContainer.classList.add('hidden');
+            section.classList.add('hidden');
         }
-    }
+    };
 
-    // Helper for Bond Cards
-    const createBondCard = (bond, isOverdue, href) => `
+    const renderBondList = (elementIdSuffix, bonds, isOverdue, href) => {
+        const element = document.getElementById(`list-${elementIdSuffix}`);
+        if (!element) return;
+
+        element.innerHTML = bonds.map(bond => `
             <div class="group relative flex flex-col gap-4 rounded-2xl border ${isOverdue ? 'border-red-200 bg-red-50 dark:border-red-900/30 dark:bg-red-900/10' : 'border-border-light bg-white dark:border-white/10 dark:bg-white/5'} p-6 shadow-sm transition-all hover:shadow-md cursor-pointer" onclick="window.location.href='${href}'">
                 ${isOverdue ? `<div class="absolute right-0 top-0 rounded-bl-xl rounded-tr-xl bg-red-100 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-red-700 dark:bg-red-900/50 dark:text-red-300">Action Required</div>` : ''}
                 <div class="flex items-start justify-between">
@@ -84,133 +120,93 @@ const renderDashboardData = () => {
                     </div>
                 </div>
             </div>
-        `;
+        `).join('');
+    };
 
-    // Render Created Bonds
-    if (MOCK_DATA.dashboard.created) {
-        document.getElementById('list-created-active').innerHTML = MOCK_DATA.dashboard.created.active.map(bond => createBondCard(bond, false, 'lenderbondview.html')).join('');
-        document.getElementById('list-created-overdue').innerHTML = MOCK_DATA.dashboard.created.overdue.map(bond => createBondCard(bond, true, 'lenderbondview.html')).join('');
-    }
+    // Initialize Auth Listener
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            renderDashboard(user);
+        }
+    });
 
-    // Render Received Bonds
-    if (MOCK_DATA.dashboard.received) {
-        document.getElementById('list-received-active').innerHTML = MOCK_DATA.dashboard.received.active.map(bond => createBondCard(bond, false, 'recipientbondview.html')).join('');
-        document.getElementById('list-received-overdue').innerHTML = MOCK_DATA.dashboard.received.overdue.map(bond => createBondCard(bond, true, 'recipientbondview.html')).join('');
-    }
-};
+    // --- UI INTERACTION LOGIC ---
 
-renderDashboardData();
+    // Tab Switching Logic
+    const setupTabs = (prefix) => {
+        const activeTab = document.getElementById(`tab-${prefix}-active`);
+        const overdueTab = document.getElementById(`tab-${prefix}-overdue`);
+        const activeList = document.getElementById(`list-${prefix}-active`);
+        const overdueList = document.getElementById(`list-${prefix}-overdue`);
 
-// Helper to find elements by text content since querySelector doesn't support :contains
-const findElementByText = (selector, text) => {
-    const elements = document.querySelectorAll(selector);
-    for (let el of elements) {
-        if (el.textContent.includes(text)) return el;
-    }
-    return null;
-};
+        // Common styles for active/inactive tabs
+        const activeClass = ['relative', 'text-brand-blue', 'dark:text-blue-300'];
+        const inactiveClass = ['text-text-secondary', 'hover:text-brand-dark', 'dark:text-gray-400', 'dark:hover:text-white'];
+        const indicatorHTML = '<span class="absolute bottom-[-17px] left-0 h-[3px] w-full bg-brand-blue dark:bg-blue-300 rounded-t-sm"></span>';
 
-// Link buttons
-const createBtn = findElementByText('button', 'Create New Bond');
-if (createBtn) createBtn.addEventListener('click', () => window.location.href = 'newbond.html');
+        const switchTab = (isOverdue) => {
+            if (isOverdue) {
+                // Set Overdue Active
+                overdueTab.className = `pb-1 text-sm font-bold ${activeClass.join(' ')}`;
+                overdueTab.innerHTML = `Overdue ${indicatorHTML}`;
+                activeTab.className = `pb-1 text-sm font-bold ${inactiveClass.join(' ')}`;
+                activeTab.innerHTML = 'Active';
 
-const historyBtn = findElementByText('button', 'Bond History');
-if (historyBtn) historyBtn.addEventListener('click', () => window.location.href = 'bondhistory.html');
+                activeList.classList.add('hidden');
+                overdueList.classList.remove('hidden');
+            } else {
+                // Set Active Active
+                activeTab.className = `pb-1 text-sm font-bold ${activeClass.join(' ')}`;
+                activeTab.innerHTML = `Active ${indicatorHTML}`;
+                overdueTab.className = `pb-1 text-sm font-bold ${inactiveClass.join(' ')}`;
+                overdueTab.innerHTML = 'Overdue';
 
-const calendarBtn = findElementByText('button', 'Calendar');
-if (calendarBtn) calendarBtn.addEventListener('click', () => window.location.href = 'calendar.html');
-
-const viewRequestsLink = document.getElementById('view-all-requests-link');
-if (viewRequestsLink) {
-    viewRequestsLink.href = 'allrequests.html';
-}
-
-// Interactive Cards Actions
-const reviewBtns = document.querySelectorAll('button');
-reviewBtns.forEach(btn => {
-    if (btn.textContent.trim() === 'Review') {
-        btn.addEventListener('click', () => window.location.href = 'reviewrequestchange.html');
-    }
-});
-
-const declineBtns = document.querySelectorAll('button');
-declineBtns.forEach(btn => {
-    if (btn.textContent.trim() === 'Decline') {
-        btn.addEventListener('click', () => {
-            if (confirm('Are you sure you want to decline this request?')) {
-                alert('Request declined.');
-                // Reload or remove element logic
+                overdueList.classList.add('hidden');
+                activeList.classList.remove('hidden');
             }
-        });
-    }
-});
+        };
 
-// Tab Switching Logic
-const setupTabs = (prefix) => {
-    const activeTab = document.getElementById(`tab-${prefix}-active`);
-    const overdueTab = document.getElementById(`tab-${prefix}-overdue`);
-    const activeList = document.getElementById(`list-${prefix}-active`);
-    const overdueList = document.getElementById(`list-${prefix}-overdue`);
-
-    // Common styles for active/inactive tabs
-    const activeClass = ['relative', 'text-brand-blue', 'dark:text-blue-300'];
-    const inactiveClass = ['text-text-secondary', 'hover:text-brand-dark', 'dark:text-gray-400', 'dark:hover:text-white'];
-    const indicatorHTML = '<span class="absolute bottom-[-17px] left-0 h-[3px] w-full bg-brand-blue dark:bg-blue-300 rounded-t-sm"></span>';
-
-    const switchTab = (isOverdue) => {
-        if (isOverdue) {
-            // Set Overdue Active
-            overdueTab.className = `pb-1 text-sm font-bold ${activeClass.join(' ')}`;
-            overdueTab.innerHTML = `Overdue ${indicatorHTML}`;
-            activeTab.className = `pb-1 text-sm font-bold ${inactiveClass.join(' ')}`;
-            activeTab.innerHTML = 'Active';
-
-            activeList.classList.add('hidden');
-            overdueList.classList.remove('hidden');
-        } else {
-            // Set Active Active
-            activeTab.className = `pb-1 text-sm font-bold ${activeClass.join(' ')}`;
-            activeTab.innerHTML = `Active ${indicatorHTML}`;
-            overdueTab.className = `pb-1 text-sm font-bold ${inactiveClass.join(' ')}`;
-            overdueTab.innerHTML = 'Overdue';
-
-            overdueList.classList.add('hidden');
-            activeList.classList.remove('hidden');
+        if (activeTab && overdueTab) {
+            activeTab.addEventListener('click', () => switchTab(false));
+            overdueTab.addEventListener('click', () => switchTab(true));
         }
     };
 
-    if (activeTab && overdueTab) {
-        activeTab.addEventListener('click', () => switchTab(false));
-        overdueTab.addEventListener('click', () => switchTab(true));
-    }
-};
+    setupTabs('created');
+    setupTabs('received');
 
-setupTabs('created');
-setupTabs('received');
+    // Profile Dropdown Logic
+    const profileBtn = document.getElementById('profile-menu-button');
+    const profileDropdown = document.getElementById('profile-dropdown');
 
-// Profile Dropdown Logic
-const profileBtn = document.getElementById('profile-menu-button');
-const profileDropdown = document.getElementById('profile-dropdown');
+    if (profileBtn && profileDropdown) {
+        profileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('hidden');
+        });
 
-if (profileBtn && profileDropdown) {
-    profileBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        profileDropdown.classList.toggle('hidden');
-    });
-
-    // Close when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
-            profileDropdown.classList.add('hidden');
-        }
-    });
-
-    // Sign Out logic
-    const signOutBtn = document.getElementById('sign-out-btn');
-    if (signOutBtn) {
-        signOutBtn.addEventListener('click', () => {
-            window.location.href = 'signin.html';
+        document.addEventListener('click', (e) => {
+            if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                profileDropdown.classList.add('hidden');
+            }
         });
     }
-}
 
+    // Link buttons (Fixed to use direct IDs if available or simple text match)
+    const findElementByText = (selector, text) => {
+        const elements = document.querySelectorAll(selector);
+        for (let el of elements) {
+            if (el.textContent.includes(text)) return el;
+        }
+        return null;
+    };
+
+    const createBtn = findElementByText('button', 'Create New Bond');
+    if (createBtn) createBtn.addEventListener('click', () => window.location.href = 'newbond.html');
+
+    const historyBtn = findElementByText('button', 'Bond History');
+    if (historyBtn) historyBtn.addEventListener('click', () => window.location.href = 'bondhistory.html');
+
+    const calendarBtn = findElementByText('button', 'Calendar');
+    if (calendarBtn) calendarBtn.addEventListener('click', () => window.location.href = 'calendar.html');
+});

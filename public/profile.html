@@ -44,47 +44,46 @@
     class="bg-background-light dark:bg-background-dark font-display text-text-main dark:text-white min-h-screen flex flex-col">
     <!-- TopNavBar -->
     <header
-        class="sticky top-0 z-50 w-full border-b border-border-light dark:border-border-dark bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md px-6 py-3">
-        <div class="mx-auto max-w-7xl flex items-center justify-between">
-            <div class="flex items-center gap-3 text-text-main dark:text-white">
-                <div class="size-8 text-primary">
-                    <svg class="h-full w-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z"
-                            fill="currentColor"></path>
-                    </svg>
+        class="sticky top-0 z-50 w-full border-b border-border-light bg-white/95 backdrop-blur-md dark:bg-background-dark/90 dark:border-white/10">
+        <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <a href="dashboard.html" class="flex items-center gap-3">
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-dark text-white shadow-md">
+                    <span class="material-symbols-outlined text-[22px]">link</span>
                 </div>
-                <h2 class="text-xl font-bold leading-tight tracking-[-0.015em]">Amantra</h2>
-            </div>
-            <nav class="hidden md:flex items-center gap-8">
-                <a class="text-text-secondary hover:text-primary text-sm font-semibold transition-colors"
-                    href="#">Dashboard</a>
-                <a class="text-primary text-sm font-semibold transition-colors" href="#">My Profile</a>
+                <h2 class="text-xl font-extrabold tracking-tight text-brand-dark dark:text-white">Amantra</h2>
+            </a>
 
+            <nav class="hidden md:flex items-center gap-8">
+                <a class="text-sm font-medium text-text-secondary hover:text-brand-dark dark:text-gray-400 dark:hover:text-white transition-colors"
+                    href="dashboard.html">Dashboard</a>
+                <a class="text-sm font-medium text-text-secondary hover:text-brand-dark dark:text-gray-400 dark:hover:text-white transition-colors"
+                    href="bondhistory.html">Bonds</a>
+                <a class="text-sm font-medium text-text-secondary hover:text-brand-dark dark:text-gray-400 dark:hover:text-white transition-colors"
+                    href="allrequests.html">Requests</a>
+                <a class="text-sm font-medium text-text-secondary hover:text-brand-dark dark:text-gray-400 dark:hover:text-white transition-colors"
+                    href="profile.html">Profile</a>
             </nav>
-            <div class="flex items-center gap-4">
-                <button
-                    class="hidden sm:flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-primary hover:bg-primary/90 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-md shadow-primary/20">
-                    <span class="truncate">Create Bond</span>
-                </button>
+
+            <div class="flex items-center gap-4 sm:gap-6">
                 <div class="relative" id="profile-menu-container">
                     <button id="profile-menu-button"
-                        class="h-10 w-10 rounded-full bg-cover bg-center border border-border-light dark:border-border-dark cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
-                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBRWcYErgYqftK0ZJPtW_jy9gDunYPuOhSsUjkXTA6GQB-Pp4WdB-s3osANvjNjZ4vrrzc08_Dt2DfLW2PK4rKK-eKyj3vODd11y3-lNlVnHww_dv36mJUbpkG3DKDRkjJQqbfZsAwS2uT_oNHK-Tn1YCXH0rQ_17elvRHqkOsyLIYawcZL5rr6UcrGvURitp5jolhA__LigtAPUOaShmC9-BQfyzOIuHlTVyFWmSXd2GnCdWFsPHyLRaSDYVR2hQQc2ZmyEs4ZI8jO");'>
+                        class="h-10 w-10 cursor-pointer overflow-hidden rounded-full border-2 border-white shadow-sm ring-1 ring-border-light dark:ring-white/20 focus:outline-none focus:ring-2 focus:ring-primary">
+                        <div class="h-full w-full bg-cover bg-center" data-alt="User profile picture"
+                            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDgaaUMaGWAhLW2jxgP-l70Wfr0NADrREGVja0uk7Rhmmxaz6fYt6L79PRkuxGQ4uaHLz5tEmJAC89VjO0eQKgXxRvXS0U9IDHrllWGgHxVyyjgu2mqEFHWIEjijgsaDKrqFy6wisLuDUMv-51pQfQ5sXrZaKBGMMpFBi2S0VOwOyS2QAe8FiD5CkB7iuLgYoFa4wXjqk9X7ozUEr5PZ2f89RJwqgZo01w9ea6M-9Ckus4dfnD_dGuHCWo_tZGTZZhkpVaPqGCHNdDF');">
+                        </div>
                     </button>
-                    <!-- Dropdown -->
+                    <!-- Dropdown Menu -->
                     <div id="profile-dropdown"
                         class="hidden absolute right-0 top-12 w-72 bg-card-light dark:bg-card-dark rounded-xl shadow-lg border border-border-light dark:border-border-dark overflow-hidden z-50 animate-fade-in">
                         <div
                             class="px-4 py-3 border-b border-border-light dark:border-border-dark bg-gray-50 dark:bg-white/5">
-                            <p class="text-sm font-medium text-text-main dark:text-white">User Settings
+                            <p class="text-sm font-medium text-text-main dark:text-white">User Settings</p>
+                            <p class="text-xs text-text-secondary dark:text-gray-400 truncate">user.email@amantra.com
                             </p>
-                            <p class="text-xs text-text-secondary dark:text-gray-400 truncate">
-                                user.email@amantra.com</p>
                         </div>
                         <div class="py-2 border-b border-border-light dark:border-border-dark">
-                            <a href="profile.html"
-                                class="flex items-center gap-3 px-4 py-2.5 text-sm text-text-main dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+                            <a class="flex items-center gap-3 px-4 py-2.5 text-sm text-text-main dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                href="profile.html">
                                 <span
                                     class="material-symbols-outlined text-[20px] text-text-secondary dark:text-gray-500">person</span>
                                 Profile Details
@@ -103,7 +102,7 @@
                                 href="#">
                                 <span
                                     class="material-symbols-outlined text-[20px] text-text-secondary dark:text-gray-500">help</span>
-                                Help &amp; Support
+                                Help & Support
                             </a>
                             <a id="sign-out-btn"
                                 class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group cursor-pointer">
@@ -152,7 +151,7 @@
                             <div class="flex justify-between items-end mb-4">
                                 <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-24 w-24 border-4 border-white dark:border-card-dark shadow-md"
                                     data-alt="User profile picture close up"
-                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC_k5nzjc_mtudj23rsy1-nAjH-wwV4d4kzb8Uvk4S9MSnbJnborkNfpbodITZZbV-e3fXvJeutQOKI9XuA5HN33qcWNc5HJTOUH0cY_HSNvCMsFICIYBfYWeuNJPdrQdc5R2nOZrdwmlKYCPgUq91qFp0YZcemOEJUi6WJPoC6mtVhiKXz-R0ZiYthzARuFwzJv__g32yjCnATASXjX_scdcsY_LR9EF7wMrH-vtS6-9mNHHzmnilDmwfQIum-kLeIfDH0T7rDItuT");'>
+                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDgaaUMaGWAhLW2jxgP-l70Wfr0NADrREGVja0uk7Rhmmxaz6fYt6L79PRkuxGQ4uaHLz5tEmJAC89VjO0eQKgXxRvXS0U9IDHrllWGgHxVyyjgu2mqEFHWIEjijgsaDKrqFy6wisLuDUMv-51pQfQ5sXrZaKBGMMpFBi2S0VOwOyS2QAe8FiD5CkB7iuLgYoFa4wXjqk9X7ozUEr5PZ2f89RJwqgZo01w9ea6M-9Ckus4dfnD_dGuHCWo_tZGTZZhkpVaPqGCHNdDF");'>
                                 </div>
                                 <span
                                     class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-green-200 dark:border-green-800">
@@ -325,67 +324,8 @@
                             <a class="text-primary text-sm font-bold hover:underline" href="bondhistory.html">View
                                 All</a>
                         </div>
-                        <div class="divide-y divide-border-light dark:divide-border-dark">
-                            <!-- Item 1 -->
-                            <div
-                                class="p-4 flex items-center justify-between hover:bg-background-light dark:hover:bg-background-dark transition-colors cursor-pointer group">
-                                <div class="flex items-center gap-4">
-                                    <div
-                                        class="bg-blue-100 dark:bg-blue-900/30 text-primary p-2 rounded-full h-10 w-10 flex items-center justify-center">
-                                        <span class="material-symbols-outlined">request_quote</span>
-                                    </div>
-                                    <div>
-                                        <p
-                                            class="text-text-main dark:text-white font-bold text-sm group-hover:text-primary transition-colors">
-                                            Loan to Sharma Enterprises</p>
-                                        <p class="text-text-secondary text-xs">Created on Oct 24, 2023</p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-text-main dark:text-white font-bold text-sm">₹ 50,000</p>
-                                    <p class="text-green-600 dark:text-green-400 text-xs font-medium">Active</p>
-                                </div>
-                            </div>
-                            <!-- Item 2 -->
-                            <div
-                                class="p-4 flex items-center justify-between hover:bg-background-light dark:hover:bg-background-dark transition-colors cursor-pointer group">
-                                <div class="flex items-center gap-4">
-                                    <div
-                                        class="bg-purple-100 dark:bg-purple-900/30 text-purple-600 p-2 rounded-full h-10 w-10 flex items-center justify-center">
-                                        <span class="material-symbols-outlined">handshake</span>
-                                    </div>
-                                    <div>
-                                        <p
-                                            class="text-text-main dark:text-white font-bold text-sm group-hover:text-primary transition-colors">
-                                            Bond from Rajesh Kumar</p>
-                                        <p class="text-text-secondary text-xs">Received on Oct 20, 2023</p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-text-main dark:text-white font-bold text-sm">₹ 12,000</p>
-                                    <p class="text-text-secondary text-xs font-medium">Pending</p>
-                                </div>
-                            </div>
-                            <!-- Item 3 -->
-                            <div
-                                class="p-4 flex items-center justify-between hover:bg-background-light dark:hover:bg-background-dark transition-colors cursor-pointer group">
-                                <div class="flex items-center gap-4">
-                                    <div
-                                        class="bg-teal-100 dark:bg-teal-900/30 text-teal-600 p-2 rounded-full h-10 w-10 flex items-center justify-center">
-                                        <span class="material-symbols-outlined">check</span>
-                                    </div>
-                                    <div>
-                                        <p
-                                            class="text-text-main dark:text-white font-bold text-sm group-hover:text-primary transition-colors">
-                                            Repayment - Education Fund</p>
-                                        <p class="text-text-secondary text-xs">Completed on Sep 15, 2023</p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-text-main dark:text-white font-bold text-sm">₹ 25,000</p>
-                                    <p class="text-text-secondary text-xs font-medium">Closed</p>
-                                </div>
-                            </div>
+                        <div id="recent-bonds-list" class="divide-y divide-border-light dark:divide-border-dark">
+                            <div class="p-4 text-center text-text-secondary text-sm">Loading recent bonds...</div>
                         </div>
                     </div>
                 </div>
@@ -414,7 +354,8 @@
         </div>
     </div>
 
-    <script src="js/profile.js"></script>
+    <script type="module" src="js/auth_check.js"></script>
+    <script type="module" src="js/profile.js"></script>
 </body>
 
 </html>
