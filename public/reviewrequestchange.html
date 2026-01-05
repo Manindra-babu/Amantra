@@ -69,11 +69,53 @@
                     <span
                         class="material-symbols-outlined text-text-main dark:text-white !text-[20px]">notifications</span>
                 </button>
-                <button
-                    class="flex size-10 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-white dark:bg-card-dark border border-border-light dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                    <span
-                        class="material-symbols-outlined text-text-main dark:text-white !text-[20px]">account_circle</span>
-                </button>
+                <div class="relative" id="profile-menu-container">
+                    <button id="profile-menu-button"
+                        class="h-10 w-10 rounded-full bg-cover bg-center border border-border-light dark:border-border-dark cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAf7NuVTTd-6-hVIHdvzP1NSnqppg9rGDhFoehpvD7_1XvaC_pNey3OB9J5degvtFWOydYgOOpIBGayJ7rI_wKP1VwkXitZhom2h6vBdd_CAiIvvMwC0V2VkHxOaTmPWoEKtXSM8xQelyCpA6ViEoYziSFhwcvH1wTK5t3YIU5ZGmXy7Uk8GU8GUJdLbYNFCmYH-ktnZ8Bt-JJFA46MqbTKrnlwYHC21MEHMJfFxD8s8NxFMsV0ZSeIYu9kR5_H080uYwLUvWLBuBPx");'>
+                    </button>
+                    <!-- Dropdown -->
+                    <div id="profile-dropdown"
+                        class="hidden absolute right-0 top-12 w-72 bg-card-light dark:bg-card-dark rounded-xl shadow-lg border border-border-light dark:border-border-dark overflow-hidden z-50 animate-fade-in">
+                        <div
+                            class="px-4 py-3 border-b border-border-light dark:border-border-dark bg-gray-50 dark:bg-white/5">
+                            <p class="text-sm font-medium text-text-main dark:text-white">User Settings
+                            </p>
+                            <p class="text-xs text-text-secondary dark:text-gray-400 truncate">
+                                user.email@amantra.com</p>
+                        </div>
+                        <div class="py-2 border-b border-border-light dark:border-border-dark">
+                            <a href="profile.html"
+                                class="flex items-center gap-3 px-4 py-2.5 text-sm text-text-main dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+                                <span
+                                    class="material-symbols-outlined text-[20px] text-text-secondary dark:text-gray-500">person</span>
+                                Profile Details
+                            </a>
+                        </div>
+                        <div class="py-2 border-b border-border-light dark:border-border-dark">
+                            <a class="flex items-center gap-3 px-4 py-2.5 text-sm text-text-main dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                href="#">
+                                <span
+                                    class="material-symbols-outlined text-[20px] text-text-secondary dark:text-gray-500">share</span>
+                                Share Profile
+                            </a>
+                        </div>
+                        <div class="py-2">
+                            <a class="flex items-center gap-3 px-4 py-2.5 text-sm text-text-main dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                href="#">
+                                <span
+                                    class="material-symbols-outlined text-[20px] text-text-secondary dark:text-gray-500">help</span>
+                                Help &amp; Support
+                            </a>
+                            <a id="sign-out-btn"
+                                class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group cursor-pointer">
+                                <span
+                                    class="material-symbols-outlined text-[20px] text-red-500 group-hover:translate-x-1 transition-transform">logout</span>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </header>

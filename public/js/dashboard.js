@@ -26,9 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const calendarBtn = findElementByText('button', 'Calendar');
     if (calendarBtn) calendarBtn.addEventListener('click', () => window.location.href = 'calendar.html');
 
-    const viewRequestsLink = document.querySelector('a[href="#"]');
-    // Being specific as there might be multiple href="#"
-    if (viewRequestsLink && viewRequestsLink.textContent.includes('View all requests')) {
+    const viewRequestsLink = document.getElementById('view-all-requests-link');
+    if (viewRequestsLink) {
         viewRequestsLink.href = 'allrequests.html';
     }
 
@@ -52,30 +51,49 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Bond list items click to view details
-    const bondCards = document.querySelectorAll('.group.relative.flex.flex-col');
-    bondCards.forEach(card => {
-        // Find the arrow button by iterating spans
-        const spans = card.querySelectorAll('span.material-symbols-outlined');
-        let arrowBtn = null;
-        for (let span of spans) {
-            if (span.textContent.includes('arrow_outward')) {
-                arrowBtn = span.closest('div');
-                break;
-            }
-        }
+    // Tab Switching Logic
+    const setupTabs = (prefix) => {
+        const activeTab = document.getElementById(`tab-${prefix}-active`);
+        const overdueTab = document.getElementById(`tab-${prefix}-overdue`);
+        const activeList = document.getElementById(`list-${prefix}-active`);
+        const overdueList = document.getElementById(`list-${prefix}-overdue`);
 
-        if (arrowBtn) {
-            arrowBtn.parentElement.addEventListener('click', () => {
-                // Determine if it's a bond sent or received
-                if (card.innerHTML.includes('To:')) {
-                    window.location.href = 'lenderbondview.html';
-                } else {
-                    window.location.href = 'recipientbondview.html'; // Assuming this exists or falls back
-                }
-            });
+        // Common styles for active/inactive tabs
+        const activeClass = ['relative', 'text-brand-blue', 'dark:text-blue-300'];
+        const inactiveClass = ['text-text-secondary', 'hover:text-brand-dark', 'dark:text-gray-400', 'dark:hover:text-white'];
+        const indicatorHTML = '<span class="absolute bottom-[-17px] left-0 h-[3px] w-full bg-brand-blue dark:bg-blue-300 rounded-t-sm"></span>';
+
+        const switchTab = (isOverdue) => {
+            if (isOverdue) {
+                // Set Overdue Active
+                overdueTab.className = `pb-1 text-sm font-bold ${activeClass.join(' ')}`;
+                overdueTab.innerHTML = `Overdue ${indicatorHTML}`;
+                activeTab.className = `pb-1 text-sm font-bold ${inactiveClass.join(' ')}`;
+                activeTab.innerHTML = 'Active';
+
+                activeList.classList.add('hidden');
+                overdueList.classList.remove('hidden');
+            } else {
+                // Set Active Active
+                activeTab.className = `pb-1 text-sm font-bold ${activeClass.join(' ')}`;
+                activeTab.innerHTML = `Active ${indicatorHTML}`;
+                overdueTab.className = `pb-1 text-sm font-bold ${inactiveClass.join(' ')}`;
+                overdueTab.innerHTML = 'Overdue';
+
+                overdueList.classList.add('hidden');
+                activeList.classList.remove('hidden');
+            }
+        };
+
+        if (activeTab && overdueTab) {
+            activeTab.addEventListener('click', () => switchTab(false));
+            overdueTab.addEventListener('click', () => switchTab(true));
         }
-    });
+    };
+
+    setupTabs('created');
+    setupTabs('received');
+
     // Profile Dropdown Logic
     const profileBtn = document.getElementById('profile-menu-button');
     const profileDropdown = document.getElementById('profile-dropdown');

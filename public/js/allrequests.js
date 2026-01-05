@@ -29,19 +29,32 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Action buttons
-        const actionButtons = document.querySelectorAll('td button');
-        actionButtons.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const row = e.target.closest('tr');
-                const status = row.querySelector('span.rounded-full').textContent.trim();
 
-                if (status.includes('Pending Review')) {
-                    // Navigate to review request page
+
+        // Row Click Navigation
+        const requestRows = document.querySelectorAll('tbody tr');
+        requestRows.forEach(row => {
+            row.style.cursor = 'pointer';
+            row.addEventListener('click', (e) => {
+                // Prevent if clicking an interactive element
+                if (e.target.closest('button') || e.target.closest('a')) return;
+
+                const statusElement = row.querySelector('span.rounded-full');
+                const status = statusElement ? statusElement.textContent.trim() : '';
+
+                if (status.includes('Pending')) {
                     window.location.href = 'reviewrequestchange.html';
                 } else {
-                    console.log('View details for:', status);
-                    // Could navigate to detail view if it existed
+                    // Default view for other states (Completed, Rejected, etc.)
+                    // Mapping to a generic view or back to 'requestchange.html' as a placeholder
+                    // or maybe 'lenderbondview.html' if it's just a bond
+                    // Given the context, 'reviewrequestchange.html' is for incoming requests
+                    // 'requestchange.html' is for creating requests.
+                    // Let's default to reviewrequestchange.html for now as a viewer or 
+                    // stick to the user's specific flow if known. 
+                    // For "Accepted" or "Rejected", viewing the bond details might be better.
+                    // But for "Requests", let's assume review view is the detail view.
+                    window.location.href = 'reviewrequestchange.html';
                 }
             });
         });
