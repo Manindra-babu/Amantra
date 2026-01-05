@@ -79,10 +79,7 @@
                     href="#">Profile</a>
             </div>
             <div class="flex items-center gap-4">
-                <button
-                    class="flex items-center justify-center rounded-full size-10 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-text-main dark:text-white">
-                    <span class="material-symbols-outlined text-[24px]">notifications</span>
-                </button>
+
                 <div class="relative" id="profile-menu-container">
                     <button id="profile-menu-button"
                         class="h-9 w-9 cursor-pointer overflow-hidden rounded-full border border-border-light dark:border-border-dark focus:outline-none focus:ring-2 focus:ring-primary">
@@ -224,189 +221,9 @@
                                 scope="col">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-border-light dark:divide-border-dark">
-                        <!-- Row 1: Pending -->
-                        <tr class="hover:bg-gray-50 dark:hover:bg-[#1f293a] transition-colors group">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex flex-col">
-                                    <span class="text-xs text-text-secondary">#REQ-2023-089</span>
-                                    <span class="text-sm font-bold text-text-main dark:text-white">Education Bond
-                                        #402</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-3">
-                                    <div class="size-8 rounded-full bg-cover bg-center"
-                                        data-alt="Portrait of Sarah Jenkins"
-                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBUVe926KjQ4I0NWOqTZBHu59aSJdri30iiQ643CH8mLrN5Z_hT3pd6ohkztjRB6qpXQDYV-tDVvRUhtOKGwh2ZH_oOg8ftvBxT_ElDab2euv-BQzJzqX33gwBC0hfkzoxe9_EHEpZLGLSkveC956xh768yv8fQIKE_xFouAITjfo6WSxq7VufcHBLZMc7leW-Q1CbrQmRe7K1lE-IPjLToH8N27zGYctXF7uC84Jkps8I8SczjjYGGDcOZzxj4vWAC59gqP9tYSASK");'>
-                                    </div>
-                                    <span class="text-sm font-medium text-text-main dark:text-white">Sarah
-                                        Jenkins</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="text-sm text-text-main dark:text-gray-300">Oct 24, 2023</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <p class="text-sm text-text-secondary dark:text-gray-400 line-clamp-1 max-w-[200px]"
-                                    title="Requesting to extend repayment schedule by 2 months due to family emergency.">
-                                    Requesting to extend repayment schedule by 2 months...</p>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                                    <span class="size-1.5 rounded-full bg-amber-500"></span>
-                                    Pending Review
-                                </span>
-                            </td>
-
-                        </tr>
-                        <!-- Row 2: Rejected -->
-                        <tr class="hover:bg-gray-50 dark:hover:bg-[#1f293a] transition-colors group">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex flex-col">
-                                    <span class="text-xs text-text-secondary">#REQ-2023-082</span>
-                                    <span class="text-sm font-bold text-text-main dark:text-white">Small Biz Bond
-                                        #112</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-3">
-                                    <div class="size-8 rounded-full bg-cover bg-center"
-                                        data-alt="Portrait of Marcus Thompson"
-                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC7wZ3Uaz-cfW9gmPyWMWI2cJaK-h03-JXpqnGp-VOt51x4Bp4kOGDEYWii7JA8K5as1T42llWcPyF_6Uu38j9cMT_BSBh7HF89t3-2FrkxSFyvdOU-kX6vOZD4y_Txt1HOxsQwG-xx8_n3MWfPkLth1lRfa9K3n1JGl9b9GzxJhsqXVLmdaMBQdIJJEItARf3sFi2wzxlgOYSwwMDlsBrWmcO_N4TF700ukS2hMQkjreVIdmSxNerHZwdRt05282k9XW7V1KKaO3qG");'>
-                                    </div>
-                                    <span class="text-sm font-medium text-text-main dark:text-white">Marcus
-                                        Thompson</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="text-sm text-text-main dark:text-gray-300">Oct 20, 2023</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <p class="text-sm text-text-secondary dark:text-gray-400 line-clamp-1 max-w-[200px]"
-                                    title="Proposal to increase principal amount for inventory purchase.">Proposal to
-                                    increase principal amount for inventory...</p>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
-                                    <span class="size-1.5 rounded-full bg-rose-500"></span>
-                                    Rejected
-                                </span>
-                            </td>
-
-                        </tr>
-                        <!-- Row 3: Accepted -->
-                        <tr class="hover:bg-gray-50 dark:hover:bg-[#1f293a] transition-colors group">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex flex-col">
-                                    <span class="text-xs text-text-secondary">#REQ-2023-075</span>
-                                    <span class="text-sm font-bold text-text-main dark:text-white">Agri-Bond #88</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-3">
-                                    <div class="size-8 rounded-full bg-cover bg-center"
-                                        data-alt="Portrait of Elena Rodriguez"
-                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBKqmDzafwnk8vD-NJG4mZ67Lr3kwdEgA6IQlu6Q91GA5RVnfRon8dYK55HylMnCFe2XtJzf-H8D8T6L5iTxmLEF-YQeoeVpNqsKJCX1JUWktWihBtGpZJoPVx8bqB2NiBL19y2h2dH2yVDDGTGrSKnMBZTRhtf8JtLBT2_4mvHVsLG5s6b0-43CIm8wPJIsgDQqHTJ3mFMaM-SkqQki4Bsu6EBOkGrJMUiow81fXfsMgULhrESkGXLZ13Nq_Q4uZWTRmvD_Rp0abFX");'>
-                                    </div>
-                                    <span class="text-sm font-medium text-text-main dark:text-white">Elena
-                                        Rodriguez</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="text-sm text-text-main dark:text-gray-300">Oct 15, 2023</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <p class="text-sm text-text-secondary dark:text-gray-400 line-clamp-1 max-w-[200px]"
-                                    title="Change payment frequency from monthly to quarterly based on harvest cycles.">
-                                    Change payment frequency from monthly to quarterly...</p>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                                    <span class="size-1.5 rounded-full bg-emerald-500"></span>
-                                    Accepted
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right">
-                                <button
-                                    class="inline-flex items-center justify-center rounded-lg text-sm font-medium h-8 px-4 text-text-secondary dark:text-gray-300 bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 border border-border-light dark:border-border-dark transition-colors">
-                                    Details
-                                </button>
-                            </td>
-                        </tr>
-                        <!-- Row 4: Pending -->
-                        <tr class="hover:bg-gray-50 dark:hover:bg-[#1f293a] transition-colors group">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex flex-col">
-                                    <span class="text-xs text-text-secondary">#REQ-2023-071</span>
-                                    <span class="text-sm font-bold text-text-main dark:text-white">Tech Start Bond
-                                        #501</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-3">
-                                    <div class="size-8 rounded-full bg-cover bg-center"
-                                        data-alt="Portrait of David Chen"
-                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAyoONJKn0-uJpLOExPtUlpXRuHMvNKSw4G83NbbBvKks62ephaJ8hyWhhTABJ849nBsFCR5nInAPlVn6Q8cSxDHc59CN1cronIyx7y0KpiKukAr-XRH9_nS7SmPybLFTTdY5RwF_yOHUDj_OihY1546sQTfNeLyAOhxRLQFAJUjhfJlqcxbQKd0ERMOfvLiMslU3mNhDKKWHBYxNQpVEJOVS7R5mV8ZXAJLRFHlJtdwBG63ioiuVzK3nb5OiWePIyz_LKj-nfsQo-_");'>
-                                    </div>
-                                    <span class="text-sm font-medium text-text-main dark:text-white">David Chen</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="text-sm text-text-main dark:text-gray-300">Oct 12, 2023</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <p class="text-sm text-text-secondary dark:text-gray-400 line-clamp-1 max-w-[200px]"
-                                    title="Request for early repayment without penalty fees.">Request for early
-                                    repayment without penalty fees.</p>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                                    <span class="size-1.5 rounded-full bg-amber-500"></span>
-                                    Pending Review
-                                </span>
-                            </td>
-
-                        </tr>
-                        <!-- Row 5: Pending -->
-                        <tr class="hover:bg-gray-50 dark:hover:bg-[#1f293a] transition-colors group">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex flex-col">
-                                    <span class="text-xs text-text-secondary">#REQ-2023-068</span>
-                                    <span class="text-sm font-bold text-text-main dark:text-white">Housing Bond
-                                        #22</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-3">
-                                    <div class="size-8 rounded-full bg-cover bg-center"
-                                        data-alt="Portrait of Aisha Bello"
-                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBC6RbHSYk-XsiAPtYl1mv6QoE2L0oNsaOApwE1mHf2ed8wuI9t0J7QsxA2f4q5gTvmDraAdhbZlI5pJM8U-Z419TWSHJTymWjKc6XVpAMrcFp1BW-pDz6VVcMSvTq5EOs4BNxJEB5jSC4sCouq14Qsar9yjllwuTjFnPdxWZa8Glrs1FKdN4JqQOLDj53PzqxpZIQf8bSgb_YSDfrTCVpL4N4UBT6EjIwhQsVWRcfO7ByXHoQyD8yFsoojaw7QGee9z2dCFDAOh-T0");'>
-                                    </div>
-                                    <span class="text-sm font-medium text-text-main dark:text-white">Aisha Bello</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="text-sm text-text-main dark:text-gray-300">Oct 10, 2023</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <p class="text-sm text-text-secondary dark:text-gray-400 line-clamp-1 max-w-[200px]"
-                                    title="Modification of collateral terms due to property valuation change.">
-                                    Modification of collateral terms due to property...</p>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                                    <span class="size-1.5 rounded-full bg-amber-500"></span>
-                                    Pending Review
-                                </span>
-                            </td>
-
-                        </tr>
+                    <tbody id="all-requests-body"
+                        class="bg-white dark:bg-card-dark divide-y divide-border-light dark:divide-border-dark">
+                        <!-- Data populated by JS -->
                     </tbody>
                 </table>
             </div>
@@ -417,6 +234,7 @@
         </div>
         </div>
     </main>
+    <script src="js/mock_data.js"></script>
     <script src="js/allrequests.js"></script>
 </body>
 

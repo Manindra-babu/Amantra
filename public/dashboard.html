@@ -67,12 +67,7 @@
                 <h2 class="text-xl font-extrabold tracking-tight text-brand-dark dark:text-white">Amantra</h2>
             </div>
             <div class="flex items-center gap-4 sm:gap-6">
-                <button
-                    class="group relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-transparent hover:bg-brand-light/50 transition-colors text-text-secondary hover:text-brand-blue dark:text-gray-300 dark:hover:text-white">
-                    <span class="material-symbols-outlined" style="font-size: 24px;">notifications</span>
-                    <span
-                        class="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-red-500 border-2 border-white dark:border-background-dark"></span>
-                </button>
+
                 <div class="relative" id="profile-menu-container">
                     <button id="profile-menu-button"
                         class="h-10 w-10 cursor-pointer overflow-hidden rounded-full border-2 border-white shadow-sm ring-1 ring-border-light dark:ring-white/20 focus:outline-none focus:ring-2 focus:ring-primary">
@@ -167,61 +162,9 @@
                         class="text-sm font-bold text-brand-blue hover:text-brand-dark dark:text-blue-300 dark:hover:text-white"
                         href="allrequests.html">View all requests</a>
                 </div>
-                <div
+                <div id="change-requests-container"
                     class="rounded-2xl border border-amber-200 bg-amber-50/50 p-2 dark:border-amber-900/30 dark:bg-amber-900/10">
-                    <div
-                        class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 rounded-xl bg-white p-6 shadow-sm border border-amber-100 dark:bg-white/5 dark:border-white/10">
-                        <div class="flex items-center gap-5">
-                            <div class="relative">
-                                <div class="h-14 w-14 rounded-full bg-brand-light bg-cover bg-center ring-2 ring-white shadow-sm dark:ring-white/10"
-                                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAFqaGdMaSWJLMIq2PDK_xeIqjlO5zbV_Zvjm46x5zs2hk7_0G3QkASUAC1bHFIqX8mh8nkdSnNE5EoQMRqeBdFxBPQ1h0a1ANy_pjpfCdkJBvSE038kKp4X5U3mbZKxe2X79EJ6RlOn_AJDqXnpzqS0hjUKOAOM2hL9_Lt3HJXVd6pVaWicYuq6qF1gesmFQooaa68JixHQyQrv5-7Koqx35mOiINEE0qCE-3oOEIPat-qHVtigGBxn7dHnDpOwQ2JqZf5SzBhf6p4');">
-                                </div>
-                                <div
-                                    class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-amber-500 ring-2 ring-white dark:ring-[#1E1E1E]">
-                                    <span class="material-symbols-outlined text-white"
-                                        style="font-size: 14px;">edit</span>
-                                </div>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-bold text-brand-dark dark:text-white">Sarah Jenkins</h3>
-                                <p class="text-sm font-medium text-text-secondary">Proposed new terms for <span
-                                        class="text-brand-blue font-bold dark:text-blue-300">Bond #B-204</span></p>
-                            </div>
-                        </div>
-                        <div class="flex-1 lg:max-w-xl">
-                            <div
-                                class="flex items-center gap-4 rounded-xl bg-background-light px-5 py-4 border border-border-light dark:bg-white/5 dark:border-white/10">
-                                <div>
-                                    <p class="text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">
-                                        Current Amount</p>
-                                    <p class="text-sm font-bold text-brand-grey line-through">$500.00</p>
-                                </div>
-                                <div
-                                    class="flex-1 border-t-2 border-dashed border-gray-300 dark:border-gray-600 mx-2 relative top-[2px]">
-                                </div>
-                                <span class="material-symbols-outlined text-amber-500"
-                                    style="font-size: 20px;">arrow_forward</span>
-                                <div
-                                    class="flex-1 border-t-2 border-dashed border-gray-300 dark:border-gray-600 mx-2 relative top-[2px]">
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">
-                                        Requested</p>
-                                    <p class="text-xl font-extrabold text-brand-dark dark:text-white">$550.00</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3 w-full lg:w-auto">
-                            <button
-                                class="flex-1 lg:flex-none flex items-center justify-center gap-2 rounded-xl bg-brand-blue px-5 py-3 text-sm font-bold text-white shadow-lg shadow-brand-blue/20 transition-all hover:bg-brand-dark hover:scale-105 active:scale-95">
-                                Review
-                            </button>
-                            <button
-                                class="flex-1 lg:flex-none rounded-xl border border-border-light bg-white px-5 py-3 text-sm font-bold text-text-secondary hover:bg-gray-50 dark:bg-transparent dark:border-white/10 dark:text-white dark:hover:bg-white/5">
-                                Decline
-                            </button>
-                        </div>
-                    </div>
+
                 </div>
             </div>
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
@@ -247,75 +190,11 @@
                     </div>
                     <!-- Created Bonds Lists -->
                     <div id="list-created-active" class="flex flex-col gap-4">
-                        <div class="group relative flex flex-col gap-4 rounded-2xl border border-border-light bg-white p-6 shadow-sm transition-all hover:shadow-md hover:border-brand-blue/30 dark:border-white/10 dark:bg-white/5 dark:hover:border-white/20 cursor-pointer"
-                            onclick="window.location.href='lenderbondview.html'">
-                            <div class="flex items-start justify-between">
-                                <div class="flex items-center gap-4">
-                                    <div class="h-12 w-12 rounded-full bg-brand-light bg-cover bg-center ring-2 ring-white dark:ring-white/10"
-                                        data-alt="Portrait of Marcus Chen"
-                                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDjJy59yrcxNsx7ImbnIlfUvGvnFRstP5gro8son0iaDAXP02oMUzqACBb7dJ2MgKbt7CLOmCTd2H-6q1vFjzBfIltrRTnfjVjhjXK6S6rvSC_5xfsCxIDaALjuc7pkKcTzIStDx6EirTawu2XpP9sB_Zi4ffOpW5sdsjXUgW3wq7M4EM1dZPRiOcAqzVP2VsAdbZuNCHECHCKNQesNh7GvkHywKgYKsS1mUYmQbNOBndbNmaebwmetOb7DPQHm0GOo8OjfKy78hmRT');">
-                                    </div>
-                                    <div>
-                                        <p class="text-base font-bold text-brand-dark dark:text-white">To: Marcus Chen
-                                        </p>
-                                        <p class="text-xs font-semibold text-text-secondary uppercase tracking-wider">
-                                            Created Sep 28, 2023</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                class="flex items-end justify-between border-t border-border-light pt-4 mt-2 dark:border-white/10">
-                                <div>
-                                    <p class="text-xs font-bold uppercase tracking-wide text-text-secondary mb-1">Amount
-                                    </p>
-                                    <p class="text-2xl font-extrabold text-brand-dark dark:text-white">$1,250.00</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs font-medium text-text-secondary mb-1">Due Date</p>
-                                    <div
-                                        class="inline-flex items-center rounded-md bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-                                        <span class="material-symbols-outlined mr-1"
-                                            style="font-size: 14px;">warning</span>
-                                        Due in 2 days
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                     <div id="list-created-overdue" class="hidden flex flex-col gap-4">
                         <!-- Duplicated 'Overdue' Card for Demo -->
-                        <div class="group relative flex flex-col gap-4 rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm transition-all hover:shadow-md dark:border-red-900/30 dark:bg-red-900/10 cursor-pointer"
-                            onclick="window.location.href='lenderbondview.html'">
-                            <div class="flex items-start justify-between">
-                                <div class="flex items-center gap-4">
-                                    <div class="h-12 w-12 rounded-full bg-brand-light bg-cover bg-center ring-2 ring-red-100 dark:ring-red-900/30"
-                                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDjJy59yrcxNsx7ImbnIlfUvGvnFRstP5gro8son0iaDAXP02oMUzqACBb7dJ2MgKbt7CLOmCTd2H-6q1vFjzBfIltrRTnfjVjhjXK6S6rvSC_5xfsCxIDaALjuc7pkKcTzIStDx6EirTawu2XpP9sB_Zi4ffOpW5sdsjXUgW3wq7M4EM1dZPRiOcAqzVP2VsAdbZuNCHECHCKNQesNh7GvkHywKgYKsS1mUYmQbNOBndbNmaebwmetOb7DPQHm0GOo8OjfKy78hmRT');">
-                                    </div>
-                                    <div>
-                                        <p class="text-base font-bold text-brand-dark dark:text-white">To: Marcus Chen
-                                        </p>
-                                        <p
-                                            class="text-xs font-semibold text-red-600 dark:text-red-400 uppercase tracking-wider">
-                                            Overdue since Sep 20, 2023</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                class="flex items-end justify-between border-t border-red-200 pt-4 mt-2 dark:border-red-900/30">
-                                <div>
-                                    <p class="text-xs font-bold uppercase tracking-wide text-text-secondary mb-1">Amount
-                                    </p>
-                                    <p class="text-2xl font-extrabold text-brand-dark dark:text-white">$1,250.00</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs font-medium text-text-secondary mb-1">Status</p>
-                                    <div
-                                        class="inline-flex items-center rounded-md bg-white px-3 py-1 text-xs font-bold text-red-600 shadow-sm ring-1 ring-red-100 dark:bg-red-900/40 dark:text-red-400 dark:ring-0">
-                                        Overdue 5 days
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </section>
                 <section class="flex flex-col gap-5">
@@ -340,79 +219,16 @@
                     </div>
                     <!-- Received Bonds Lists -->
                     <div id="list-received-active" class="hidden flex flex-col gap-4">
-                        <div class="group relative flex flex-col gap-4 rounded-2xl border border-border-light bg-brand-light/30 p-6 shadow-sm transition-all hover:shadow-md hover:bg-brand-light/50 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10 cursor-pointer"
-                            onclick="window.location.href='recipientbondview.html'">
-                            <div class="flex items-start justify-between">
-                                <div class="flex items-center gap-4">
-                                    <div class="h-12 w-12 rounded-full bg-white bg-cover bg-center ring-2 ring-brand-light dark:ring-white/10"
-                                        data-alt="Portrait of David Kim"
-                                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAwQZhiBdxaSxkrLTNaB3vxTIhInHiQawqywu9UV5GxIQUtCqURGbu-jvqcab16Ewsmzq2k31BeadPHwacml_hEtHGn_X3bj6MxDJO5vt3_3KAHF5kdwzi1YulJerPy7XXJuIc5q_tuxa8xuCgeUAGvsSU6uWyV7_KcSxcUd-QZMuQXkKUiBVv3GV3SvJJws193GQ7eJx_Bduly9VkzbAKNF761OJNlBBu6AF0gd0dfmqZ-85ZJR_LH1KqAtdADuIupWELGkpXL8-UG');">
-                                    </div>
-                                    <div>
-                                        <p class="text-base font-bold text-brand-dark dark:text-white">From: David Kim
-                                        </p>
-                                        <p class="text-xs font-semibold text-text-secondary uppercase tracking-wider">
-                                            Recieved Oct 20, 2023</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                class="flex items-end justify-between border-t border-border-light pt-4 mt-2 dark:border-white/10">
-                                <div>
-                                    <p class="text-xs font-bold uppercase tracking-wide text-text-secondary mb-1">Amount
-                                    </p>
-                                    <p class="text-2xl font-extrabold text-brand-dark dark:text-white">$2,000.00</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs font-medium text-text-secondary mb-1">Due Date</p>
-                                    <div
-                                        class="inline-flex items-center rounded-md bg-white px-3 py-1 text-xs font-bold text-brand-grey shadow-sm ring-1 ring-brand-light dark:bg-white/10 dark:text-gray-300 dark:ring-0">
-                                        Dec 01, 2023
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                     <div id="list-received-overdue" class="flex flex-col gap-4">
-                        <div class="group relative flex flex-col gap-4 rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm transition-all hover:shadow-md dark:border-red-900/30 dark:bg-red-900/10 cursor-pointer"
-                            onclick="window.location.href='recipientbondview.html'">
-                            <div
-                                class="absolute right-0 top-0 rounded-bl-xl rounded-tr-xl bg-red-100 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-red-700 dark:bg-red-900/50 dark:text-red-300">
-                                Action Required</div>
-                            <div class="flex items-start justify-between">
-                                <div class="flex items-center gap-4">
-                                    <div class="h-12 w-12 rounded-full bg-white bg-cover bg-center ring-2 ring-red-100 dark:ring-red-900/30"
-                                        data-alt="Portrait of Elena Rodriguez"
-                                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBkOI4p07kuM7K08iDVU_csjtYNzgVnIe6OxnkTO6eU6SsTUbkG3JVvWaK1akbim1J1LaYR_z9E23G-XZy8Z3U6v53-dBg-GA54_yLFBFHNUw_Tv2KNZEx1p2BvafmWHLwMRpX-Z4Jr8QsErLuJ_L8L7TiFi-DBL-xesfpb2mqEK3xPv1-mEWiTlH8kafT8EtPibFt9CPNfCojwVREidMTopVYDOUERrSfD7GYfNAumGP0Ob1olFxoQj4BTy9h2tNqwCRBRRZkPIdOR');">
-                                    </div>
-                                    <div>
-                                        <p class="text-base font-bold text-brand-dark dark:text-white">From: Elena
-                                            Rodriguez</p>
-                                        <p class="text-xs font-medium text-red-600 dark:text-red-400">Overdue Status</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                class="flex items-end justify-between border-t border-red-200 pt-4 mt-2 dark:border-red-900/30">
-                                <div>
-                                    <p class="text-xs font-bold uppercase tracking-wide text-text-secondary mb-1">Amount
-                                    </p>
-                                    <p class="text-2xl font-extrabold text-brand-dark dark:text-white">$340.00</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs font-medium text-text-secondary mb-1">Status</p>
-                                    <div
-                                        class="inline-flex items-center rounded-md bg-white px-3 py-1 text-xs font-bold text-red-600 shadow-sm ring-1 ring-red-100 dark:bg-red-900/40 dark:text-red-400 dark:ring-0">
-                                        Overdue 5 days
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </section>
             </div>
         </div>
     </main>
+    <script src="js/mock_data.js"></script>
     <script src="js/dashboard.js"></script>
 </body>
 

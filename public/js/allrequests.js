@@ -1,4 +1,41 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Render Mock Data
+    const renderAllRequests = () => {
+        if (typeof MOCK_DATA === 'undefined') return;
+        const tbody = document.getElementById('all-requests-body');
+        if (!tbody || !MOCK_DATA.allRequests) return;
+
+        tbody.innerHTML = MOCK_DATA.allRequests.map(req => `
+            <tr class="hover:bg-gray-50 dark:hover:bg-[#1f293a] transition-colors group">
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex flex-col">
+                        <span class="text-xs text-text-secondary">${req.reqId}</span>
+                        <span class="text-sm font-bold text-text-main dark:text-white">${req.name}</span>
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center gap-3">
+                        <div class="size-8 rounded-full bg-cover bg-center" style='background-image: url("${req.avatar}");'></div>
+                        <span class="text-sm font-medium text-text-main dark:text-white">${req.requester}</span>
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="text-sm text-text-main dark:text-gray-300">${req.date}</span>
+                </td>
+                <td class="px-6 py-4">
+                    <p class="text-sm text-text-secondary dark:text-gray-400 line-clamp-1 max-w-[200px]" title="${req.details}">${req.details}</p>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-${req.statusColor}-100 text-${req.statusColor}-800 dark:bg-${req.statusColor}-900/40 dark:text-${req.statusColor}-300 border border-${req.statusColor}-200 dark:border-${req.statusColor}-800">
+                        <span class="size-1.5 rounded-full bg-${req.statusColor}-500"></span>
+                        ${req.status}
+                    </span>
+                </td>
+            </tr>
+        `).join('');
+    };
+
+    renderAllRequests();
     // Navigation handling
     const setupNavigation = () => {
         const links = {

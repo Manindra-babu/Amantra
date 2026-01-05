@@ -1,4 +1,52 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Render Mock Data
+    const renderBondHistory = () => {
+        if (typeof MOCK_DATA === 'undefined') return;
+        const tbody = document.getElementById('bond-history-body');
+        if (!tbody || !MOCK_DATA.bondHistory) return;
+
+        tbody.innerHTML = MOCK_DATA.bondHistory.map(bond => `
+            <tr class="group hover:bg-background-light dark:hover:bg-background-dark/50 transition-colors">
+                <td class="whitespace-nowrap px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-lg ${bond.bgClass || 'bg-primary/10'} ${bond.textClass || 'text-primary'}">
+                            <span class="material-symbols-outlined">${bond.icon}</span>
+                        </div>
+                        <div>
+                            <p class="font-bold text-accent-dark dark:text-white">${bond.name}</p>
+                            <p class="text-xs text-secondary dark:text-gray-400">${bond.bondId}</p>
+                        </div>
+                    </div>
+                </td>
+                <td class="whitespace-nowrap px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="h-8 w-8 rounded-full bg-cover bg-center" style='background-image: url("${bond.avatar}");'></div>
+                        <span class="text-sm font-medium text-accent-dark dark:text-white">${bond.counterparty}</span>
+                    </div>
+                </td>
+                <td class="whitespace-nowrap px-6 py-4">
+                    <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${bond.typeClass}">${bond.type}</span>
+                </td>
+                <td class="whitespace-nowrap px-6 py-4 text-right">
+                    <span class="font-bold text-accent-dark dark:text-white text-base">${bond.amount}</span>
+                </td>
+                <td class="whitespace-nowrap px-6 py-4">
+                    <div class="flex flex-col">
+                        <span class="text-sm text-accent-dark dark:text-white">${bond.date}</span>
+                        ${bond.timeLeft ? `<span class="text-xs text-secondary dark:text-gray-400">${bond.timeLeft}</span>` : ''}
+                    </div>
+                </td>
+                <td class="whitespace-nowrap px-6 py-4">
+                    <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ring-1 ring-inset ${bond.statusClass} ${bond.status.includes('Overdue') ? 'bg-red-50 text-red-700 ring-red-600/20' : ''}">
+                        ${bond.statusIcon ? `<span class="material-symbols-outlined text-[14px]">${bond.statusIcon}</span>` : '<span class="h-1.5 w-1.5 rounded-full bg-primary"></span>'}
+                        ${bond.status}
+                    </span>
+                </td>
+            </tr>
+        `).join('');
+    };
+
+    renderBondHistory();
     // Navigation Action
     const createBtn = document.getElementById('create-bond-btn');
     if (createBtn) {

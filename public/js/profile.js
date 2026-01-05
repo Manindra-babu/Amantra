@@ -28,4 +28,54 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+
+
+    // QR Code Modal Logic
+    const qrTrigger = document.getElementById('digital-bond-qr');
+    const qrModal = document.getElementById('qr-modal');
+    const qrContent = document.getElementById('qr-modal-content');
+    const closeQrBtn = document.getElementById('close-qr-modal');
+
+    if (qrTrigger && qrModal && qrContent) {
+        const openModal = () => {
+            qrModal.classList.remove('hidden');
+            // Small delay to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                qrModal.classList.remove('opacity-0');
+                qrContent.classList.remove('scale-95');
+                qrContent.classList.add('scale-100');
+            }, 10);
+        };
+
+        const closeModal = () => {
+            qrModal.classList.add('opacity-0');
+            qrContent.classList.remove('scale-100');
+            qrContent.classList.add('scale-95');
+            setTimeout(() => {
+                qrModal.classList.add('hidden');
+            }, 300);
+        };
+
+        qrTrigger.addEventListener('click', openModal);
+
+        if (closeQrBtn) {
+            closeQrBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeModal();
+            });
+        }
+
+        qrModal.addEventListener('click', (e) => {
+            if (e.target === qrModal) {
+                closeModal();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !qrModal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+    }
 });
