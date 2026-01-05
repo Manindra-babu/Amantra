@@ -155,21 +155,25 @@
                 <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                         <div class="flex items-center gap-3">
-                            <h1 class="text-3xl font-black tracking-tight text-text-main dark:text-white sm:text-4xl">
-                                Bond #BND-2023-8492</h1>
+                            <h1 id="bond-title"
+                                class="text-3xl font-black tracking-tight text-text-main dark:text-white sm:text-4xl">
+                                Bond ...</h1>
                             <span class="material-symbols-outlined text-text-secondary dark:text-slate-500 cursor-help"
                                 title="Verified Bond ID">verified</span>
+                            <span id="bond-display-id"
+                                class="ml-2 text-sm text-text-secondary dark:text-slate-500 font-mono"></span>
                         </div>
                         <p class="mt-2 text-base text-text-secondary dark:text-slate-400">
                             Digital financial agreement details and acceptance.
                         </p>
                     </div>
                     <!-- Status Chip -->
-                    <div
+                    <div id="bond-status-container"
                         class="flex items-center rounded-full bg-orange-100 dark:bg-orange-900/30 px-4 py-1.5 border border-orange-200 dark:border-orange-800">
-                        <span
+                        <span id="bond-status-icon"
                             class="material-symbols-outlined mr-1.5 text-sm text-orange-600 dark:text-orange-400">pending</span>
-                        <span class="text-sm font-medium text-orange-700 dark:text-orange-300">Action Required</span>
+                        <span id="bond-status-text"
+                            class="text-sm font-medium text-orange-700 dark:text-orange-300">Action Required</span>
                     </div>
                 </div>
                 <!-- Main Bond Card -->
@@ -186,7 +190,8 @@
                                     Bond Value</span>
                                 <div class="flex items-baseline gap-1 text-primary">
                                     <span class="text-2xl font-bold">$</span>
-                                    <span class="text-5xl font-extrabold tracking-tight sm:text-6xl">5,000.00</span>
+                                    <span id="bond-amount"
+                                        class="text-5xl font-extrabold tracking-tight sm:text-6xl">0.00</span>
                                 </div>
                                 <div
                                     class="mt-2 flex items-center gap-2 text-sm text-text-secondary dark:text-slate-400">
@@ -199,14 +204,15 @@
                                 class="flex items-center gap-4 rounded-xl bg-background-light p-4 dark:bg-background-dark/50 border border-border-light dark:border-border-dark">
                                 <div class="h-14 w-14 overflow-hidden rounded-full bg-slate-200"
                                     data-alt="Portrait of Michael Scott, the sender of the bond">
-                                    <img alt="Michael Scott" class="h-full w-full object-cover"
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9hV1657heGx84IMJa9t4WAkGUI3YMmQdaMPDTjTBY6O0NbeDWTzzkId_kfh30C5-ifpsKZbs0OB2I7BQj1GCc1ttREjnC0U_7lUnnN3DqkJFX_rieiwCTUyvRnCLjErri8r9DLa6VHrVV3jVhAqX8fDX-ZipEmpGDEzWXZZoKHSRMbGO8ti0i7a83nC0aGn1SpCGpgYBUNgc-N7nQvD67CNJ6WLgoXRfJA9T1URLewBi3cqNO7vlAtMpVh_5gAhLxdPMrZIu-_sk0" />
+                                    <img alt="Sender" class="h-full w-full object-cover"
+                                        src="assets/default_avatar.png" />
                                 </div>
                                 <div class="flex flex-col">
                                     <span
                                         class="text-xs font-medium uppercase text-text-secondary dark:text-slate-400">Sent
                                         by</span>
-                                    <span class="text-lg font-bold text-text-main dark:text-white">Michael Scott</span>
+                                    <span id="bond-creator-name"
+                                        class="text-lg font-bold text-text-main dark:text-white">...</span>
                                     <span class="text-sm text-text-secondary dark:text-slate-400">Creator • Trust Score:
                                         98</span>
                                 </div>
@@ -220,14 +226,15 @@
                                 <span class="material-symbols-outlined">calendar_month</span>
                                 <span class="text-sm font-medium">Due Date</span>
                             </div>
-                            <p class="text-lg font-bold text-text-main dark:text-white">Oct 24, 2024</p>
+                            <p id="bond-due-date" class="text-lg font-bold text-text-main dark:text-white">--/--/----
+                            </p>
                         </div>
                         <div class="bg-surface-light p-6 dark:bg-surface-dark">
                             <div class="flex items-center gap-2 mb-2 text-text-secondary dark:text-slate-400">
                                 <span class="material-symbols-outlined">category</span>
                                 <span class="text-sm font-medium">Bond Type</span>
                             </div>
-                            <p class="text-lg font-bold text-text-main dark:text-white">Personal Loan</p>
+                            <p id="bond-type" class="text-lg font-bold text-text-main dark:text-white">...</p>
                         </div>
                         <div class="bg-surface-light p-6 dark:bg-surface-dark">
                             <div class="flex items-center gap-2 mb-2 text-text-secondary dark:text-slate-400">
@@ -247,9 +254,9 @@
                             </div>
                             <div class="flex-1">
                                 <h3 class="text-lg font-bold text-text-main dark:text-white">Purpose</h3>
-                                <p class="mt-2 text-base leading-relaxed text-slate-600 dark:text-slate-300">
-                                    Funds provided for the home renovation project as discussed last Tuesday.
-                                    Specifically covers the materials for the kitchen and bathroom remodeling.
+                                <p id="bond-purpose"
+                                    class="mt-2 text-base leading-relaxed text-slate-600 dark:text-slate-300">
+                                    ...
                                 </p>
                             </div>
                         </div>
@@ -262,8 +269,8 @@
                             </div>
                             <div class="flex-1">
                                 <h3 class="text-lg font-bold text-text-main dark:text-white">Terms &amp; Conditions</h3>
-                                <div
-                                    class="mt-2 rounded-lg bg-background-light p-4 text-sm leading-relaxed text-slate-600 dark:bg-background-dark dark:text-slate-300 border border-border-light dark:border-border-dark">
+                                <div id="bond-terms-content"
+                                    class="mt-2 rounded-lg bg-background-light p-4 text-sm leading-relaxed text-slate-600 dark:bg-background-dark dark:text-slate-300 border border-border-light dark:border-border-dark whitespace-pre-wrap">
                                     <ul class="list-disc space-y-2 pl-4">
                                         <li>Repayment is expected in full by the due date stated above.</li>
                                         <li>0% interest applies if paid on or before Oct 24, 2024.</li>
@@ -320,7 +327,7 @@
             </div>
         </main>
     </div>
-    <script src="js/recipientbondview.js"></script>
+    <script type="module" src="js/recipientbondview.js"></script>
     <script src="js/pwa-register.js"></script>
 </body>
 

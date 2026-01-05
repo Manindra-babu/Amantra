@@ -15,31 +15,64 @@ document.addEventListener('DOMContentLoaded', () => {
             renderChangeRequests(requests);
         });
 
-        // Bonds Listener
-        const bondsQuery = query(collection(db, "bonds"), where("userId", "==", user.uid));
-        onSnapshot(bondsQuery, (snapshot) => {
-            const createdActive = [];
-            const createdOverdue = [];
-            const receivedActive = [];
-            const receivedOverdue = [];
+        const contractsQuery = query(collection(db, "contracts")); // Fetch all and filter client side for complex OR logic across creator/counterparty
+        // OR better, use two queries as before if composite indexes are an issue, but let's try a simple approach first or keep existing structure if we can matches.
+        // Actually, to match "creatorUid == user.uid" OR "counterpartyEmail == user.email", it's complex.
+        // Let's stick to just creator for now as per the user's "Create" flow focus, or try to support both if possible.
+        // Given the rules I wrote allow read if creator or counterparty, a simple query(collection(db, "contracts")) will fail due to rules if we don't filter?
+        // Actually, rules filter what you CAN read. But client SDK needs a query that matches constraints.
+        // Let's query where creatorUid == uid.
 
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                if (data.type === 'created') {
-                    if (data.statusCategory === 'active') createdActive.push(data);
-                    else if (data.statusCategory === 'overdue') createdOverdue.push(data);
-                } else if (data.type === 'received') {
-                    if (data.statusCategory === 'active') receivedActive.push(data);
-                    else if (data.statusCategory === 'overdue') receivedOverdue.push(data);
-                }
-            });
+        const createdQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid));
 
-            renderBondList('created-active', createdActive, false, 'lenderbondview.html');
-            renderBondList('created-overdue', createdOverdue, true, 'lenderbondview.html');
-            renderBondList('received-active', receivedActive, false, 'recipientbondview.html');
-            renderBondList('received-overdue', receivedOverdue, true, 'recipientbondview.html');
+        onSnapshot(createdQuery, (snapshot) => {
+            processSnapshot(snapshot, user, 'created');
         });
+
+        // We ideally need a second query for received bonds (where counterpartyEmail == user.email).
+        // Assuming email is available on user object.
+        if (user.email) {
+            const receivedQuery = query(collection(db, "contracts"), where("counterpartyEmail", "==", user.email));
+            onSnapshot(receivedQuery, (snapshot) => {
+                processSnapshot(snapshot, user, 'received');
+            });
+        }
     };
+
+    let allCreated = [];
+    let allReceived = [];
+
+    const processSnapshot = (snapshot, user, source) => {
+        const bonds = [];
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            data.id = doc.id; // Keep ID
+            // Map fields for UI consistency
+            data.name = data.title; // title -> name
+            data.amount = data.totalValue; // totalValue -> amount
+            data.dueDate = data.effectiveDate; // effectiveDate -> dueDate
+            // Infer category
+            data.statusCategory = (data.status === 'pending' || data.status === 'active') ? 'active' : 'overdue'; // Simplified logic
+            bonds.push(data);
+        });
+
+        if (source === 'created') allCreated = bonds;
+        else allReceived = bonds;
+
+        updateDashboardLists();
+    }
+
+    const updateDashboardLists = () => {
+        const createdActive = allCreated.filter(b => b.statusCategory === 'active');
+        const createdOverdue = allCreated.filter(b => b.statusCategory === 'overdue');
+        const receivedActive = allReceived.filter(b => b.statusCategory === 'active');
+        const receivedOverdue = allReceived.filter(b => b.statusCategory === 'overdue');
+
+        renderBondList('created-active', createdActive, false, 'lenderbondview.html');
+        renderBondList('created-overdue', createdOverdue, true, 'lenderbondview.html');
+        renderBondList('received-active', receivedActive, false, 'recipientbondview.html');
+        renderBondList('received-overdue', receivedOverdue, true, 'recipientbondview.html');
+    }
 
     const renderChangeRequests = (requests) => {
         const section = document.getElementById('change-requests-section');
@@ -95,14 +128,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!element) return;
 
         element.innerHTML = bonds.map(bond => `
-            <div class="group relative flex flex-col gap-4 rounded-2xl border ${isOverdue ? 'border-red-200 bg-red-50 dark:border-red-900/30 dark:bg-red-900/10' : 'border-border-light bg-white dark:border-white/10 dark:bg-white/5'} p-6 shadow-sm transition-all hover:shadow-md cursor-pointer" onclick="window.location.href='${href}'">
+            <div class="group relative flex flex-col gap-4 rounded-2xl border ${isOverdue ? 'border-red-200 bg-red-50 dark:border-red-900/30 dark:bg-red-900/10' : 'border-border-light bg-white dark:border-white/10 dark:bg-white/5'} p-6 shadow-sm transition-all hover:shadow-md cursor-pointer" onclick="window.location.href='${href}?id=${bond.id}'">
                 ${isOverdue ? `<div class="absolute right-0 top-0 rounded-bl-xl rounded-tr-xl bg-red-100 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-red-700 dark:bg-red-900/50 dark:text-red-300">Action Required</div>` : ''}
                 <div class="flex items-start justify-between">
                     <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-full bg-cover bg-center ${isOverdue ? 'ring-2 ring-red-100 dark:ring-red-900/30' : 'rounded-full bg-brand-light ring-2 ring-white dark:ring-white/10'}" style="background-image: url('${bond.avatar}');"></div>
+                        <div class="h-12 w-12 rounded-full bg-cover bg-center ${isOverdue ? 'ring-2 ring-red-100 dark:ring-red-900/30' : 'rounded-full bg-brand-light ring-2 ring-white dark:ring-white/10'}" style="background-image: url('${bond.avatar || 'assets/default_avatar.png'}');"></div>
                         <div>
-                            <p class="text-base font-bold text-brand-dark dark:text-white">${bond.name ? (href.includes('lender') ? 'To: ' : 'From: ') + bond.name : ''}</p>
-                            <p class="text-xs font-semibold ${isOverdue ? 'text-red-600 dark:text-red-400' : 'text-text-secondary'} uppercase tracking-wider">${isOverdue ? 'Overdue Status' : 'Created ' + bond.createdDate}</p>
+                            <p class="text-base font-bold text-brand-dark dark:text-white">${bond.name ? (href.includes('lender') ? 'To: ' : 'From: ') + (bond.counterpartyName || bond.name) : 'Untitled Bond'}</p>
+                            <p class="text-xs font-semibold ${isOverdue ? 'text-red-600 dark:text-red-400' : 'text-text-secondary'} uppercase tracking-wider">${isOverdue ? 'Overdue Status' : 'Created ' + (bond.createdAt ? bond.createdAt.split('T')[0] : 'Unknown')}</p>
                         </div>
                     </div>
                 </div>
@@ -114,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="text-right">
                         <p class="text-xs font-medium text-text-secondary mb-1">${isOverdue ? 'Status' : 'Due Date'}</p>
                         <div class="inline-flex items-center rounded-md ${isOverdue ? 'bg-white px-3 py-1 text-xs font-bold text-red-600 shadow-sm ring-1 ring-red-100 dark:bg-red-900/40 dark:text-red-400 dark:ring-0' : 'bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'}">
-                            ${!isOverdue && bond.status.includes('Due') ? '<span class="material-symbols-outlined mr-1" style="font-size: 14px;">warning</span>' : ''}
+                            ${!isOverdue && (bond.status || '').includes('Due') ? '<span class="material-symbols-outlined mr-1" style="font-size: 14px;">warning</span>' : ''}
                             ${bond.status}
                         </div>
                     </div>

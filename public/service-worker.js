@@ -1,4 +1,4 @@
-const CACHE_NAME = 'amantra-v1';
+const CACHE_NAME = 'amantra-v2';
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',
@@ -33,7 +33,10 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
     // Skip cross-origin requests like Firebase/Google Fonts/CDN inside the SW for now to avoid CORS issues if not handled carefully, 
     // OR handle them with StaleWhileRevalidate.
-    // For simplicity, mostly Cache First for local assets, Network First for HTML navigation to ensure fresh content.
+    const url = new URL(event.request.url);
+    if (url.origin !== self.location.origin) {
+        return; // Do not intercept cross-origin requests
+    }
 
     if (event.request.mode === 'navigate') {
         event.respondWith(

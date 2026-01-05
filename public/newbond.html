@@ -178,7 +178,7 @@
                                     <label class="flex flex-col w-full gap-2">
                                         <span class="text-text-main dark:text-white text-sm font-semibold">Bond
                                             Name</span>
-                                        <input
+                                        <input id="bond-name-input"
                                             class="w-full rounded-lg border border-input-border bg-input-bg dark:bg-surface-dark dark:border-gray-700 h-12 px-4 text-text-main dark:text-white placeholder:text-text-secondary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                                             placeholder="e.g., Personal Loan Repayment" type="text" />
                                     </label>
@@ -186,7 +186,7 @@
                                         <span class="text-text-main dark:text-white text-sm font-semibold">Type of
                                             Bond</span>
                                         <div class="relative w-full">
-                                            <select
+                                            <select id="bond-type-select"
                                                 class="w-full appearance-none rounded-lg border border-input-border bg-input-bg dark:bg-surface-dark dark:border-gray-700 h-12 px-4 text-text-main dark:text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all cursor-pointer">
                                                 <option disabled="" selected="" value="">Select bond type</option>
                                                 <option value="personal">Personal Loan</option>
@@ -205,7 +205,7 @@
                                 <label class="flex flex-col w-full gap-2 relative group">
                                     <span class="text-text-main dark:text-white text-sm font-semibold">Recipient</span>
                                     <div class="relative w-full">
-                                        <input
+                                        <input id="bond-recipient-input"
                                             class="w-full rounded-lg border border-input-border bg-input-bg dark:bg-surface-dark dark:border-gray-700 h-12 pl-11 pr-4 text-text-main dark:text-white placeholder:text-text-secondary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                                             placeholder="Search by name, email or wallet address" type="text" />
                                         <div
@@ -258,7 +258,7 @@
                                 <label class="flex flex-col w-full gap-2">
                                     <span class="text-text-main dark:text-white text-sm font-semibold">Purpose /
                                         Description</span>
-                                    <textarea
+                                    <textarea id="bond-desc-textarea"
                                         class="w-full rounded-lg border border-input-border bg-input-bg dark:bg-surface-dark dark:border-gray-700 min-h-[120px] p-4 text-text-main dark:text-white placeholder:text-text-secondary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none"
                                         placeholder="Briefly describe the purpose of this financial bond..."></textarea>
                                 </label>
@@ -345,7 +345,7 @@
                                 <span id="summary-total-cost" class="text-xl font-bold text-primary">$0.00</span>
                             </div>
                             <div class="flex flex-col gap-3">
-                                <button
+                                <button id="create-bond-btn"
                                     class="w-full h-12 bg-primary hover:bg-[#0ea5d6] text-white font-bold rounded-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
                                     Create Bond
                                     <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -380,7 +380,7 @@
         // html.classList.add('dark');
     </script>
     <script type="module" src="js/auth_check.js"></script>
-    <script src="js/newbond.js"></script>
+    <script type="module" src="js/newbond.js"></script>
     <script src="js/pwa-register.js"></script>
 </body>
 

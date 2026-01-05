@@ -1,35 +1,56 @@
 import { auth, db } from './firebase-config.js';
-import { collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+import { collection, query, where, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    const renderBondHistory = (user) => {
-        // Use 'bonds' collection for consistency with Dashboard/Profile
-        const q = query(collection(db, "bonds"), where("userId", "==", user.uid));
+    const renderBondHistory = async (user) => {
+        // Fetch Created
+        const createdQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid));
 
-        onSnapshot(q, (snapshot) => {
-            const bonds = [];
-            snapshot.forEach((doc) => {
+        let allBonds = [];
+
+        try {
+            const createdSnap = await getDocs(createdQuery);
+            createdSnap.forEach(doc => {
                 const data = doc.data();
-                // Normalize data structure if needed (ensure dates are comparable)
-                bonds.push(data);
+                data.id = doc.id;
+                data.isLending = true; // Created by user -> Lending
+                allBonds.push(data);
             });
-            updateTable(bonds);
-            updateStats(bonds);
-        });
+
+            // Fetch Received
+            if (user.email) {
+                const receivedQuery = query(collection(db, "contracts"), where("counterpartyEmail", "==", user.email));
+                const receivedSnap = await getDocs(receivedQuery);
+                receivedSnap.forEach(doc => {
+                    const data = doc.data();
+                    data.id = doc.id;
+                    data.isLending = false; // Received -> Borrowing
+                    // Dedupe
+                    if (!allBonds.find(b => b.id === data.id)) {
+                        allBonds.push(data);
+                    }
+                });
+            }
+        } catch (e) {
+            console.error("Error fetching history:", e);
+        }
+
+        updateTable(allBonds);
+        updateStats(allBonds);
     };
 
     const updateStats = (bonds) => {
         // 1. Total Active Value
-        const activeBonds = bonds.filter(b =>
-            b.status.toLowerCase() === 'active' ||
-            b.statusCategory === 'active'
-        );
+        // Status 'active' or 'pending'
+        const activeBonds = bonds.filter(b => {
+            const s = (b.status || '').toLowerCase();
+            return s === 'active' || s === 'pending';
+        });
 
         const totalValue = activeBonds.reduce((sum, bond) => {
-            // Remove non-numeric except . and -
-            const val = parseFloat(bond.amount.replace(/[^0-9.-]+/g, ""));
+            const val = parseFloat((bond.totalValue || bond.amount || "0").replace(/[^0-9.-]+/g, ""));
             return sum + (isNaN(val) ? 0 : val);
         }, 0);
 
@@ -39,22 +60,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 2. Upcoming Due Date
-        // Filter active bonds with future dates
         const now = new Date();
         const futureBonds = activeBonds.filter(b => {
-            const d = new Date(b.dueDate); // stored as YYYY-MM-DD or readable string?
-            // Seed data uses YYYY-MM-DD usually, or standard string. JS Date parses most.
+            const d = new Date(b.effectiveDate || b.dueDate);
             return !isNaN(d) && d > now;
         });
 
-        // Sort by date ascending
-        futureBonds.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+        futureBonds.sort((a, b) => new Date(a.effectiveDate || a.dueDate) - new Date(b.effectiveDate || b.dueDate));
 
         const upcomingLabel = Array.from(document.querySelectorAll('p')).find(el => el.textContent.trim() === 'Upcoming Due');
         if (upcomingLabel && upcomingLabel.parentElement && upcomingLabel.parentElement.nextElementSibling) {
             if (futureBonds.length > 0) {
-                const nextDate = new Date(futureBonds[0].dueDate);
-                // Format: Oct 24, 2024
+                const nextDate = new Date(futureBonds[0].effectiveDate || futureBonds[0].dueDate);
                 const options = { month: 'short', day: 'numeric', year: 'numeric' };
                 upcomingLabel.parentElement.nextElementSibling.textContent = nextDate.toLocaleDateString('en-US', options);
             } else {
@@ -74,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tbody.innerHTML = bonds.map(bond => `
             <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors border-b border-border-light dark:border-border-dark last:border-b-0 cursor-pointer" 
-                onclick="window.location.href='${bond.type === 'received' ? 'recipientbondview.html' : 'lenderbondview.html'}'">
+                onclick="window.location.href='${!bond.isLending ? 'recipientbondview.html' : 'lenderbondview.html'}?id=${bond.id}'">
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
                         <div class="flex-shrink-0 h-10 w-10">
@@ -83,23 +100,23 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                         </div>
                         <div class="ml-4">
-                            <div class="text-sm font-bold text-text-main dark:text-white capitalize">${bond.name}</div>
+                            <div class="text-sm font-bold text-text-main dark:text-white capitalize">${bond.title || bond.name || 'Untitled'}</div>
                         </div>
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-bold text-text-main dark:text-white">${bond.counterparty || (bond.type === 'created' ? 'Recipient' : 'Sender')}</div>
+                    <div class="text-sm font-bold text-text-main dark:text-white">${bond.counterpartyName || bond.creatorName || 'Unknown'}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
-                        ${bond.type === 'created' ? 'Lending' : 'Borrowing'}
+                        ${bond.isLending ? 'Lending' : 'Borrowing'}
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right">
-                     <div class="text-sm font-bold text-text-main dark:text-white">${bond.amount}</div>
+                     <div class="text-sm font-bold text-text-main dark:text-white">${bond.totalValue || bond.amount}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                    ${bond.dueDate}
+                    ${bond.effectiveDate || bond.dueDate}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusClass(bond.status)}">

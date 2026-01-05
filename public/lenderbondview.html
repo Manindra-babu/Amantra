@@ -10,9 +10,6 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script>
         tailwind.config = {
@@ -128,21 +125,20 @@
             <span class="material-symbols-outlined text-[16px]">chevron_right</span>
             <a class="hover:text-primary transition-colors" href="#">My Bonds</a>
             <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-            <span class="font-medium text-text-primary-light dark:text-text-primary-dark">Bond #B-8920</span>
+            <span class="font-medium text-text-primary-light dark:text-text-primary-dark">Bond View</span>
         </nav>
         <!-- Header & Main Actions -->
         <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-8">
             <div class="flex flex-col gap-2">
                 <div class="flex items-center gap-3">
-                    <h1 class="text-3xl lg:text-4xl font-black tracking-tight">Bond #B-8920</h1>
-                    <span
+                    <h1 id="bond-title" class="text-3xl lg:text-4xl font-black tracking-tight">Bond ...</h1>
+                    <span id="bond-status-badge"
                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold uppercase tracking-wider">
                         <span class="material-symbols-outlined text-[14px]">check_circle</span>
-                        Active
+                        Pending
                     </span>
                 </div>
-                <p class="text-text-secondary-light dark:text-text-secondary-dark text-lg">Personal loan agreement for
-                    home renovation.</p>
+                <p id="bond-description" class="text-text-secondary-light dark:text-text-secondary-dark text-lg">...</p>
             </div>
             <div class="flex items-center gap-3 flex-wrap">
                 <button
@@ -173,10 +169,8 @@
                             <p class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1">
                                 Principal Amount</p>
                             <div class="flex items-baseline gap-1">
-                                <span
-                                    class="text-5xl font-extrabold text-text-primary-light dark:text-text-primary-dark tracking-tight">$5,000</span>
-                                <span
-                                    class="text-2xl font-bold text-text-secondary-light dark:text-text-secondary-dark">.00</span>
+                                <span id="bond-amount"
+                                    class="text-5xl font-extrabold text-text-primary-light dark:text-text-primary-dark tracking-tight">$0.00</span>
                             </div>
                         </div>
                         <div class="flex gap-8">
@@ -184,11 +178,11 @@
                                 <p
                                     class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1">
                                     Due Date</p>
-                                <p class="text-xl font-bold">Oct 24, 2024</p>
-                                <p
+                                <p id="bond-due-date" class="text-xl font-bold">--/--/----</p>
+                                <p id="bond-remaining-days"
                                     class="text-xs font-medium text-orange-600 dark:text-orange-400 mt-1 flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[14px]">schedule</span>
-                                    14 Days Remaining
+                                    -- Days Remaining
                                 </p>
                             </div>
                             <div>
@@ -207,7 +201,7 @@
                             <div class="relative">
                                 <div class="size-12 rounded-full bg-cover bg-center"
                                     data-alt="Portrait of Sarah Jenkins looking professional"
-                                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDwaLBAToa6awNOaeJ6Egq_3XpDtgxY0WR23KHxcRPM8Oac6pu-R0Y7dKOYqnDnyDbg7FWRcJ5W9Q8K0o0fioqAmkOO-OTrzNuAgsvKKBkVSkDKq0O1iEGl-CHQUHXEZPIj5Yx2VSX0SvuuI-vVkzEBSbo2qDVb-lMTGNZgMIkLQ0PK0saS_7h3ZhjELZDLwtlVNNbAcoEuQ9iVVIXmjRRpbaTiR6Fw53-lbL3HH6ayTmIwLLiNNLjey0CgmaKLvOuZi5AJ0B3qBUJQ');">
+                                    style="background-image: url('assets/default_avatar.png');">
                                 </div>
                                 <div
                                     class="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-0.5 border-2 border-white dark:border-background-dark">
@@ -218,8 +212,9 @@
                                 <p
                                     class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide">
                                     Recipient</p>
-                                <p class="text-base font-bold text-text-primary-light dark:text-text-primary-dark">Sarah
-                                    Jenkins</p>
+                                <p id="bond-recipient-name"
+                                    class="text-base font-bold text-text-primary-light dark:text-text-primary-dark">...
+                                </p>
                                 <a class="text-xs text-primary hover:underline font-medium" href="#">View Profile</a>
                             </div>
                         </div>
@@ -233,10 +228,11 @@
                                 <p
                                     class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide">
                                     Bond Type</p>
-                                <p class="text-base font-bold text-text-primary-light dark:text-text-primary-dark">
-                                    Personal Loan</p>
+                                <p id="bond-type"
+                                    class="text-base font-bold text-text-primary-light dark:text-text-primary-dark">
+                                    ...</p>
                                 <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark">ID:
-                                    #B-8920</span>
+                                    ...</span>
                             </div>
                         </div>
                     </div>
@@ -248,41 +244,10 @@
                         <span class="material-symbols-outlined text-primary">info</span>
                         Purpose &amp; Description
                     </h3>
-                    <p class="text-text-secondary-light dark:text-text-secondary-dark leading-relaxed mb-6">
-                        This bond serves as a personal loan to assist with the initial costs of home renovation
-                        materials. The agreement is between friends, with no interest charged, provided the repayment is
-                        made in full by the specified due date. The funds were transferred directly to Sarah's bank
-                        account on the creation date.
+                    <p id="bond-purpose-full"
+                        class="text-text-secondary-light dark:text-text-secondary-dark leading-relaxed mb-6">
+                        ...
                     </p>
-                    <h4
-                        class="text-sm font-bold text-text-primary-light dark:text-text-primary-dark mb-3 uppercase tracking-wider">
-                        Attached Documents</h4>
-                    <div class="flex flex-wrap gap-3">
-                        <div
-                            class="flex items-center gap-3 p-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer group">
-                            <div class="p-2 bg-red-100 dark:bg-red-900/20 rounded text-red-600 dark:text-red-400">
-                                <span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
-                            </div>
-                            <div class="flex flex-col">
-                                <span
-                                    class="text-sm font-bold text-text-primary-light dark:text-text-primary-dark group-hover:text-primary transition-colors">Agreement_Signed.pdf</span>
-                                <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark">2.4 MB •
-                                    Oct 10, 2024</span>
-                            </div>
-                        </div>
-                        <div
-                            class="flex items-center gap-3 p-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer group">
-                            <div class="p-2 bg-blue-100 dark:bg-blue-900/20 rounded text-blue-600 dark:text-blue-400">
-                                <span class="material-symbols-outlined text-[20px]">image</span>
-                            </div>
-                            <div class="flex flex-col">
-                                <span
-                                    class="text-sm font-bold text-text-primary-light dark:text-text-primary-dark group-hover:text-primary transition-colors">Receipt_Transfer.png</span>
-                                <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark">1.1 MB •
-                                    Oct 10, 2024</span>
-                            </div>
-                        </div>
-                    </div>
                 </section>
                 <!-- Terms Accordion -->
                 <section
@@ -330,52 +295,11 @@
                             <div
                                 class="absolute -left-[21px] top-1 size-3 rounded-full bg-primary ring-4 ring-surface-light dark:ring-surface-dark">
                             </div>
-                            <p class="text-sm font-bold text-text-primary-light dark:text-text-primary-dark">Reminder
-                                Sent</p>
-                            <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">Automated
-                                system reminder sent to Sarah.</p>
-                            <p
-                                class="text-[10px] text-text-secondary-light dark:text-text-secondary-dark mt-1 font-medium">
-                                Oct 20, 2024 • 09:00 AM</p>
-                        </div>
-                        <!-- Timeline Item 2 -->
-                        <div class="relative">
-                            <div
-                                class="absolute -left-[21px] top-1 size-3 rounded-full bg-border-light dark:bg-border-dark ring-4 ring-surface-light dark:ring-surface-dark">
-                            </div>
-                            <p class="text-sm font-bold text-text-primary-light dark:text-text-primary-dark">Funds
-                                Transferred</p>
-                            <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">Transfer
-                                of $5,000.00 confirmed.</p>
-                            <p
-                                class="text-[10px] text-text-secondary-light dark:text-text-secondary-dark mt-1 font-medium">
-                                Oct 10, 2024 • 02:30 PM</p>
-                        </div>
-                        <!-- Timeline Item 3 -->
-                        <div class="relative">
-                            <div
-                                class="absolute -left-[21px] top-1 size-3 rounded-full bg-border-light dark:bg-border-dark ring-4 ring-surface-light dark:ring-surface-dark">
-                            </div>
-                            <p class="text-sm font-bold text-text-primary-light dark:text-text-primary-dark">Terms
-                                Accepted</p>
-                            <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">Sarah
-                                Jenkins accepted the bond terms.</p>
-                            <p
-                                class="text-[10px] text-text-secondary-light dark:text-text-secondary-dark mt-1 font-medium">
-                                Oct 10, 2024 • 01:15 PM</p>
-                        </div>
-                        <!-- Timeline Item 4 -->
-                        <div class="relative">
-                            <div
-                                class="absolute -left-[21px] top-1 size-3 rounded-full bg-border-light dark:bg-border-dark ring-4 ring-surface-light dark:ring-surface-dark">
-                            </div>
                             <p class="text-sm font-bold text-text-primary-light dark:text-text-primary-dark">Bond
                                 Created</p>
-                            <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">You
-                                created Bond #B-8920.</p>
-                            <p
+                            <p id="bond-created-at"
                                 class="text-[10px] text-text-secondary-light dark:text-text-secondary-dark mt-1 font-medium">
-                                Oct 10, 2024 • 01:00 PM</p>
+                                ...</p>
                         </div>
                     </div>
                 </section>
@@ -401,7 +325,7 @@
             </div>
         </div>
     </main>
-    <script src="lenderbondview.js"></script>
+    <script type="module" src="js/lenderbondview.js"></script>
     <script src="js/pwa-register.js"></script>
 </body>
 

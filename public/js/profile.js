@@ -132,14 +132,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div>
                         <p class="text-text-main dark:text-white font-bold text-sm group-hover:text-primary transition-colors">
-                            ${bond.name || 'Bond Transaction'}
+                            ${bond.title || bond.name || 'Bond Transaction'}
                         </p>
-                        <p class="text-text-secondary text-xs">Created on ${bond.createdDate}</p>
+                        <p class="text-text-secondary text-xs">Created on ${bond.createdAt ? new Date(bond.createdAt).toLocaleDateString() : 'Unknown'}</p>
                     </div>
                 </div>
                 <div class="text-right">
-                    <p class="text-text-main dark:text-white font-bold text-sm">${bond.amount}</p>
-                    <p class="${bond.statusCategory === 'active' ? 'text-green-600 dark:text-green-400' : 'text-text-secondary'} text-xs font-medium">${bond.status}</p>
+                    <p class="text-text-main dark:text-white font-bold text-sm">${bond.totalValue || bond.amount}</p>
+                    <p class="${(bond.status === 'active' || bond.status === 'pending') ? 'text-green-600 dark:text-green-400' : 'text-text-secondary'} text-xs font-medium">${bond.status}</p>
                 </div>
             </div>
         `).join('');
