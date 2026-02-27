@@ -1,10 +1,10 @@
 import { db, auth } from './firebase-config.js';
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     // Check Authentication
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(auth, (user) => {
         if (!user) {
             window.location.href = 'signin.html';
             return;
@@ -19,33 +19,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        try {
-            const docRef = doc(db, 'contracts', bondId);
-            const docSnap = await getDoc(docRef);
-
+        const docRef = doc(db, 'contracts', bondId);
+        onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
                 const bond = docSnap.data();
-
-                // Security Check: Only Creator (Lender) can view here? 
-                // Actually lenderbondview is usually for the creator.
-                if (bond.creatorUid !== user.uid) {
-                    // Optionally redirect if not the creator? 
-                    // Only strictly enforce if rules don't already. 
-                    // Rules allow read if creator or counterparty. 
-                    // If counterparty views this page, it might look slightly wrong (e.g. "You created...") 
-                    // but functionally ok.
-                }
-
                 updateUI(bond, bondId);
             } else {
                 console.error("No such bond!");
                 alert('Bond not found.');
                 window.location.href = 'dashboard.html';
             }
-        } catch (error) {
+        }, (error) => {
             console.error("Error getting bond:", error);
             alert('Error loading bond details.');
-        }
+        });
     });
 
     // Profile Dropdown Logic (Copied/Shared)

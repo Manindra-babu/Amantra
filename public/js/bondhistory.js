@@ -1,44 +1,54 @@
 import { auth, db } from './firebase-config.js';
-import { collection, query, where, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+import { collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    const renderBondHistory = async (user) => {
-        // Fetch Created
-        const createdQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid));
+    let createdBonds = [];
+    let receivedBonds = [];
 
-        let allBonds = [];
-
-        try {
-            const createdSnap = await getDocs(createdQuery);
-            createdSnap.forEach(doc => {
-                const data = doc.data();
-                data.id = doc.id;
-                data.isLending = true; // Created by user -> Lending
-                allBonds.push(data);
-            });
-
-            // Fetch Received
-            if (user.email) {
-                const receivedQuery = query(collection(db, "contracts"), where("counterpartyEmail", "==", user.email));
-                const receivedSnap = await getDocs(receivedQuery);
-                receivedSnap.forEach(doc => {
-                    const data = doc.data();
-                    data.id = doc.id;
-                    data.isLending = false; // Received -> Borrowing
-                    // Dedupe
-                    if (!allBonds.find(b => b.id === data.id)) {
-                        allBonds.push(data);
-                    }
-                });
+    const mergeAndRender = () => {
+        let allBonds = [...createdBonds];
+        receivedBonds.forEach(bond => {
+            if (!allBonds.find(b => b.id === bond.id)) {
+                allBonds.push(bond);
             }
-        } catch (e) {
-            console.error("Error fetching history:", e);
-        }
-
+        });
         updateTable(allBonds);
         updateStats(allBonds);
+    };
+
+    const renderBondHistory = (user) => {
+        const createdQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid));
+
+        onSnapshot(createdQuery, (snapshot) => {
+            createdBonds = [];
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                data.id = doc.id;
+                data.isLending = true;
+                createdBonds.push(data);
+            });
+            mergeAndRender();
+        }, (e) => {
+            console.error("Error fetching created history:", e);
+        });
+
+        if (user.email) {
+            const receivedQuery = query(collection(db, "contracts"), where("counterpartyEmail", "==", user.email));
+            onSnapshot(receivedQuery, (snapshot) => {
+                receivedBonds = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    data.id = doc.id;
+                    data.isLending = false;
+                    receivedBonds.push(data);
+                });
+                mergeAndRender();
+            }, (e) => {
+                console.error("Error fetching received history:", e);
+            });
+        }
     };
 
     const updateStats = (bonds) => {

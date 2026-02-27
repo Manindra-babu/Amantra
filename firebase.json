@@ -4,7 +4,6 @@
     "public": "public",
     "ignore": [
       "firebase.json",
-      "public/js/mock_data.js",
       "**/.*",
       "**/node_modules/**"
     ],
