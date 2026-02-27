@@ -127,3 +127,5 @@ After this, any commit merged into `main` will be deployed to Firebase Hosting w
 ## License
 
 This project is provided as-is for educational and personal use.
+
+
