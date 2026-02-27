@@ -32,7 +32,7 @@ window.logout = async () => {
     }
 };
 
-// Attack listener to sign out buttons if they exist
+// Attach listener to sign out buttons if they exist
 document.addEventListener('DOMContentLoaded', () => {
     const signOutBtns = document.querySelectorAll('#sign-out-btn');
     signOutBtns.forEach(btn => {
