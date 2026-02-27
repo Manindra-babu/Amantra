@@ -1,7 +1,7 @@
 import { db, auth } from './firebase-config.js';
 import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-import { setupProfileDropdown, formatCurrency, formatDate } from './ui-utils.js';
+import { setupProfileDropdown, formatDate } from './ui-utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     // Check Authentication
