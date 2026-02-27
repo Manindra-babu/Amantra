@@ -113,6 +113,17 @@ Amantra/
    firebase deploy
    ```
 
+## CI/CD — Automatic Deployment
+
+Every push to the `main` branch triggers a GitHub Actions workflow that deploys the site to Firebase Hosting automatically.
+
+### One-time setup
+
+1. In the Firebase console, go to **Project Settings → Service accounts** and click **Generate new private key** to download a JSON key file.
+2. In your GitHub repository, go to **Settings → Secrets and variables → Actions** and create a secret named `FIREBASE_SERVICE_ACCOUNT` with the contents of the JSON key file.
+
+After this, any commit merged into `main` will be deployed to Firebase Hosting without manual intervention.
+
 ## License
 
 This project is provided as-is for educational and personal use.
