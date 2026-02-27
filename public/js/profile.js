@@ -1,16 +1,14 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-import { doc, getDoc, collection, query, where, getCountFromServer, getDocs, limit, orderBy } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+import { doc, onSnapshot, collection, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- VIEW LOGIC ---
-    const updateProfileUI = async (user) => {
-        // 1. User Details
+    const updateProfileUI = (user) => {
+        // 1. User Details - Real-time listener
         const userDocRef = doc(db, "users", user.uid);
-        try {
-            const userDoc = await getDoc(userDocRef);
-
+        onSnapshot(userDocRef, (userDoc) => {
             if (userDoc.exists()) {
                 const userData = userDoc.data();
 
@@ -24,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Update Email
                 const emailLabel = findElementByText('span', 'Email Address');
                 if (emailLabel) {
-                    const emailContainer = emailLabel.closest('.flex-col'); // Get parent
+                    const emailContainer = emailLabel.closest('.flex-col');
                     if (emailContainer) {
                         const emailValue = emailContainer.querySelector('.text-text-main');
                         if (emailValue) emailValue.textContent = user.email;
@@ -44,58 +42,53 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             }
-        } catch (e) {
+        }, (e) => {
             console.error("Error fetching user details:", e);
-        }
+        });
 
-        // 2. Stats (Counts)
-        try {
-            // Bonds Created (where user is the creator)
-            const createdQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid));
-            const createdSnapshot = await getCountFromServer(createdQuery);
-            const createdCount = createdSnapshot.data().count;
+        // 2. Stats - Real-time listeners on contract queries
+        // Bonds Created
+        const createdQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid));
+        onSnapshot(createdQuery, (snapshot) => {
+            const createdCount = snapshot.size;
             updateStat('Total Created', createdCount);
 
-            // Bonds Received (where user is the counterparty)
-            let receivedCount = 0;
-            if (user.email) {
-                const receivedQuery = query(collection(db, "contracts"), where("counterpartyEmail", "==", user.email));
-                const receivedSnapshot = await getCountFromServer(receivedQuery);
-                receivedCount = receivedSnapshot.data().count;
-            }
-            updateStat('Bonds Received', receivedCount);
-
             // Active Bonds (status is 'active' or 'pending')
-            const activeCreatedQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid), where("status", "==", "active"));
-            const pendingCreatedQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid), where("status", "==", "pending"));
-
-            const activeCreatedSnap = await getCountFromServer(activeCreatedQuery);
-            const pendingCreatedSnap = await getCountFromServer(pendingCreatedQuery);
-            const activeCount = activeCreatedSnap.data().count + pendingCreatedSnap.data().count;
+            let activeCount = 0;
+            let overdueCount = 0;
+            let completedCount = 0;
+            snapshot.forEach(doc => {
+                const status = doc.data().status;
+                if (status === 'active' || status === 'pending') activeCount++;
+                if (status === 'overdue') overdueCount++;
+                if (status === 'completed') completedCount++;
+            });
             updateStat('Active Bonds', activeCount);
+            updateStat('Overdue', overdueCount);
+            updateStat('Completed', completedCount);
+        }, (error) => {
+            console.error("Error updating created stats:", error);
+        });
 
-            // Overdue
-            const overdueCreatedQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid), where("status", "==", "overdue"));
-            const overdueCreatedSnap = await getCountFromServer(overdueCreatedQuery);
-            updateStat('Overdue', overdueCreatedSnap.data().count);
-
-            // Completed
-            const completedQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid), where("status", "==", "completed"));
-            const completedSnap = await getCountFromServer(completedQuery);
-            updateStat('Completed', completedSnap.data().count);
-
-
-            // Recent Bonds List
-            // Fetch recent 3 bonds created by the user
-            const recentQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid), orderBy("createdAt", "desc"), limit(3));
-            const recentSnapshot = await getDocs(recentQuery);
-            const recentBonds = [];
-            recentSnapshot.forEach(doc => recentBonds.push(doc.data()));
-            renderRecentBonds(recentBonds);
-
-        } catch (error) {
-            console.error("Error updating stats:", error);
+        // Bonds Received
+        if (user.email) {
+            const receivedQuery = query(collection(db, "contracts"), where("counterpartyEmail", "==", user.email));
+            onSnapshot(receivedQuery, (snapshot) => {
+                updateStat('Bonds Received', snapshot.size);
+            }, (error) => {
+                console.error("Error updating received stats:", error);
+            });
         }
+
+        // Recent Bonds List - Real-time listener
+        const recentQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid), orderBy("createdAt", "desc"), limit(3));
+        onSnapshot(recentQuery, (snapshot) => {
+            const recentBonds = [];
+            snapshot.forEach(doc => recentBonds.push(doc.data()));
+            renderRecentBonds(recentBonds);
+        }, (error) => {
+            console.error("Error updating recent bonds:", error);
+        });
     };
 
 
