@@ -8,12 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let receivedBonds = [];
 
     const mergeAndRender = () => {
-        let allBonds = [...createdBonds];
+        const bondMap = new Map();
+        createdBonds.forEach(bond => bondMap.set(bond.id, bond));
         receivedBonds.forEach(bond => {
-            if (!allBonds.find(b => b.id === bond.id)) {
-                allBonds.push(bond);
+            if (!bondMap.has(bond.id)) {
+                bondMap.set(bond.id, bond);
             }
         });
+        const allBonds = Array.from(bondMap.values());
         updateTable(allBonds);
         updateStats(allBonds);
     };

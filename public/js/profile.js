@@ -60,8 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
             snapshot.forEach(doc => {
                 const status = doc.data().status;
                 if (status === 'active' || status === 'pending') activeCount++;
-                if (status === 'overdue') overdueCount++;
-                if (status === 'completed') completedCount++;
+                else if (status === 'overdue') overdueCount++;
+                else if (status === 'completed') completedCount++;
             });
             updateStat('Active Bonds', activeCount);
             updateStat('Overdue', overdueCount);
