@@ -13,14 +13,37 @@ export function setupProfileDropdown(onSignOut) {
     const profileDropdown = document.getElementById('profile-dropdown');
 
     if (profileBtn && profileDropdown) {
+        // Toggle Dropdown
+        const toggleDropdown = () => {
+            const isHidden = profileDropdown.classList.toggle('hidden');
+            profileBtn.setAttribute('aria-expanded', !isHidden);
+        };
+
+        // Close Dropdown
+        const closeDropdown = () => {
+            if (!profileDropdown.classList.contains('hidden')) {
+                profileDropdown.classList.add('hidden');
+                profileBtn.setAttribute('aria-expanded', 'false');
+            }
+        };
+
         profileBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            profileDropdown.classList.toggle('hidden');
+            toggleDropdown();
         });
 
+        // Close on outside click
         document.addEventListener('click', (e) => {
             if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
-                profileDropdown.classList.add('hidden');
+                closeDropdown();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !profileDropdown.classList.contains('hidden')) {
+                closeDropdown();
+                profileBtn.focus();
             }
         });
 
