@@ -50,52 +50,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 2. Stats (Counts)
         try {
-            // Bonds Created
-            const createdQuery = query(collection(db, "bonds"), where("userId", "==", user.uid), where("type", "==", "created"));
+            // Bonds Created (where user is the creator)
+            const createdQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid));
             const createdSnapshot = await getCountFromServer(createdQuery);
             const createdCount = createdSnapshot.data().count;
             updateStat('Total Created', createdCount);
 
-            // Bonds Received
-            const receivedQuery = query(collection(db, "bonds"), where("userId", "==", user.uid), where("type", "==", "received"));
-            const receivedSnapshot = await getCountFromServer(receivedQuery);
-            const receivedCount = receivedSnapshot.data().count;
+            // Bonds Received (where user is the counterparty)
+            let receivedCount = 0;
+            if (user.email) {
+                const receivedQuery = query(collection(db, "contracts"), where("counterpartyEmail", "==", user.email));
+                const receivedSnapshot = await getCountFromServer(receivedQuery);
+                receivedCount = receivedSnapshot.data().count;
+            }
             updateStat('Bonds Received', receivedCount);
 
-            // Active Bonds
-            // Cannot use getCountFromServer with complex 'OR' conditions easily sometimes, but here we iterate or separate queries
-            const activeCreatedQuery = query(collection(db, "bonds"), where("userId", "==", user.uid), where("type", "==", "created"), where("statusCategory", "==", "active"));
-            const activeReceivedQuery = query(collection(db, "bonds"), where("userId", "==", user.uid), where("type", "==", "received"), where("statusCategory", "==", "active"));
+            // Active Bonds (status is 'active' or 'pending')
+            const activeCreatedQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid), where("status", "==", "active"));
+            const pendingCreatedQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid), where("status", "==", "pending"));
 
             const activeCreatedSnap = await getCountFromServer(activeCreatedQuery);
-            const activeReceivedSnap = await getCountFromServer(activeReceivedQuery);
-            const activeCount = activeCreatedSnap.data().count + activeReceivedSnap.data().count;
+            const pendingCreatedSnap = await getCountFromServer(pendingCreatedQuery);
+            const activeCount = activeCreatedSnap.data().count + pendingCreatedSnap.data().count;
             updateStat('Active Bonds', activeCount);
 
             // Overdue
-            const overdueCreatedQuery = query(collection(db, "bonds"), where("userId", "==", user.uid), where("type", "==", "created"), where("statusCategory", "==", "overdue"));
-            const overdueReceivedQuery = query(collection(db, "bonds"), where("userId", "==", user.uid), where("type", "==", "received"), where("statusCategory", "==", "overdue"));
-
+            const overdueCreatedQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid), where("status", "==", "overdue"));
             const overdueCreatedSnap = await getCountFromServer(overdueCreatedQuery);
-            const overdueReceivedSnap = await getCountFromServer(overdueReceivedQuery);
-            const overdueCount = overdueCreatedSnap.data().count + overdueReceivedSnap.data().count;
-            updateStat('Overdue', overdueCount);
+            updateStat('Overdue', overdueCreatedSnap.data().count);
 
-            // Completed (Assuming status 'completed' or similar - MOCK data used statusCategory=active/overdue mainly. 
-            // Let's assume non-active/non-overdue are completed or check specific status text if available)
-            // For simplicity, let's query for specific status string 'Completed' if possible, or just mock calculation
-            // based on total - active - overdue? No, `bonds` collection only has what we seeded.
-            // Let's check if we have any 'Closed' or 'Completed' status.
-            // If not, we might show 0.
-            // Let's try standard query for 'Completed'.
-            const completedQuery = query(collection(db, "bonds"), where("userId", "==", user.uid), where("status", "==", "Completed"));
+            // Completed
+            const completedQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid), where("status", "==", "completed"));
             const completedSnap = await getCountFromServer(completedQuery);
             updateStat('Completed', completedSnap.data().count);
 
 
             // Recent Bonds List
-            // Fetch recent 3 bonds
-            const recentQuery = query(collection(db, "bonds"), where("userId", "==", user.uid), orderBy("createdDate", "desc"), limit(3));
+            // Fetch recent 3 bonds created by the user
+            const recentQuery = query(collection(db, "contracts"), where("creatorUid", "==", user.uid), orderBy("createdAt", "desc"), limit(3));
             const recentSnapshot = await getDocs(recentQuery);
             const recentBonds = [];
             recentSnapshot.forEach(doc => recentBonds.push(doc.data()));

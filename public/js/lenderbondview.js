@@ -1,9 +1,10 @@
 import { db, auth } from './firebase-config.js';
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Check Authentication
-    auth.onAuthStateChanged(async (user) => {
+    onAuthStateChanged(auth, async (user) => {
         if (!user) {
             window.location.href = 'signin.html';
             return;
@@ -150,7 +151,7 @@ function setupProfileDropdown() {
         if (signOutBtn) {
             // Import signOut if needed or just use auth
             signOutBtn.addEventListener('click', () => {
-                auth.signOut().then(() => {
+                signOut(auth).then(() => {
                     window.location.href = 'signin.html';
                 });
             });
