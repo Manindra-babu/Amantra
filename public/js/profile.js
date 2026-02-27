@@ -1,6 +1,7 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 import { doc, onSnapshot, collection, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+import { setupProfileDropdown } from './ui-utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -150,43 +151,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- INTERACTION LOGIC (Preserved) ---
     // ... (Keep existing nav/modal logic)
 
-    // Navigation Action
-    const createBtn = document.querySelector('button span.truncate')?.parentElement;
+    // Navigation Action – prefer ID, then specific selector, then text fallback
+    const createBtn = document.getElementById('btn-create-bond')
+        || document.querySelector('button span.truncate')?.parentElement;
     if (createBtn) {
-        // Only add if text matches "Create Bond" logic if needed, but selector is specific enough
         createBtn.addEventListener('click', () => window.location.href = 'newbond.html');
     } else {
-        // Fallback for button without span structure if it changed
-        const btns = document.querySelectorAll('button');
-        btns.forEach(btn => {
-            if (btn.textContent.includes('Create Bond')) btn.addEventListener('click', () => window.location.href = 'newbond.html');
-        })
+        // Fallback: find by text content (runs only once at init)
+        for (const btn of document.querySelectorAll('button')) {
+            if (btn.textContent.includes('Create Bond')) {
+                btn.addEventListener('click', () => window.location.href = 'newbond.html');
+                break;  // Stop after first match
+            }
+        }
     }
 
 
     // Profile Dropdown Logic
-    const profileBtn = document.getElementById('profile-menu-button');
-    const profileDropdown = document.getElementById('profile-dropdown');
-
-    if (profileBtn && profileDropdown) {
-        profileBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            profileDropdown.classList.toggle('hidden');
+    setupProfileDropdown(() => {
+        signOut(auth).then(() => {
+            window.location.href = 'signin.html';
         });
-
-        document.addEventListener('click', (e) => {
-            if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
-                profileDropdown.classList.add('hidden');
-            }
-        });
-
-        const signOutBtn = document.getElementById('sign-out-btn');
-        if (signOutBtn) {
-            signOutBtn.addEventListener('click', () => {
-                window.location.href = 'signin.html';
-            });
-        }
-    }
+    });
 
     // QR Code Modal Logic
     const qrTrigger = document.getElementById('digital-bond-qr');

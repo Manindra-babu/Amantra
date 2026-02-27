@@ -1,6 +1,7 @@
 import { auth, db } from './firebase-config.js';
 import { collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { setupProfileDropdown } from './ui-utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -66,28 +67,48 @@ document.addEventListener('DOMContentLoaded', () => {
             return sum + (isNaN(val) ? 0 : val);
         }, 0);
 
-        const totalValueLabel = Array.from(document.querySelectorAll('p')).find(el => el.textContent.trim() === 'Total Active Value');
-        if (totalValueLabel && totalValueLabel.parentElement && totalValueLabel.parentElement.nextElementSibling) {
-            totalValueLabel.parentElement.nextElementSibling.textContent = `$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        const totalValueEl = document.getElementById('stat-total-active-value');
+        if (totalValueEl) {
+            totalValueEl.textContent = `$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        } else {
+            // Fallback: scan for label text
+            const totalValueLabel = Array.from(document.querySelectorAll('p')).find(el => el.textContent.trim() === 'Total Active Value');
+            if (totalValueLabel && totalValueLabel.parentElement && totalValueLabel.parentElement.nextElementSibling) {
+                totalValueLabel.parentElement.nextElementSibling.textContent = `$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            }
         }
 
         // 2. Upcoming Due Date
+        // Parse dates once and reuse for filtering + sorting
         const now = new Date();
-        const futureBonds = activeBonds.filter(b => {
+        const futureBonds = [];
+        for (const b of activeBonds) {
             const d = new Date(b.effectiveDate || b.dueDate);
-            return !isNaN(d) && d > now;
-        });
+            if (!isNaN(d) && d > now) {
+                futureBonds.push({ bond: b, dateMs: d.getTime() });
+            }
+        }
 
-        futureBonds.sort((a, b) => new Date(a.effectiveDate || a.dueDate) - new Date(b.effectiveDate || b.dueDate));
+        futureBonds.sort((a, b) => a.dateMs - b.dateMs);
 
-        const upcomingLabel = Array.from(document.querySelectorAll('p')).find(el => el.textContent.trim() === 'Upcoming Due');
-        if (upcomingLabel && upcomingLabel.parentElement && upcomingLabel.parentElement.nextElementSibling) {
+        const upcomingEl = document.getElementById('stat-upcoming-due');
+        const updateUpcoming = (el) => {
             if (futureBonds.length > 0) {
-                const nextDate = new Date(futureBonds[0].effectiveDate || futureBonds[0].dueDate);
+                const nextDate = new Date(futureBonds[0].dateMs);
                 const options = { month: 'short', day: 'numeric', year: 'numeric' };
-                upcomingLabel.parentElement.nextElementSibling.textContent = nextDate.toLocaleDateString('en-US', options);
+                el.textContent = nextDate.toLocaleDateString('en-US', options);
             } else {
-                upcomingLabel.parentElement.nextElementSibling.textContent = "No Upcoming";
+                el.textContent = "No Upcoming";
+            }
+        };
+
+        if (upcomingEl) {
+            updateUpcoming(upcomingEl);
+        } else {
+            // Fallback: scan for label text
+            const upcomingLabel = Array.from(document.querySelectorAll('p')).find(el => el.textContent.trim() === 'Upcoming Due');
+            if (upcomingLabel && upcomingLabel.parentElement && upcomingLabel.parentElement.nextElementSibling) {
+                updateUpcoming(upcomingLabel.parentElement.nextElementSibling);
             }
         }
     };
@@ -157,23 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Navigation and Dropdown Logic (Preserved)
-    const profileBtn = document.getElementById('profile-menu-button');
-    const profileDropdown = document.getElementById('profile-dropdown');
-
-    if (profileBtn && profileDropdown) {
-        profileBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            profileDropdown.classList.toggle('hidden');
-        });
-        document.addEventListener('click', (e) => {
-            if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
-                profileDropdown.classList.add('hidden');
-            }
-        });
-        const signOutBtn = document.getElementById('sign-out-btn');
-        if (signOutBtn) {
-            signOutBtn.addEventListener('click', () => window.location.href = 'signin.html');
-        }
-    }
+    // Navigation and Dropdown Logic
+    setupProfileDropdown();
 });

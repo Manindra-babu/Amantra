@@ -1,6 +1,7 @@
 import { auth, db } from './firebase-config.js';
 import { collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { setupProfileDropdown } from './ui-utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -63,10 +64,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const updateDashboardLists = () => {
-        const createdActive = allCreated.filter(b => b.statusCategory === 'active');
-        const createdOverdue = allCreated.filter(b => b.statusCategory === 'overdue');
-        const receivedActive = allReceived.filter(b => b.statusCategory === 'active');
-        const receivedOverdue = allReceived.filter(b => b.statusCategory === 'overdue');
+        // Single-pass categorization instead of four separate .filter() calls
+        const createdActive = [];
+        const createdOverdue = [];
+        for (const b of allCreated) {
+            if (b.statusCategory === 'active') createdActive.push(b);
+            else createdOverdue.push(b);
+        }
+
+        const receivedActive = [];
+        const receivedOverdue = [];
+        for (const b of allReceived) {
+            if (b.statusCategory === 'active') receivedActive.push(b);
+            else receivedOverdue.push(b);
+        }
 
         renderBondList('created-active', createdActive, false, 'lenderbondview.html');
         renderBondList('created-overdue', createdOverdue, true, 'lenderbondview.html');
@@ -209,37 +220,26 @@ document.addEventListener('DOMContentLoaded', () => {
     setupTabs('received');
 
     // Profile Dropdown Logic
-    const profileBtn = document.getElementById('profile-menu-button');
-    const profileDropdown = document.getElementById('profile-dropdown');
+    setupProfileDropdown();
 
-    if (profileBtn && profileDropdown) {
-        profileBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            profileDropdown.classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
-                profileDropdown.classList.add('hidden');
-            }
-        });
-    }
-
-    // Link buttons (Fixed to use direct IDs if available or simple text match)
+    // Helper kept for backward compatibility with HTML that lacks IDs
     const findElementByText = (selector, text) => {
-        const elements = document.querySelectorAll(selector);
-        for (let el of elements) {
+        for (const el of document.querySelectorAll(selector)) {
             if (el.textContent.includes(text)) return el;
         }
         return null;
     };
 
-    const createBtn = findElementByText('button', 'Create New Bond');
+    // Link buttons using IDs with fallback to text matching
+    const createBtn = document.getElementById('btn-create-bond')
+        || findElementByText('button', 'Create New Bond');
     if (createBtn) createBtn.addEventListener('click', () => window.location.href = 'newbond.html');
 
-    const historyBtn = findElementByText('button', 'Bond History');
+    const historyBtn = document.getElementById('btn-bond-history')
+        || findElementByText('button', 'Bond History');
     if (historyBtn) historyBtn.addEventListener('click', () => window.location.href = 'bondhistory.html');
 
-    const calendarBtn = findElementByText('button', 'Calendar');
+    const calendarBtn = document.getElementById('btn-calendar')
+        || findElementByText('button', 'Calendar');
     if (calendarBtn) calendarBtn.addEventListener('click', () => window.location.href = 'calendar.html');
 });
