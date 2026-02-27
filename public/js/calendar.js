@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (selectedDay) {
                 selectedDay.classList.remove(...selectedClasses);
                 selectedDay.classList.add('hover:bg-gray-50');
+                selectedDay = null;
             }
 
             // Add selected state (visual only for now)
