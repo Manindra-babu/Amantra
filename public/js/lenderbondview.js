@@ -1,6 +1,7 @@
 import { db, auth } from './firebase-config.js';
 import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { setupProfileDropdown, formatCurrency, formatDate } from './ui-utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     // Check Authentication
@@ -35,22 +36,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Profile Dropdown Logic (Copied/Shared)
-    setupProfileDropdown();
+    // Profile Dropdown Logic
+    setupProfileDropdown(() => {
+        signOut(auth).then(() => {
+            window.location.href = 'signin.html';
+        });
+    });
 });
 
 function updateUI(bond, bondId) {
-    // Helper for formatting currency
-    const formatCurrency = (val) => {
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val).replace('$', ''); // we add $ manually in HTML
+    // Helper for formatting currency — uses $ in HTML so strip it from the formatted value
+    const fmtCurrency = (val) => {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val).replace('$', '');
     };
 
-    // Helper for date
-    const formatDate = (dateStr) => {
-        if (!dateStr) return 'N/A';
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-    };
+    // Helper for date — use the shared formatDate from ui-utils.js
 
     // Calculate remaining days
     const calculateDaysRemaining = (dueDateStr) => {
@@ -70,7 +70,7 @@ function updateUI(bond, bondId) {
 
     setText('bond-title', bond.title || 'Untitled Bond');
     setText('bond-description', bond.description || 'No description provided.');
-    setText('bond-amount', formatCurrency(bond.totalValue || 0));
+    setText('bond-amount', fmtCurrency(bond.totalValue || 0));
     setText('bond-due-date', formatDate(bond.effectiveDate));
 
     // Status Badge
@@ -114,34 +114,6 @@ function updateUI(bond, bondId) {
         } else {
             // Fallback
             termsEl.innerHTML = `<ul class="list-disc pl-5 space-y-2"><li>Standard terms apply.</li></ul>`;
-        }
-    }
-}
-
-function setupProfileDropdown() {
-    const profileBtn = document.getElementById('profile-menu-button');
-    const profileDropdown = document.getElementById('profile-dropdown');
-
-    if (profileBtn && profileDropdown) {
-        profileBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            profileDropdown.classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
-                profileDropdown.classList.add('hidden');
-            }
-        });
-
-        const signOutBtn = document.getElementById('sign-out-btn');
-        if (signOutBtn) {
-            // Import signOut if needed or just use auth
-            signOutBtn.addEventListener('click', () => {
-                signOut(auth).then(() => {
-                    window.location.href = 'signin.html';
-                });
-            });
         }
     }
 }

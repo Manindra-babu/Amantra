@@ -1,6 +1,7 @@
 import { db, auth } from './firebase-config.js';
 import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { setupProfileDropdown, formatCurrency, formatDate } from './ui-utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     // Check Authentication
@@ -36,12 +37,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Profile Dropdown Logic
-    setupProfileDropdown();
+    setupProfileDropdown(() => {
+        signOut(auth).then(() => {
+            window.location.href = 'signin.html';
+        });
+    });
 });
 
 function updateUI(bond, bondId) {
-    const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val).replace('$', '');
-    const formatDate = (dateStr) => dateStr ? new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
+    // Local currency formatter strips '$' since it's added in HTML
+    const fmtCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val).replace('$', '');
 
     const setText = (id, text) => {
         const el = document.getElementById(id);
@@ -49,7 +54,7 @@ function updateUI(bond, bondId) {
     };
 
     setText('bond-title', bond.title || 'Untitled Bond');
-    setText('bond-amount', formatCurrency(bond.totalValue || 0));
+    setText('bond-amount', fmtCurrency(bond.totalValue || 0));
     setText('bond-due-date', formatDate(bond.effectiveDate));
 
     // Status
@@ -73,33 +78,6 @@ function updateUI(bond, bondId) {
         } else {
             // Fallback
             termsEl.innerHTML = `<ul class="list-disc pl-5 space-y-2"><li>Standard terms apply.</li></ul>`;
-        }
-    }
-}
-
-function setupProfileDropdown() {
-    const profileBtn = document.getElementById('profile-menu-button');
-    const profileDropdown = document.getElementById('profile-dropdown');
-
-    if (profileBtn && profileDropdown) {
-        profileBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            profileDropdown.classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
-                profileDropdown.classList.add('hidden');
-            }
-        });
-
-        const signOutBtn = document.getElementById('sign-out-btn');
-        if (signOutBtn) {
-            signOutBtn.addEventListener('click', () => {
-                signOut(auth).then(() => {
-                    window.location.href = 'signin.html';
-                });
-            });
         }
     }
 }

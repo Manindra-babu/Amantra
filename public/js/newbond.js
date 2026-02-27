@@ -1,6 +1,7 @@
 import { auth, db } from './firebase-config.js';
 import { collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { setupProfileDropdown, formatCurrency, debounce } from './ui-utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     // ---- Bond Summary Logic ----
@@ -33,14 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    function formatCurrency(amount, currencyCode = 'USD') {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: currencyCode,
-            minimumFractionDigits: 2
-        }).format(amount);
-    }
-
     function updateBondSummary() {
         const amount = parseFloat(amountInput.value) || 0;
         const currency = currencySelect.value || 'USD';
@@ -71,8 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Debounced version for keystroke-driven input; direct call for discrete changes
+    const debouncedUpdateSummary = debounce(updateBondSummary, 250);
+
     // Attach Listeners for Summary
-    if (amountInput) amountInput.addEventListener('input', updateBondSummary);
+    if (amountInput) amountInput.addEventListener('input', debouncedUpdateSummary);
     if (currencySelect) currencySelect.addEventListener('change', updateBondSummary);
     if (dateInput) dateInput.addEventListener('change', updateBondSummary);
 
@@ -173,26 +169,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ---- Existing Profile Dropdown Logic ----
-    const profileBtn = document.getElementById('profile-menu-button');
-    const profileDropdown = document.getElementById('profile-dropdown');
-
-    if (profileBtn && profileDropdown) {
-        profileBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            profileDropdown.classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
-                profileDropdown.classList.add('hidden');
-            }
-        });
-
-        const signOutBtn = document.getElementById('sign-out-btn');
-        if (signOutBtn) {
-            signOutBtn.addEventListener('click', () => {
-                window.location.href = 'signin.html';
-            });
-        }
-    }
+    setupProfileDropdown();
 });
